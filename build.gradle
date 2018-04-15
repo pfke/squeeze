@@ -11,16 +11,23 @@ plugins {
     id 'scala'
 }
 
+ext {
+    scalaVersion = '2.12'
+    scalaReleaseVersion = scalaVersion + '.5'
+}
+
 dependencies {
-    // Use Scala 2.11 in our library project
-    compile 'org.scala-lang:scala-library:2.11.8'
+    // Use Scala in our library project
+    compile group: 'org.scala-lang', name: 'scala-library', version: scalaReleaseVersion
+
+    compile group: 'org.scala-lang', name: 'scala-compiler', version: scalaReleaseVersion
+    compile group: 'org.scala-lang', name: 'scala-reflect', version: scalaReleaseVersion
+
+    compile group: 'com.typesafe.akka', name: "akka-actor_$scalaVersion", version: '2.5.10'
 
     // Use Scalatest for testing our library
     testCompile 'junit:junit:4.12'
-    testCompile 'org.scalatest:scalatest_2.11:3.0.4'
-
-    // Need scala-xml at test runtime
-    testRuntime 'org.scala-lang.modules:scala-xml_2.11:1.0.6'
+    testCompile group: 'org.scalatest', name: "scalatest_$scalaVersion", version: '3.0.4'
 }
 
 // In this section you declare where to find the dependencies of your project
@@ -29,3 +36,15 @@ repositories {
     // You can declare any Maven/Ivy/file repository here.
     jcenter()
 }
+
+compileScala {
+  scalaCompileOptions.additionalParameters = [
+          '-feature',
+          '-language:existentials,reflectiveCalls,postfixOps,implicitConversions',
+          '-unchecked',
+          '-deprecation',
+          '-encoding', 'utf8',
+          '-Ywarn-adapted-args'
+  ]
+}
+
