@@ -3,6 +3,7 @@ package de.pfke.squeeze.core.data.collection
 import java.nio.ByteOrder
 
 import akka.util.{ByteIterator, ByteString}
+import de.pfke.squeeze.core.data.collection.BitStringAlignment.BitStringAlignment
 
 import scala.collection.mutable.ArrayBuffer
 

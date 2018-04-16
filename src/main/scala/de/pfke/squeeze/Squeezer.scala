@@ -3,8 +3,9 @@ package de.pfke.squeeze
 import java.nio.ByteOrder
 
 import akka.util.ByteString
-import de.pfke.squeeze.core.data.collection.BitStringAlignment
-import de.pfke.squeeze.core.refl.GenericOps
+import de.pfke.squeeze.annots.AnnotationHelperIncludes._
+import de.pfke.squeeze.core.data.collection.{AnythingIterator, BitStringAlignment}
+import de.pfke.squeeze.core.refl.generic.GenericOps
 import de.pfke.squeeze.serialize.serializerHints.{ByteStringBuilderHint, SerializerHint}
 import de.pfke.squeeze.serialize.{SerializerContainer, SerializerWrapper}
 import de.pfke.squeeze.zlib.{PatchLevelVersion, SerializerRunException}
@@ -30,7 +31,7 @@ object Squeezer {
   ) (
     implicit
     byteOrder: ByteOrder
-  ): Squeezer = apply(PatchLevelVersion(version))
+  ): Squeezer = apply(PatchLevelVersion.parse(version))
 
   /**
     * Create with PatchLevelVersion
@@ -63,7 +64,7 @@ class Squeezer(
     typeTag: ru.TypeTag[A]
   ): Long = {
     GenericOps
-      .getTypeInfo(in)
+      .typeOf(in)
       .typeSymbol
       .annotations
       .getTypeForIface match {
@@ -91,7 +92,7 @@ class Squeezer(
     version: Option[PatchLevelVersion] = initialFromVersion,
     classTag: ClassTag[A],
     typeTag: ru.TypeTag[A]
-  ) = getSerializer[A]().read(iter = iter, hints = hints:_*)
+  ): A = getSerializer[A]().read(iter = iter, hints = hints:_*)
 
   /**
     * Serialize the input
@@ -109,7 +110,7 @@ class Squeezer(
     version: Option[PatchLevelVersion] = initialFromVersion,
     classTag: ClassTag[A],
     typeTag: ru.TypeTag[A]
-  ) = getSerializer[A]().write(data = data, hints = hints:_*)
+  ): Unit = getSerializer[A]().write(data = data, hints = hints:_*)
 
   /**
     * Read from given input and deserialize to an object A

@@ -1,6 +1,6 @@
 package de.pfke.squeeze.serialize.serializerHints
 
-import de.pfke.grind.data.collection.bitString.BitStringBuilder
+import de.pfke.squeeze.core.data.collection.BitStringBuilder
 
 case class BitStringBuilderHint (
   builder: BitStringBuilder

@@ -4,13 +4,12 @@ import java.nio.ByteOrder
 import java.nio.charset.{Charset, StandardCharsets}
 
 import akka.util.ByteStringBuilder
-import de.pfke.grind.data._
-import de.pfke.grind.core.version.PatchLevelVersion
-import de.pfke.grind.data.collection.anythingString.AnythingIterator
-import de.pfke.grind.data.length.digital.{BitLength, ByteLength, DigitalLength}
-import de.pfke.grind.refl.core.GeneralRefl.TypeInfo
-import de.pfke.grind.refl.squeeze.serialize.serializerHints._
-import de.pfke.grind.refl.squeeze.zlib.SerializerRunException
+import de.pfke.squeeze.core.data.byTypes.complex.OptionOpsIncludes._
+import de.pfke.squeeze.core.data.collection.AnythingIterator
+import de.pfke.squeeze.core.data.length.digital.{BitLength, ByteLength, DigitalLength}
+import de.pfke.squeeze.core.refl.generic.GenericOps.TypeInfo
+import de.pfke.squeeze.serialize.serializerHints._
+import de.pfke.squeeze.zlib.{PatchLevelVersion, SerializerRunException}
 
 import scala.reflect.ClassTag
 import scala.reflect.runtime.{universe => ru}
@@ -85,7 +84,7 @@ trait Serializer[A] {
     */
   protected def findIfaceTypeHint(
     hints: Seq[SerializerHint]
-  ): Option[Int] = findOneHint[IfaceTypeHint](hints = hints).matchToOption(_.value)
+  ): Option[Int] = findOneHint[IfaceTypeHint](hints = hints).execAndLift(_.value)
 
   /**
     * Find exact one or none hint of the given type
@@ -100,11 +99,7 @@ trait Serializer[A] {
   )(
     implicit
     classTag: ClassTag[B]
-  ): Option[B] = {
-    hints
-      .collect { case t: B => t }
-      .headOption
-  }
+  ): Option[B] = hints.collectFirst { case t: B => t }
 
   /**
     * Find size hint and pack into DigitalLength option
@@ -164,7 +159,7 @@ trait Serializer[A] {
     (findOneHint[StringBuilderHint](hints = hints), byteStringWriteOp, value) match {
       case (Some(x: BitStringBuilderHint), _, _) => x.builder.appendBits(lenToWrite(hints = hints).getOrElse(ByteLength(0)).toBits.toInt, value)(objectTypeInfo.classTag, objectTypeInfo.typeTag)
       case (Some(x: ByteStringBuilderHint), Some(writeOp), _) => writeOp(x.builder, value)
-      case (Some(x: ByteStringBuilderHint), None, t: String) => x.builder.putBytes(encodeString(t, lenToWrite(hints = hints).matchToOption(_.toByte.toInt)))
+      case (Some(x: ByteStringBuilderHint), None, t: String) => x.builder.putBytes(encodeString(t, lenToWrite(hints = hints).execAndLift(_.toByte.toInt)))
       case (Some(x: ByteStringBuilderHint), None, _) => throw new SerializerRunException("want to write into a ByteStringBuilder, but no write op defined")
 
       case _ => throw new SerializerRunException("no ...StringBuilderHint given, don't know how to write data")
