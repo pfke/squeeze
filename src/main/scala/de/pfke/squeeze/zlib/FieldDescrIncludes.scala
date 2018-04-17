@@ -16,7 +16,7 @@ object FieldDescrIncludes
 trait FieldDescrIncludes {
   implicit class fromFieldDescr(
     in: FieldDescr
-  ) extends GenericOpsImplicits_from_ruType(in.tpe) {
+  ) {
     def getAsBitfield: Option[asBitfield] = getAnnot[asBitfield]
     def hasAsBitfield: Boolean = hasAnnot[asBitfield]
 

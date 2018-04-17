@@ -187,6 +187,9 @@ object GenericOps {
   }
 }
 
+object GenericOpsIncludes
+  extends GenericOpsIncludes
+
 trait GenericOpsIncludes {
   implicit class GenericOpsImplicits_from_object (
     in: Any
@@ -208,7 +211,7 @@ trait GenericOpsIncludes {
     /**
       * Return true if the passed type is complex
       */
-    def isComplexType: Boolean = GenericOps.isComplex(in)
+    def isComplex: Boolean = GenericOps.isComplex(in)
 
     /**
       * Returns true if the given squeezle is an enum.
@@ -220,12 +223,12 @@ trait GenericOpsIncludes {
     /**
       * Return true if the passed type is a list
       */
-    def isListType: Boolean = GenericOps.isList(in)
+    def isList: Boolean = GenericOps.isList(in)
 
     /**
       * Return true if the passed type is a string
       */
-    def isPrimitiveType: Boolean = GenericOps.isPrimitive(in)
+    def isPrimitive: Boolean = GenericOps.isPrimitive(in)
 
     /**
       * Return true if the passed type is a string
@@ -241,7 +244,7 @@ trait GenericOpsIncludes {
       * Get a type and unify to common type.
       * Used to be able to compare e.g. java.lang.Integer == scala.Int
       */
-    def unifyType: ru.Type = GenericOps.toScalaType(in)
+    def toScalaType: ru.Type = GenericOps.toScalaType(in)
   }
 
   implicit class GenericOpsImplicits_from_ruTypeTag[A] (

@@ -24,6 +24,7 @@
 
 package de.pfke.squeeze.core.data.byTypes.primitives.bitTwiddling
 
+import de.pfke.squeeze.core.data.byTypes.primitives.BitTwiddling
 import org.scalatest.{Matchers, WordSpecLike}
 
 import scala.collection.immutable.BitSet

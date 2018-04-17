@@ -1,5 +1,6 @@
 package de.pfke.squeeze.core.data.byTypes.primitives.stringOps
 
+import de.pfke.squeeze.core.data.byTypes.primitives.StringOps
 import org.scalatest.{Matchers, WordSpecLike}
 
 class StringOps_countMatches_spec

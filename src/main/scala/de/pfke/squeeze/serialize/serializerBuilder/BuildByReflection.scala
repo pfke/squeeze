@@ -1,12 +1,15 @@
 package de.pfke.squeeze.serialize.serializerBuilder
 
 import de.pfke.squeeze.SizeOf
+import de.pfke.squeeze.annots.AnnotationHelperIncludes._
 import de.pfke.squeeze.annots.classAnnots.{fromVersion, typeForIface}
-import de.pfke.squeeze.annots.{injectLength, withFixedLength}
+import de.pfke.squeeze.annots.{injectCount, injectLength, injectTotalLength, withFixedLength}
 import de.pfke.squeeze.core.data._
 import de.pfke.squeeze.core.data.collection.BitStringAlignment
 import de.pfke.squeeze.core.refl.custom.{FieldDescr, FieldHelper}
 import de.pfke.squeeze.core.refl.generic.{ClassInfo, ClassOps, EnumOps, GenericOps}
+import de.pfke.squeeze.core.refl.generic.GenericOpsIncludes._
+import de.pfke.squeeze.zlib.FieldDescrIncludes._
 import de.pfke.squeeze.zlib.SerializerBuildException
 
 import scala.annotation.StaticAnnotation
@@ -321,9 +324,9 @@ class BuildByReflection
       val subFields = FieldHelper.getFields(upperType)
 
       val typeHint = subFields.getInjectTypeAnnot(fieldName) match {
-        case Some(x) if x._2.isEnum => Some(s"IfaceTypeHint(value = ${x._2.name}.id)")
-        case Some(x)                => Some(s"IfaceTypeHint(value = ${x._2.name})")
-        case None                   => None
+        case Some(x) if x._2.tpe.isEnum => Some(s"IfaceTypeHint(value = ${x._2.name}.id)")
+        case Some(x)                    => Some(s"IfaceTypeHint(value = ${x._2.name})")
+        case None                       => None
       }
 
       // Laengen-info
@@ -353,10 +356,10 @@ class BuildByReflection
       val code = field.tpe.typeArgs.headOption.execOrThrow( i => makeLine(thisTpe = i), new SerializerBuildException(s"unknown sub type of this list: ${field.tpe}"))
 
       // annots auswerten
-      val foundInjectCountAnnot = allSubFields.getInjectCountAnnot(field.name).matchToOption(_._2.name)
-      val foundWithFixedCountAnnot = field.getWithFixedCount.matchToOption(_.count.toString)
+      val foundInjectCountAnnot = allSubFields.getInjectCountAnnot(field.name).execAndLift(_._2.name)
+      val foundWithFixedCountAnnot: Option[String] = field.getWithFixedCount.execAndLift(_.count.toString)
 
-      val count = foundInjectCountAnnot orElse foundWithFixedCountAnnot orDefault "'unknown count'"
+      val count = foundInjectCountAnnot orElse foundWithFixedCountAnnot orElse "'unknown count'"
 
       s"(0 until $count).map { _ => $code }.toList"
     }
@@ -364,7 +367,7 @@ class BuildByReflection
     // code for iter
     fields
       .map {
-        case t if t.isListType => s"val ${t.name} = ${makeList(t)}"
+        case t if t.tpe.isList => s"val ${t.name} = ${makeList(t)}"
         case t => s"val ${t.name} = ${makeLine(thisTpe = t.tpe, fieldName = t.name)}"
       }
       .mkString("\n")
@@ -407,14 +410,14 @@ class BuildByReflection
     def groupBitfieldsByAlignment(): List[List[FieldDescr]] = {
       val upperClassAnnots = upperClassType.typeSymbol.annotations
 
-      val alignment = upperClassAnnots.getAlignBitfieldsBy.matchToException(_.bits, new SerializerBuildException(s"class has no 'alignBitfieldsBy' annotation"))
+      val alignment = upperClassAnnots.getAlignBitfieldsBy.execOrThrow(_.bits, new SerializerBuildException(s"class has no 'alignBitfieldsBy' annotation"))
 
       val r1 = new ArrayBuffer[ArrayBuffer[FieldDescr]]()
       r1 += new ArrayBuffer[FieldDescr]()
       var currentSize = 0
       fields
         .foreach { i =>
-          val sizeInBits = i.getAsBitfield.matchToException(_.bits, new SerializerBuildException(s"field ${i.name} has no 'asBitfield' annotation"))
+          val sizeInBits = i.getAsBitfield.execOrThrow(_.bits, new SerializerBuildException(s"field ${i.name} has no 'asBitfield' annotation"))
 
           currentSize += sizeInBits
           r1.last += i
@@ -429,17 +432,17 @@ class BuildByReflection
     }
 
     val sepFields = groupBitfieldsByAlignment()
-    val bitAlignment = upperClassType.typeSymbol.annotations.getAlignBitfieldsBy.matchToException(_.bits, new SerializerBuildException(s"class has no 'alignBitfieldsBy' annotation"))
+    val bitAlignment = upperClassType.typeSymbol.annotations.getAlignBitfieldsBy.execOrThrow(_.bits, new SerializerBuildException(s"class has no 'alignBitfieldsBy' annotation"))
 
     // code for iter
     val iterCode = fields
       .map {
-        case t if t.hasAsBitfield => s"val ${buildName(t)} = serializerContainer.read[${t.tpe}]($bitfieldIterName, hints = SizeInBitHint(value = ${t.getAsBitfield.matchToException(_.bits, new SerializerBuildException(s"missing bitfield annotation on field ${t.name}"))}))"
+        case t if t.hasAsBitfield => s"val ${buildName(t)} = serializerContainer.read[${t.tpe}]($bitfieldIterName, hints = SizeInBitHint(value = ${t.getAsBitfield.execOrThrow(_.bits, new SerializerBuildException(s"missing bitfield annotation on field ${t.name}"))}))"
         case t => throw new SerializerBuildException(s"field '${t.name}' w/o 'asBitfield' annotation")
       }.mkString("\n")
 
     val upperClassAnnots = upperClassType.typeSymbol.annotations
-    val alignBitfieldsBy = upperClassAnnots.getAlignBitfieldsBy.matchTo(_.bits, 1)
+    val alignBitfieldsBy = upperClassAnnots.getAlignBitfieldsBy.execOrDefault(_.bits, 1)
     // wir brauchen hier die reine bit size
     val bitFieldSize = SizeOf.guessBitsize(fields = fields, upperClassAnnots = List.empty)
 
@@ -518,7 +521,7 @@ class BuildByReflection
       implicit
       classTag: ClassTag[A],
       typeTag: ru.TypeTag[A]
-    ): A = field.getAnnot[A] matchToException ( i => i, new SerializerBuildException(s"$typeTag annot expected"))
+    ): A = field.getAnnot[A] execOrThrow ( i => i, new SerializerBuildException(s"$typeTag annot expected"))
     def readInjectCount (field: FieldDescr): injectCount = readAnnot[injectCount](field)
     def readInjectLength (field: FieldDescr): injectLength = readAnnot[injectLength](field)
     def readWithFixedLength (field: FieldDescr): withFixedLength = readAnnot[withFixedLength](field)
@@ -526,18 +529,18 @@ class BuildByReflection
     // get all fields
     fields
       .map {
-        case t if t.isListType =>
-          val code = t.tpe.typeArgs.headOption.matchToException(
+        case t if t.tpe.isList =>
+          val code = t.tpe.typeArgs.headOption.execOrThrow(
             i => write_buildCode_callSerializer(tpe = i, paramName = "i"),
             new SerializerBuildException(s"unknown sub type of this list: $upperClassType")
           )
           s"$paramName.${t.name}.foreach { i => $code }"
 
-        case t if t.isString && t.hasAnnot[withFixedLength] => s"serializerContainer.write[String]($paramName.${t.name}, hints = hints ++ Seq(SizeInByteHint(value = ${readWithFixedLength(t).bytes})):_*)"
+        case t if t.tpe.isString && t.hasAnnot[withFixedLength] => s"serializerContainer.write[String]($paramName.${t.name}, hints = hints ++ Seq(SizeInByteHint(value = ${readWithFixedLength(t).bytes})):_*)"
 
         case t if t.hasAnnot[injectCount] => write_buildCode_callSerializer(tpe = t.tpe, paramName = s"$paramName.${readInjectCount(t).fromField}.size.to${t.tpe}").trim
         case t if t.hasAnnot[injectLength] => write_buildCode_callSerializer(tpe = t.tpe, paramName = s"$paramName.${readInjectLength(t).fromField}.length.to${t.tpe}").trim
-        case t if t.hasAnnot[injectTotalLength] => write_buildCode_callSerializer(tpe = t.tpe, paramName = s"${sizeOf.guess(upperClassType)}").trim // TODO: statisch oder dynamisc?
+        case t if t.hasAnnot[injectTotalLength] => write_buildCode_callSerializer(tpe = t.tpe, paramName = s"${SizeOf.guess(upperClassType)}").trim // TODO: statisch oder dynamisc?
 
         case t => write_buildCode_callSerializer(tpe = t.tpe, paramName = s"$paramName.${t.name}", field = Some(t)).trim
       }
@@ -571,7 +574,7 @@ class BuildByReflection
 
           val idx = groupedSubFields.filter(_.hasAsBitfield).indexOf(fields)
 
-          s"_${idx + 1}${ idxToString.get(idx).matchTo(i => i, "th")}BitBuilder"
+          s"_${idx + 1}${ idxToString.get(idx).execOrDefault(i => i, "th")}BitBuilder"
 
         case None => ""
       }
@@ -579,13 +582,13 @@ class BuildByReflection
 
     // get all fields
     val code = fields.map {
-      case t if t.hasAsBitfield => s"serializerContainer.write[${t.tpe}]($paramName.${t.name}, hints = BitStringBuilderHint($bitfieldIterName), SizeInBitHint(value = ${t.getAsBitfield.matchToException(_.bits, new SerializerBuildException(s"missing bitfield annotation on field ${t.name}"))}))"
+      case t if t.hasAsBitfield => s"serializerContainer.write[${t.tpe}]($paramName.${t.name}, hints = BitStringBuilderHint($bitfieldIterName), SizeInBitHint(value = ${t.getAsBitfield.execOrThrow(_.bits, new SerializerBuildException(s"missing bitfield annotation on field ${t.name}"))}))"
       case t => throw new SerializerBuildException(s"field '${t.name}' w/o 'asBitfield' annotation")
     }.mkString("\n")
 
     val upperClassAnnots = upperClassType.typeSymbol.annotations
-    val alignBitfieldsBy = upperClassAnnots.getAlignBitfieldsBy.matchTo(_.bits, 1)
-    val bitFieldSize = sizeOf.guess(fields = fields, upperClassAnnots = List.empty) * 8
+    val alignBitfieldsBy = upperClassAnnots.getAlignBitfieldsBy.execOrDefault(_.bits, 1)
+    val bitFieldSize = SizeOf.guess(fields = fields, upperClassAnnots = List.empty) * 8
 
     val prefix = s"val $bitfieldIterName = BitStringBuilder.newBuilder(alignment = BitStringAlignment.${BitStringAlignment.enumFromWidth(alignBitfieldsBy)})\n"
     val suffix = s"findOneHint[ByteStringBuilderHint](hints = hints).get.builder.append($bitfieldIterName.result())"
@@ -599,10 +602,10 @@ class BuildByReflection
     tpe: ru.Type
   ): String = {
     //---
-    implicit val classLoader = ClassFinder.defaultClassLoader
+    implicit val classLoader = ClassOps.defaultClassLoader
 
-    val derivedClasses = ClassFinder
-      .findAllClassesDerivedFrom(tpe, packageName = "")
+    val derivedClasses = ClassOps
+      .findClasses_byInheritance(tpe, packageName = "")
       .map { i => i -> i.annotations.getAnnot[typeForIface] }
 
     // any class defined w/o 'typeForIface' annot? -> exception
