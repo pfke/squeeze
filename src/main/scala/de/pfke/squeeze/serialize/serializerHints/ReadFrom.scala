@@ -1,6 +1,6 @@
 package de.pfke.squeeze.serialize.serializerHints
 
-import de.pfke.grind.data.length.digital.{BitLength, ByteLength, DigitalLength}
+import de.pfke.squeeze.core.data.length.digital.{BitLength, ByteLength, DigitalLength}
 
 import scala.reflect.ClassTag
 
@@ -31,9 +31,5 @@ trait ReadFrom {
     hints: Seq[SerializerHint]
   )(implicit
     classTag: ClassTag[A]
-  ): Option[A] = {
-    hints
-      .collect { case t: A => t }
-      .headOption
-  }
+  ): Option[A] = hints.collectFirst { case t: A => t }
 }

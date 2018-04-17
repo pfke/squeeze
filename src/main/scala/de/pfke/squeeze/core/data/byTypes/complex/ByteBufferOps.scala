@@ -4,7 +4,7 @@ import java.io.InputStream
 import java.nio.ByteBuffer
 import java.nio.charset.{Charset, StandardCharsets}
 
-import de.pintono.grind.core.data.byTypes.stream.ByteBufferBackedInputStream
+import de.pfke.squeeze.core.data.byTypes.stream.ByteBufferBackedInputStream
 
 object ByteBufferOps {
   def asString (

@@ -1,5 +1,7 @@
 package de.pfke.squeeze.core.data.collection
 
+import de.pfke.squeeze.core.data.byTypes.primitives.BitTwiddling
+
 import scala.collection.{BitSet, mutable}
 
 object RichEnumBitMask {

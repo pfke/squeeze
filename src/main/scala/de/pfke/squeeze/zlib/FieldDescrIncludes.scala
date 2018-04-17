@@ -1,10 +1,9 @@
 package de.pfke.squeeze.zlib
 
-import de.pfke.grind.data._
-import de.pfke.grind.refl.{FieldDescr, FieldHelper}
-import de.pfke.grind.refl.core.GeneralReflIncludes
-import de.pfke.grind.refl.squeeze.annots.{asBitfield, injectCount, injectLength, injectType, withFixedCount, withFixedLength}
-import de.pfke.grind.refl.squeeze.annots.AnnotationHelperIncludes._
+import de.pfke.squeeze.annots.{asBitfield, injectCount, injectLength, injectType, withFixedCount, withFixedLength}
+import de.pfke.squeeze.annots.AnnotationHelperIncludes._
+import de.pfke.squeeze.core.data._
+import de.pfke.squeeze.core.refl.custom.{FieldDescr, FieldHelper}
 
 import scala.annotation.StaticAnnotation
 import scala.collection.mutable.ArrayBuffer
@@ -17,7 +16,7 @@ object FieldDescrIncludes
 trait FieldDescrIncludes {
   implicit class fromFieldDescr(
     in: FieldDescr
-  ) extends GeneralReflIncludes.OpsFromRUType(in.tpe) {
+  ) extends GenericOpsImplicits_from_ruType(in.tpe) {
     def getAsBitfield: Option[asBitfield] = getAnnot[asBitfield]
     def hasAsBitfield: Boolean = hasAnnot[asBitfield]
 
@@ -28,11 +27,11 @@ trait FieldDescrIncludes {
     def hasInjectType: Boolean = hasAnnot[injectType]
 
     def getWithFixedCount: Option[withFixedCount] = getAnnot[withFixedCount]
-    def getWithFixedCountOr(default: Int): Int = getAnnot[withFixedCount].matchTo(_.count, default)
+    def getWithFixedCountOr(default: Int): Int = getAnnot[withFixedCount].execOrDefault(_.count, default)
     def hasWithFixedCount: Boolean = hasAnnot[withFixedCount]
 
     def getWithFixedLength: Option[withFixedLength] = getAnnot[withFixedLength]
-    def getWithFixedLengthOr(default: Int): Int = getAnnot[withFixedLength].matchTo(_.bytes, default)
+    def getWithFixedLengthOr(default: Int): Int = getAnnot[withFixedLength].execOrDefault(_.bytes, default)
     def hasWithFixedLength: Boolean = hasAnnot[withFixedLength]
 
     /**
@@ -91,7 +90,7 @@ trait FieldDescrIncludes {
       typeTag: ru.TypeTag[A]
     ): List[(A, FieldDescr)] = {
       in
-        .map { i => i.getAnnot[A].matchToOption( ii => (ii, i)) } // wir wollen Some(injectLength, FieldDescr)
+        .map { i => i.getAnnot[A].execAndLift( ii => (ii, i)) } // wir wollen Some(injectLength, FieldDescr)
         .filter { _.nonEmpty }
         .map { _.get }
     }
@@ -106,7 +105,7 @@ trait FieldDescrIncludes {
     ): Option[(injectCount, FieldDescr)] = {
       getAnnot[injectCount]
         .find { _._1.fromField == targetFieldName }
-        .matchToOption { i => (i._1, i._2) }
+        .execAndLift { i => (i._1, i._2) }
     }
 
     // get injectLength annot for this fields matching the passed name
@@ -115,7 +114,7 @@ trait FieldDescrIncludes {
     ): Option[(injectLength, FieldDescr)] = {
       getAnnot[injectLength]
         .find { _._1.fromField == targetFieldName }
-        .matchToOption { i => (i._1, i._2) }
+        .execAndLift { i => (i._1, i._2) }
     }
 
     // get injectType annot for this fields matching the passed name
@@ -124,7 +123,7 @@ trait FieldDescrIncludes {
     ): Option[(injectType, FieldDescr)] = {
       getAnnot[injectType]
         .find { _._1.fromField == targetFieldName }
-        .matchToOption { i => (i._1, i._2) }
+        .execAndLift { i => (i._1, i._2) }
     }
 
     // get withFixedLength annot for this fields

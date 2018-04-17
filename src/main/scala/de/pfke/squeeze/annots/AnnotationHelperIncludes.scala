@@ -1,6 +1,5 @@
 package de.pfke.squeeze.annots
 
-import de.pfke.grind.refl.squeeze.annots.classAnnots.typeForIface
 import de.pfke.squeeze.annots.classAnnots.typeForIface
 
 import scala.annotation.StaticAnnotation

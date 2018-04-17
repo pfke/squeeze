@@ -3,8 +3,8 @@ package de.pfke.squeeze.serialize.serializerHints
 import java.nio.ByteOrder
 
 import akka.util.ByteIterator
-import de.pfke.grind.data.length.digital.DigitalLength
-import de.pfke.grind.refl.squeeze.zlib.SerializerRunException
+import de.pfke.squeeze.core.data.length.digital.DigitalLength
+import de.pfke.squeeze.zlib.SerializerRunException
 
 case class ReadFromByteIteratorHint(
   iter: ByteIterator,

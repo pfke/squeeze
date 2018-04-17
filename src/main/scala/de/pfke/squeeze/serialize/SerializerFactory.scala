@@ -1,7 +1,7 @@
 package de.pfke.squeeze.serialize
 
-import de.pfke.grind.refl.squeeze.serialize.serializerBuilder.{BuildByReflection, BuiltSerializer}
-import de.pfke.grind.refl.squeeze.serialize.serializerCompiler.{CompiledSerializer, SerializerCompiler}
+import de.pfke.squeeze.serialize.serializerBuilder.{BuildByReflection, BuiltSerializer}
+import de.pfke.squeeze.serialize.serializerCompiler.{CompiledSerializer, SerializerCompiler}
 
 import scala.reflect.ClassTag
 import scala.reflect.runtime.{universe => ru}

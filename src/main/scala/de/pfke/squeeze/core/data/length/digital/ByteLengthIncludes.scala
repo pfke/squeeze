@@ -1,5 +1,8 @@
 package de.pfke.squeeze.core.data.length.digital
 
+import de.pfke.squeeze.core.data.byTypes.primitives.DoubleOpsIncludes
+import de.pfke.squeeze.core.data.units.prefix.{IECPrefix, Prefix, SIPrefix}
+
 object ByteLengthIncludes
   extends ByteLengthIncludes
 
@@ -86,5 +89,5 @@ trait ByteLengthIncludes {
   implicit class ByteLengthImplicits_speedFormatterFromByteLength (
     in: ByteLength
   )
-    extends DoubleImplicits_fromDouble(in = in.toByte)
+    extends DoubleOpsIncludes.DoubleImplicits_fromDouble(in = in.toByte)
 }

@@ -1,5 +1,7 @@
 package de.pfke.squeeze.core.data.length.digital
 
+import de.pfke.squeeze.core.data.length.Length
+
 object DigitalLength {
   def fromBits(in: Double): DigitalLength = if (in % 8 == 0) ByteLength(in / 8) else BitLength(in)
   def zero: DigitalLength = ByteLength.zero

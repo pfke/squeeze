@@ -1,8 +1,8 @@
 package de.pfke.squeeze.annots
 
-import de.pfke.grind.data._
-import de.pfke.grind.refl.core.AnnotationRefl
-import de.pfke.grind.refl.squeeze.annots.classAnnots.typeForIface
+import de.pfke.squeeze.annots.classAnnots.typeForIface
+import de.pfke.squeeze.core.data._
+import de.pfke.squeeze.core.refl.generic.AnnotationOps
 
 import scala.annotation.StaticAnnotation
 import scala.reflect.ClassTag
@@ -77,7 +77,7 @@ object AnnotationHelper {
   ) (
     implicit
     classLoader: ClassLoader = getClass.getClassLoader
-  ): Int = getAnnot[withFixedCount](in).matchTo(_.count, default)
+  ): Int = getAnnot[withFixedCount](in).execOrDefault(_.count, default)
 
   def hasWithFixedCount (
     in: List[ru.Annotation]
@@ -93,7 +93,7 @@ object AnnotationHelper {
   def getWithFixedLengthOr (
     in: List[ru.Annotation],
     default: Int
-  ): Int = getAnnot[withFixedLength](in).matchTo(_.bytes, default)
+  ): Int = getAnnot[withFixedLength](in).execOrDefault(_.bytes, default)
 
   def hasWithFixedLength (
     in: List[ru.Annotation]
@@ -109,7 +109,7 @@ object AnnotationHelper {
     classTag: ClassTag[A],
     typeTag: ru.TypeTag[A],
     classLoader: ClassLoader = getClass.getClassLoader
-  ): Option[A] = AnnotationRefl.create[A](in)
+  ): Option[A] = AnnotationOps.instantiate[A](in)
 
   /**
     * Returns true, if the given field descr has the wanted annot
@@ -119,5 +119,5 @@ object AnnotationHelper {
   ) (
     implicit
     typeTag: ru.TypeTag[A]
-  ): Boolean = AnnotationRefl.contains[A](in)
+  ): Boolean = AnnotationOps.contains[A](in)
 }

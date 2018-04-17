@@ -1,5 +1,8 @@
 package de.pfke.squeeze.core.data.length.digital
 
+import de.pfke.squeeze.core.data.byTypes.primitives.{BitTwiddling, DoubleOps}
+import de.pfke.squeeze.core.data.units.prefix.{IECPrefix, Prefix, SIPrefix}
+
 object ByteLength {
   def apply(in: Double): ByteLength = new ByteLength(data = in, Prefix.No).promoteTo
   def apply(in: Double, prefix: Prefix): ByteLength = new ByteLength(data = in, prefix)

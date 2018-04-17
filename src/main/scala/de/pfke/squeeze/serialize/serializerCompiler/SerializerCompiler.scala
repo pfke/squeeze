@@ -1,9 +1,8 @@
 package de.pfke.squeeze.serialize.serializerCompiler
 
+import de.pfke.squeeze.serialize.Serializer
+import de.pfke.squeeze.serialize.serializerBuilder.BuiltSerializer
 import javax.script.{Compilable, ScriptEngineManager}
-
-import de.pfke.grind.refl.squeeze.serialize.Serializer
-import de.pfke.grind.refl.squeeze.serialize.serializerBuilder.BuiltSerializer
 
 object SerializerCompiler {
   // fields

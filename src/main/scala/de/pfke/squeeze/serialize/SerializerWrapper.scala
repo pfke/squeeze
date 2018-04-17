@@ -2,11 +2,11 @@ package de.pfke.squeeze.serialize
 
 import java.nio.ByteOrder
 
-import de.pfke.grind.core.version.PatchLevelVersion
-import de.pfke.grind.data.collection.anythingString.AnythingIterator
-import de.pfke.grind.refl.core.GeneralRefl.TypeInfo
-import de.pfke.grind.refl.squeeze.serialize.serializerCompiler.CompiledSerializer
-import de.pfke.grind.refl.squeeze.serialize.serializerHints.SerializerHint
+import de.pfke.squeeze.core.data.collection.AnythingIterator
+import de.pfke.squeeze.core.refl.generic.GenericOps.TypeInfo
+import de.pfke.squeeze.serialize.serializerCompiler.CompiledSerializer
+import de.pfke.squeeze.serialize.serializerHints.SerializerHint
+import de.pfke.squeeze.zlib.PatchLevelVersion
 
 import scala.reflect.ClassTag
 import scala.reflect.runtime.{universe => ru}

@@ -1,5 +1,6 @@
 package de.pfke.squeeze
 
+import de.pfke.squeeze.core.refl.custom.{FieldDescr, FieldHelper}
 import de.pfke.squeeze.core.refl.generic.PrimitiveOps
 
 import scala.reflect.ClassTag

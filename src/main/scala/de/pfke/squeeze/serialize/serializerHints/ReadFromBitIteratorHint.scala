@@ -2,11 +2,11 @@ package de.pfke.squeeze.serialize.serializerHints
 
 import java.nio.ByteOrder
 
-import de.pfke.grind.data.collection.bitString.BitIterator
-import de.pfke.grind.data.length.digital.DigitalLength
+import de.pfke.squeeze.core.data.collection.BitStringIterator
+import de.pfke.squeeze.core.data.length.digital.DigitalLength
 
 case class ReadFromBitIteratorHint(
-  iter: BitIterator,
+  iter: BitStringIterator,
   sizeToRead: Option[DigitalLength] = None
 ) extends ReadFrom {
   require(iter != null, "passed iter is null")

@@ -1,15 +1,13 @@
 package de.pfke.squeeze.serialize.serializerBuilder
 
-import de.pfke.grind._
-import de.pfke.grind.data._
-import de.pfke.grind.data.collection.bitString.BitStringAlignment
-import de.pfke.grind.refl.core.ClassFinder.ClassInfo
-import de.pfke.grind.refl.core._
-import de.pfke.grind.refl.squeeze.annots._
-import de.pfke.grind.refl.squeeze.annots.classAnnots.{fromVersion, typeForIface}
-import de.pfke.grind.refl.squeeze.zlib._
-import de.pfke.grind.refl.squeeze.zlib.FieldDescrIncludes._
-import de.pfke.grind.refl.{FieldDescr, FieldHelper, sizeOf}
+import de.pfke.squeeze.SizeOf
+import de.pfke.squeeze.annots.classAnnots.{fromVersion, typeForIface}
+import de.pfke.squeeze.annots.{injectLength, withFixedLength}
+import de.pfke.squeeze.core.data._
+import de.pfke.squeeze.core.data.collection.BitStringAlignment
+import de.pfke.squeeze.core.refl.custom.{FieldDescr, FieldHelper}
+import de.pfke.squeeze.core.refl.generic.{ClassInfo, ClassOps, EnumOps, GenericOps}
+import de.pfke.squeeze.zlib.SerializerBuildException
 
 import scala.annotation.StaticAnnotation
 import scala.collection.mutable.ArrayBuffer
@@ -69,12 +67,12 @@ class BuildByReflection
     classTag: ClassTag[A],
     typeTag: ru.TypeTag[A]): String = {
     typeTag.tpe match {
-      case t if GeneralRefl.isComplexType(t) => genCodeForComplex()
+      case t if GenericOps.isComplex(t) => genCodeForComplex()
 
-      case t if GeneralRefl.isEnum(t) => genCodeForEnum()
+      case t if GenericOps.isEnum(t) => genCodeForEnum()
 
-      case t if GeneralRefl.isPrimitiveType(t) => genCodeForPrimitives()
-      case t if GeneralRefl.isString(t) => genCodeForString()
+      case t if GenericOps.isPrimitive(t) => genCodeForPrimitives()
+      case t if GenericOps.isString(t) => genCodeForString()
 
       case _ => "empty"
     }
@@ -100,7 +98,7 @@ class BuildByReflection
     }
     def makeInstanceCode(): String = {
       typeTag.tpe match {
-        case t if GeneralRefl.isAbstract(t) => "// no its a trait"
+        case t if GenericOps.isAbstract(t) => "// no its a trait"
 
         case _ => makeInstanceCodeForComplex()
       }
@@ -117,12 +115,12 @@ class BuildByReflection
     }
     def makeIterCode(): String = {
       typeTag.tpe match {
-        case t if GeneralRefl.isAbstract(t) => read_buildIterCode_forTraits(tpe = t)
+        case t if GenericOps.isAbstract(t) => read_buildIterCode_forTraits(tpe = t)
         case _                 => makeIterCodeForComplex()
       }
     }
 
-    def makeWriteCode(): String = if (GeneralRefl.isAbstract(typeTag.tpe)) makeWriteCodeForTrait(tpe = typeTag.tpe) else makeWriteCodeForComplex(tpe = typeTag.tpe)
+    def makeWriteCode(): String = if (GenericOps.isAbstract(typeTag.tpe)) makeWriteCodeForTrait(tpe = typeTag.tpe) else makeWriteCodeForComplex(tpe = typeTag.tpe)
 
     s"""override def read(
        |  iter: AnythingIterator,
@@ -133,7 +131,7 @@ class BuildByReflection
        |  serializerContainer: SerializerContainer,
        |  version: Option[PatchLevelVersion]
        |): ${typeTag.tpe} = {
-       |  require(iter.len.toByte >= ${sizeOf.guess[A]()}, s"[${typeTag.tpe.toString}] given input has only $${iter.len} bytes left, but we need ${sizeOf.guess[A]()} byte")
+       |  require(iter.len.toByte >= ${SizeOf.guess[A]()}, s"[${typeTag.tpe.toString}] given input has only $${iter.len} bytes left, but we need ${SizeOf.guess[A]()} byte")
        |  // read iter
        |  ${makeIterCode().indent}
        |  // create object
@@ -164,15 +162,15 @@ class BuildByReflection
   ): String = {
     def makeCaseLine(in: String) = s"case t if t == $in.id => $in"
     def makeCases() = {
-      EnumRefl
+      EnumOps
         .getChildrenNames()
         .map(makeCaseLine)
         .mkString("\n")
     }
 
     // Test auf Duplikate Ids: diese fallen sonst nur zur Compile-Zeit auf und geben dann keine eindeutige Fehlermeldung mehr.
-    EnumRefl
-      .hasDuplicateIds(typeTag.tpe) match {
+    EnumOps
+      .getDuplicateId(typeTag.tpe) match {
       case Some(x) => throw new SerializerBuildException(s"Error while generating a serializer for '${typeTag.tpe}'. Duplicate ids detected. (msg: '$x')")
       case None => // do nothing
     }
@@ -224,10 +222,10 @@ class BuildByReflection
     implicit
     classTag: ClassTag[A],
     typeTag: ru.TypeTag[A]): String = {
-    val writerOpCode = writerOpCodeMap.get(GeneralRefl.unifyType(typeTag.tpe)).matchToException(_.toString, new SerializerBuildException(s"method called with complex type: '${typeTag.tpe}'"))
+    val writerOpCode = writerOpCodeMap.get(GenericOps.toScalaType(typeTag.tpe)).execOrThrow(_.toString, new SerializerBuildException(s"method called with complex type: '${typeTag.tpe}'"))
 
     s"""override protected def byteStringWriteOp(implicit byteOrder: ByteOrder) = Some({ (bsb,value) => bsb.put$writerOpCode })
-       |override protected def defaultSize = Some(ByteLength(${sizeOf.guess[A]}))""".stripMargin
+       |override protected def defaultSize = Some(ByteLength(${SizeOf.guess[A]}))""".stripMargin
   }
 
   /**
@@ -248,15 +246,15 @@ class BuildByReflection
     tpe: ru.Type
   ): String = {
     //---
-    implicit val classLoader = ClassFinder.defaultClassLoader
+    implicit val classLoader = ClassOps.defaultClassLoader
 
     case class FoundAnnotsAsOpt(ifaceOpt: Option[typeForIface], versionOpt: Option[fromVersion])
     case class FoundAnnots(iface: typeForIface, versionOpt: Option[fromVersion])
     case class TypeToFoundAnnotsOpts(clazz: ClassInfo[_], foundAnnots: FoundAnnotsAsOpt)
     case class TypeToFoundAnnots(clazz: ClassInfo[_], foundAnnots: FoundAnnots)
 
-    val allSubClasses: List[TypeToFoundAnnotsOpts] = ClassFinder
-      .findAllClassesDerivedFrom(tpe, packageName = "")
+    val allSubClasses: List[TypeToFoundAnnotsOpts] = ClassOps
+      .findClasses_byInheritance(tpe, packageName = "")
       .filterNot(_.classSymbol.isAbstract)
       .map { i =>
         try {
@@ -352,7 +350,7 @@ class BuildByReflection
     def makeList(
       field: FieldDescr
     ): String = {
-      val code = field.tpe.typeArgs.headOption.matchToException( i => makeLine(thisTpe = i), new SerializerBuildException(s"unknown sub type of this list: ${field.tpe}"))
+      val code = field.tpe.typeArgs.headOption.execOrThrow( i => makeLine(thisTpe = i), new SerializerBuildException(s"unknown sub type of this list: ${field.tpe}"))
 
       // annots auswerten
       val foundInjectCountAnnot = allSubFields.getInjectCountAnnot(field.name).matchToOption(_._2.name)
@@ -400,7 +398,7 @@ class BuildByReflection
 
           val idx = groupedSubFields.filter(_.hasAsBitfield).indexOf(fields)
 
-          s"_${idx + 1}${ idxToString.get(idx).matchTo(i => i, "th")}BitIter"
+          s"_${idx + 1}${ idxToString.get(idx).execOrDefault(i => i, "th")}BitIter"
 
         case None => ""
       }
@@ -443,7 +441,7 @@ class BuildByReflection
     val upperClassAnnots = upperClassType.typeSymbol.annotations
     val alignBitfieldsBy = upperClassAnnots.getAlignBitfieldsBy.matchTo(_.bits, 1)
     // wir brauchen hier die reine bit size
-    val bitFieldSize = sizeOf.guessBitsize(fields = fields, upperClassAnnots = List.empty)
+    val bitFieldSize = SizeOf.guessBitsize(fields = fields, upperClassAnnots = List.empty)
 
     val prefix = s"val $bitfieldIterName = iter.iterator(bitAlignment = BitStringAlignment.${BitStringAlignment.enumFromWidth(alignBitfieldsBy)})\n"
     val padding = if ((bitFieldSize % bitAlignment) == 0) "" else s"$bitfieldIterName.read[Long](BitLength(${bitAlignment - (bitFieldSize % bitAlignment)})) // read padding bits\n"
@@ -470,8 +468,8 @@ class BuildByReflection
       }
     }
 
-    GeneralRefl.unifyType(tpe) match {
-      case _ => s"serializerContainer.write[$tpe](${field.matchTo(buildValueFromField, paramName)}, hints = hints:_*)"
+    GenericOps.toScalaType(tpe) match {
+      case _ => s"serializerContainer.write[$tpe](${field.execOrDefault(buildValueFromField, paramName)}, hints = hints:_*)"
     }
   }
 

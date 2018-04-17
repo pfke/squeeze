@@ -3,7 +3,7 @@ package de.pfke.squeeze.serialize.serializerHints
 import java.nio.ByteOrder
 
 import akka.util.ByteString
-import de.pfke.grind.data.length.digital.DigitalLength
+import de.pfke.squeeze.core.data.length.digital.DigitalLength
 
 case class ReadFromByteStringHint(
   in: ByteString

@@ -1,5 +1,7 @@
 package de.pfke.squeeze.core.data.length.digital
 
+import de.pfke.squeeze.core.data.units.prefix.Prefix
+
 object BitLength {
   def apply(in: Double): BitLength = new BitLength(data = in)
   def zero: BitLength = apply(0)
