@@ -1,6 +1,5 @@
-package de.pfke.squeeze
+package de.pfke.squeeze.core.refl.custom
 
-import de.pfke.squeeze.core.refl.custom.{FieldDescr, FieldHelper}
 import de.pfke.squeeze.core.refl.generic.PrimitiveOps
 
 import scala.reflect.ClassTag
@@ -41,7 +40,7 @@ object SizeOf {
     * Method to guess object size.
     * Returns 0 if the size is unknown
     */
-  def guess[A]()(
+  def guess[A]() (
     implicit
     classTag: ClassTag[A],
     typeTag: ru.TypeTag[A]

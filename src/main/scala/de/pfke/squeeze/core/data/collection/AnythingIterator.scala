@@ -4,9 +4,9 @@ import java.nio.ByteOrder
 import java.nio.charset.{Charset, StandardCharsets}
 
 import akka.util.{ByteIterator, ByteString}
-import de.pfke.squeeze.SizeOf
 import de.pfke.squeeze.core.data.collection.BitStringAlignment.BitStringAlignment
 import de.pfke.squeeze.core.data.length.digital.{BitLength, ByteLength, DigitalLength}
+import de.pfke.squeeze.core.refl.custom.SizeOf
 import de.pfke.squeeze.core.refl.generic.{GenericOps, PrimitiveOps}
 
 import scala.reflect.ClassTag
