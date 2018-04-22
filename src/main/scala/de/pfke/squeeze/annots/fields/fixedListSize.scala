@@ -14,15 +14,13 @@
  * copies or substantial portions of the Software.
  */
 
-package de.pfke.squeeze.annots
+package de.pfke.squeeze.annots.fields
 
 import scala.annotation.StaticAnnotation
 
 /**
- * With this annotation u can describe the length if a string field.
- *
- * @param bytes is the length
- */
-case class withFixedLength(
-  bytes: Int
-  ) extends StaticAnnotation
+  * With this annotation u can describe the size of a list.
+  */
+case class fixedListSize (
+  size: Int
+) extends StaticAnnotation

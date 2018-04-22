@@ -1,7 +1,6 @@
 package de.pfke.squeeze.zlib
 
-import de.pfke.squeeze.annots.{asBitfield, injectCount, injectLength, injectType, withFixedCount, withFixedLength}
-import de.pfke.squeeze.annots.AnnotationHelperIncludes._
+import de.pfke.squeeze.annots.fields._
 import de.pfke.squeeze.core.data._
 import de.pfke.squeeze.core.refl.custom.{FieldDescr, FieldHelper}
 
@@ -23,16 +22,16 @@ trait FieldDescrIncludes {
     def getInjectLength: Option[injectLength] = getAnnot[injectLength]
     def hasInjectLength: Boolean = hasAnnot[injectLength]
 
-    def getInjectType: Option[injectType] = getAnnot[injectType]
-    def hasInjectType: Boolean = hasAnnot[injectType]
+    def getInjectType: Option[injectFieldType] = getAnnot[injectFieldType]
+    def hasInjectType: Boolean = hasAnnot[injectFieldType]
 
-    def getWithFixedCount: Option[withFixedCount] = getAnnot[withFixedCount]
-    def getWithFixedCountOr(default: Int): Int = getAnnot[withFixedCount].execOrDefault(_.count, default)
-    def hasWithFixedCount: Boolean = hasAnnot[withFixedCount]
+    def getWithFixedCount: Option[fixedListSize] = getAnnot[fixedListSize]
+    def getWithFixedCountOr(default: Int): Int = getAnnot[fixedListSize].execOrDefault(_.size, default)
+    def hasWithFixedCount: Boolean = hasAnnot[fixedListSize]
 
-    def getWithFixedLength: Option[withFixedLength] = getAnnot[withFixedLength]
-    def getWithFixedLengthOr(default: Int): Int = getAnnot[withFixedLength].execOrDefault(_.bytes, default)
-    def hasWithFixedLength: Boolean = hasAnnot[withFixedLength]
+    def getWithFixedLength: Option[fixedLength] = getAnnot[fixedLength]
+    def getWithFixedLengthOr(default: Int): Int = getAnnot[fixedLength].execOrDefault(_.size, default)
+    def hasWithFixedLength: Boolean = hasAnnot[fixedLength]
 
     /**
       * Returns the wanted annotation
@@ -102,8 +101,8 @@ trait FieldDescrIncludes {
     // get injectCount annot for this fields matching the passed name
     def getInjectCountAnnot(
       targetFieldName: String
-    ): Option[(injectCount, FieldDescr)] = {
-      getAnnot[injectCount]
+    ): Option[(injectListSize, FieldDescr)] = {
+      getAnnot[injectListSize]
         .find { _._1.fromField == targetFieldName }
         .execAndLift { i => (i._1, i._2) }
     }
@@ -120,15 +119,15 @@ trait FieldDescrIncludes {
     // get injectType annot for this fields matching the passed name
     def getInjectTypeAnnot(
       targetFieldName: String
-    ): Option[(injectType, FieldDescr)] = {
-      getAnnot[injectType]
+    ): Option[(injectFieldType, FieldDescr)] = {
+      getAnnot[injectFieldType]
         .find { _._1.fromField == targetFieldName }
         .execAndLift { i => (i._1, i._2) }
     }
 
     // get withFixedLength annot for this fields
-    def getWithFixedLengthAnnot: Option[(withFixedLength, FieldDescr)] = {
-      getAnnot[withFixedLength]
+    def getWithFixedLengthAnnot: Option[(fixedLength, FieldDescr)] = {
+      getAnnot[fixedLength]
         .headOption
     }
   }

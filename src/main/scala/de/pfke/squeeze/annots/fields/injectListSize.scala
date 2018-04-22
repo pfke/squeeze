@@ -14,16 +14,15 @@
  * copies or substantial portions of the Software.
  */
 
-package de.pfke.squeeze.annots
+package de.pfke.squeeze.annots.fields
 
 import scala.annotation.StaticAnnotation
 
 /**
- * The annotated field will be encoded as bit field.
- * One after another bit fields will be generated together into 32 bit values
- *
- * @param bits number of bits
- */
-case class asBitfield(
-  bits: Int
-  ) extends StaticAnnotation
+  * The number of elements of the annotated field will be injected.
+  *
+  * @param fromField is the source field name
+  */
+case class injectListSize (
+  fromField: String
+) extends StaticAnnotation

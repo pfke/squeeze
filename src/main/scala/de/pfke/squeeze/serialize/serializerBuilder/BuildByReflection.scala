@@ -1,8 +1,7 @@
 package de.pfke.squeeze.serialize.serializerBuilder
 
-import de.pfke.squeeze.annots.AnnotationHelperIncludes._
-import de.pfke.squeeze.annots.classAnnots.{fromVersion, typeForIface}
-import de.pfke.squeeze.annots.{injectCount, injectLength, injectTotalLength, withFixedLength}
+import de.pfke.squeeze.annots.classAnnots.{toVersion, fromIfaceToType}
+import de.pfke.squeeze.annots.fields.{fixedLength, injectLength, injectListSize}
 import de.pfke.squeeze.core.data._
 import de.pfke.squeeze.core.data.collection.BitStringAlignment
 import de.pfke.squeeze.core.refl.custom.{FieldDescr, FieldHelper, SizeOf}
@@ -250,8 +249,8 @@ class BuildByReflection
     //---
     implicit val classLoader = ClassOps.defaultClassLoader
 
-    case class FoundAnnotsAsOpt(ifaceOpt: Option[typeForIface], versionOpt: Option[fromVersion])
-    case class FoundAnnots(iface: typeForIface, versionOpt: Option[fromVersion])
+    case class FoundAnnotsAsOpt(ifaceOpt: Option[fromIfaceToType], versionOpt: Option[toVersion])
+    case class FoundAnnots(iface: fromIfaceToType, versionOpt: Option[toVersion])
     case class TypeToFoundAnnotsOpts(clazz: ClassInfo[_], foundAnnots: FoundAnnotsAsOpt)
     case class TypeToFoundAnnots(clazz: ClassInfo[_], foundAnnots: FoundAnnots)
 
@@ -260,7 +259,7 @@ class BuildByReflection
       .filterNot(_.classSymbol.isAbstract)
       .map { i =>
         try {
-          TypeToFoundAnnotsOpts(i, FoundAnnotsAsOpt(i.annotations.getAnnot[typeForIface], i.annotations.getAnnot[fromVersion]))
+          TypeToFoundAnnotsOpts(i, FoundAnnotsAsOpt(i.annotations.getAnnot[fromIfaceToType], i.annotations.getAnnot[toVersion]))
         } catch {
           case e: IllegalArgumentException => throw new SerializerBuildException(s"unable to reflect annotation for '${i.tpe}' (${e.getMessage})")
         }
@@ -274,15 +273,15 @@ class BuildByReflection
     }
 
     def getVersionMatcher(
-      annot: Option[fromVersion]
+      annot: Option[toVersion]
     ): String = {
       annot match {
-        case Some(x) => s"Some(PatchLevelVersion(${x.major}, ${x.minor}, ${x.level}))"
+        case Some(x) => s"Some(PatchLevelVersion(${x.major}, ${x.minor}, ${x.patch}))"
         case None => "None"
       }
     }
 
-    implicit def orderingTI[A <: TypeToFoundAnnotsOpts]: Ordering[A] = Ordering.by { i => s"${i.clazz.tpe.toString}${i.foundAnnots.versionOpt.getOrElse(fromVersion(0, 0, 0))}" }
+    implicit def orderingTI[A <: TypeToFoundAnnotsOpts]: Ordering[A] = Ordering.by { i => s"${i.clazz.tpe.toString}${i.foundAnnots.versionOpt.getOrElse(toVersion(0, 0, 0))}" }
 
     val code = allSubClasses
       .filterNot(_.foundAnnots.ifaceOpt.isEmpty)
@@ -334,7 +333,7 @@ class BuildByReflection
 
       val lengthHint = foundInjectLengthAnnot orElse foundWithFixedLengthAnnot match {
           case Some((x: injectLength, field: FieldDescr))    => Some(s"SizeInByteHint(value = ${field.name.replaceAll(field.name, field.name)})")
-          case Some((x: withFixedLength, field: FieldDescr)) => Some(s"SizeInByteHint(value = ${x.bytes})")
+          case Some((x: fixedLength, field: FieldDescr)) => Some(s"SizeInByteHint(value = ${x.size})")
           case _ => None
       }
 
@@ -356,7 +355,7 @@ class BuildByReflection
 
       // annots auswerten
       val foundInjectCountAnnot = allSubFields.getInjectCountAnnot(field.name).execAndLift(_._2.name)
-      val foundWithFixedCountAnnot: Option[String] = field.getWithFixedCount.execAndLift(_.count.toString)
+      val foundWithFixedCountAnnot: Option[String] = field.getWithFixedCount.execAndLift(_.size.toString)
 
       val count = foundInjectCountAnnot orElse foundWithFixedCountAnnot orElse "'unknown count'"
 
@@ -521,9 +520,9 @@ class BuildByReflection
       classTag: ClassTag[A],
       typeTag: ru.TypeTag[A]
     ): A = field.getAnnot[A] execOrThrow ( i => i, new SerializerBuildException(s"$typeTag annot expected"))
-    def readInjectCount (field: FieldDescr): injectCount = readAnnot[injectCount](field)
+    def readInjectCount (field: FieldDescr): injectListSize = readAnnot[injectListSize](field)
     def readInjectLength (field: FieldDescr): injectLength = readAnnot[injectLength](field)
-    def readWithFixedLength (field: FieldDescr): withFixedLength = readAnnot[withFixedLength](field)
+    def readWithFixedLength (field: FieldDescr): fixedLength = readAnnot[fixedLength](field)
 
     // get all fields
     fields
@@ -535,11 +534,11 @@ class BuildByReflection
           )
           s"$paramName.${t.name}.foreach { i => $code }"
 
-        case t if t.tpe.isString && t.hasAnnot[withFixedLength] => s"serializerContainer.write[String]($paramName.${t.name}, hints = hints ++ Seq(SizeInByteHint(value = ${readWithFixedLength(t).bytes})):_*)"
+        case t if t.tpe.isString && t.hasAnnot[fixedLength] => s"serializerContainer.write[String]($paramName.${t.name}, hints = hints ++ Seq(SizeInByteHint(value = ${readWithFixedLength(t).size})):_*)"
 
-        case t if t.hasAnnot[injectCount] => write_buildCode_callSerializer(tpe = t.tpe, paramName = s"$paramName.${readInjectCount(t).fromField}.size.to${t.tpe}").trim
+        case t if t.hasAnnot[injectListSize] => write_buildCode_callSerializer(tpe = t.tpe, paramName = s"$paramName.${readInjectCount(t).fromField}.size.to${t.tpe}").trim
         case t if t.hasAnnot[injectLength] => write_buildCode_callSerializer(tpe = t.tpe, paramName = s"$paramName.${readInjectLength(t).fromField}.length.to${t.tpe}").trim
-        case t if t.hasAnnot[injectTotalLength] => write_buildCode_callSerializer(tpe = t.tpe, paramName = s"${SizeOf.guess(upperClassType)}").trim // TODO: statisch oder dynamisc?
+        case t if t.hasAnnot[injectLength] => write_buildCode_callSerializer(tpe = t.tpe, paramName = s"${SizeOf.guess(upperClassType)}").trim // TODO: statisch oder dynamisc?
 
         case t => write_buildCode_callSerializer(tpe = t.tpe, paramName = s"$paramName.${t.name}", field = Some(t)).trim
       }
@@ -605,7 +604,7 @@ class BuildByReflection
 
     val derivedClasses = ClassOps
       .findClasses_byInheritance(tpe, packageName = "")
-      .map { i => i -> i.annotations.getAnnot[typeForIface] }
+      .map { i => i -> i.annotations.getAnnot[fromIfaceToType] }
 
     // any class defined w/o 'typeForIface' annot? -> exception
     derivedClasses

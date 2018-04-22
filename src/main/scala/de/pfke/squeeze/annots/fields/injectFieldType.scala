@@ -14,13 +14,16 @@
  * copies or substantial portions of the Software.
  */
 
-package de.pfke.squeeze.annots
+package de.pfke.squeeze.annots.fields
 
 import scala.annotation.StaticAnnotation
 
 /**
- * With this annotation u can describe the size of a list.
- */
-case class withFixedCount(
-  count: Int
-  ) extends StaticAnnotation
+  * The type of the named field (interface, abstract types) will be injected.
+  * On deserialization, this info is used to extract the interface type.
+  *
+  * @param fromField is the source field name
+  */
+case class injectFieldType (
+  fromField: String
+) extends StaticAnnotation

@@ -14,13 +14,15 @@
  * copies or substantial portions of the Software.
  */
 
-package de.pfke.squeeze.annots
+package de.pfke.squeeze.annots.fields
 
 import scala.annotation.StaticAnnotation
 
 /**
- * A field decorated with this annotation will be filled with the total encoded length
- * of the object.
- */
-case class injectTotalLength()
-  extends StaticAnnotation
+  * With this annotation u can describe the length if a string field.
+  *
+  * @param size is the length
+  */
+case class fixedLength (
+  size: Int
+) extends StaticAnnotation
