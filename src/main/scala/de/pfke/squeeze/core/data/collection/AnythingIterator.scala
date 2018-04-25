@@ -13,27 +13,27 @@ import scala.reflect.ClassTag
 import scala.reflect.runtime.{universe => ru}
 
 object AnythingIterator {
-  def apply(
+  def apply (
     in: ByteIterator,
     bitAlignment: BitStringAlignment
-  )(
+  ) (
     implicit
     byteOrder: ByteOrder
   ): AnythingIterator = new AnythingIterator(iter = in, bitAlignment = bitAlignment)
 
-  def apply(
+  def apply (
     in: ByteString,
     bitAlignment: BitStringAlignment
-  )(
+  ) (
     implicit
     byteOrder: ByteOrder
   ): AnythingIterator = apply(in = in.iterator, bitAlignment = bitAlignment)
 }
 
-class AnythingIterator(
+class AnythingIterator (
   iter: ByteIterator,
   bitAlignment: BitStringAlignment
-)(
+) (
   implicit
   byteOrder: ByteOrder
 ) {
@@ -43,7 +43,7 @@ class AnythingIterator(
   /**
     * Returns a new iterator with the given bit alignment
     */
-  def iterator(
+  def iterator (
     bitAlignment: BitStringAlignment = BitStringAlignment._32Bit
   ) = new AnythingIterator(iter, bitAlignment = bitAlignment)
 
@@ -57,18 +57,17 @@ class AnythingIterator(
     */
   def length: DigitalLength = ByteLength(iter.length)
 
-  def readString(
+  def readString (
     lenToRead: DigitalLength
-  ): String = {
-    getByteIterator
-
-    ???
-  }
+  ) (
+    implicit
+    charset: Charset = StandardCharsets.ISO_8859_1
+  ): String = decodeString(getByteIterator, Some(lenToRead.toByte.toInt))
 
   /**
     * Entweder ein poar Bytes oder ein paar Bits lesen
     */
-  def read[A](
+  def read[A] (
     lenToRead: Option[DigitalLength]
   )(
     implicit
@@ -79,6 +78,7 @@ class AnythingIterator(
       case Some(t: BitLength) if GenericOps.isString(typeTag.tpe) => throw new IllegalArgumentException(s"could not read a string as bits")
       case Some(t: BitLength) => readAsBits(lenToRead = t)
       case Some(t: ByteLength) => readAsBytes(lenToRead = t)
+
       case Some(t) => throw new IllegalArgumentException(s"unknown length type: $t")
 
       case None => readAsBytes()
@@ -89,9 +89,9 @@ class AnythingIterator(
   }
 
   /**
-    * Entweder ein poar Bytes oder ein paar Bits lesen
+    * Entweder ein paar Bytes oder ein paar Bits lesen
     */
-  def read[A](
+  def read[A] (
     lenToRead: DigitalLength
   )(
     implicit
@@ -100,9 +100,9 @@ class AnythingIterator(
   ): A = read(Some(lenToRead))
 
   /**
-    * Entweder ein poar Bytes oder ein paar Bits lesen
+    * Entweder ein paar Bytes oder ein paar Bits lesen
     */
-  def read[A]()(
+  def read[A]() (
     implicit
     classTag: ClassTag[A],
     typeTag: ru.TypeTag[A]
@@ -122,7 +122,7 @@ class AnythingIterator(
   /**
     * Bytes lesen (Datentyplänge)
     */
-  protected def readAsBytes[A]()(
+  protected def readAsBytes[A]() (
     implicit
     classTag: ClassTag[A],
     typeTag: ru.TypeTag[A]
@@ -227,7 +227,7 @@ class AnythingIterator(
   protected def decodeString(
     iter: ByteIterator,
     length: Option[Int] = None
-  )(
+  ) (
     implicit
     charset: Charset = StandardCharsets.ISO_8859_1
   ): String = {

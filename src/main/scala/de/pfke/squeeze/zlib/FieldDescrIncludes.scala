@@ -2,6 +2,7 @@ package de.pfke.squeeze.zlib
 
 import de.pfke.squeeze.annots.fields._
 import de.pfke.squeeze.core.data._
+import de.pfke.squeeze.core.refl._
 import de.pfke.squeeze.core.refl.custom.{FieldDescr, FieldHelper}
 
 import scala.annotation.StaticAnnotation

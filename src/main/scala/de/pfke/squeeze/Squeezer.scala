@@ -4,6 +4,7 @@ import java.nio.ByteOrder
 
 import akka.util.ByteString
 import de.pfke.squeeze.core.data.collection.{AnythingIterator, BitStringAlignment}
+import de.pfke.squeeze.core.refl._
 import de.pfke.squeeze.core.refl.generic.GenericOps
 import de.pfke.squeeze.serialize.serializerHints.{ByteStringBuilderHint, SerializerHint}
 import de.pfke.squeeze.serialize.{SerializerContainer, SerializerWrapper}
@@ -66,7 +67,7 @@ class Squeezer(
       .typeOf(in)
       .typeSymbol
       .annotations
-      .getTypeForIface match {
+      .getFromIfaceToType match {
       case Some(x) if x.value.isInstanceOf[Int] => x.value.asInstanceOf[Int]
       case Some(x) if x.value.isInstanceOf[Long] => x.value.asInstanceOf[Long]
       case Some(x) => throw new SerializerRunException(s"iface type for $typeTag is not in a valid format. Int or Long expected" +

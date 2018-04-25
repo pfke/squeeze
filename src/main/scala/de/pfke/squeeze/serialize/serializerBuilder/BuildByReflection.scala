@@ -4,6 +4,7 @@ import de.pfke.squeeze.annots.classAnnots.{toVersion, fromIfaceToType}
 import de.pfke.squeeze.annots.fields.{fixedLength, injectLength, injectListSize}
 import de.pfke.squeeze.core.data._
 import de.pfke.squeeze.core.data.collection.BitStringAlignment
+import de.pfke.squeeze.core.refl._
 import de.pfke.squeeze.core.refl.custom.{FieldDescr, FieldHelper, SizeOf}
 import de.pfke.squeeze.core.refl.generic.{ClassInfo, ClassOps, EnumOps, GenericOps}
 import de.pfke.squeeze.core.refl.generic.GenericOpsIncludes._
@@ -322,7 +323,7 @@ class BuildByReflection
       val subFields = FieldHelper.getFields(upperType)
 
       val typeHint = subFields.getInjectTypeAnnot(fieldName) match {
-        case Some(x) if x._2.tpe.isEnum => Some(s"IfaceTypeHint(value = ${x._2.name}.id)")
+        case Some(x) if GenericOps.isEnum(x._2.tpe) => Some(s"IfaceTypeHint(value = ${x._2.name}.id)")
         case Some(x)                    => Some(s"IfaceTypeHint(value = ${x._2.name})")
         case None                       => None
       }
@@ -365,7 +366,7 @@ class BuildByReflection
     // code for iter
     fields
       .map {
-        case t if t.tpe.isList => s"val ${t.name} = ${makeList(t)}"
+        case t if GenericOps.isList(t.tpe) => s"val ${t.name} = ${makeList(t)}"
         case t => s"val ${t.name} = ${makeLine(thisTpe = t.tpe, fieldName = t.name)}"
       }
       .mkString("\n")
@@ -463,7 +464,7 @@ class BuildByReflection
       f: FieldDescr
     ) = {
       f.annos
-        .getInjectType match {
+        .getInjectFieldType match {
         case Some(x) => s"serializerContainer.getIfaceType(${paramName.replaceAll(f.name, x.fromField)}).to$tpe"
         case None => paramName
       }
@@ -527,14 +528,14 @@ class BuildByReflection
     // get all fields
     fields
       .map {
-        case t if t.tpe.isList =>
+        case t if GenericOps.isList(t.tpe) =>
           val code = t.tpe.typeArgs.headOption.execOrThrow(
             i => write_buildCode_callSerializer(tpe = i, paramName = "i"),
             new SerializerBuildException(s"unknown sub type of this list: $upperClassType")
           )
           s"$paramName.${t.name}.foreach { i => $code }"
 
-        case t if t.tpe.isString && t.hasAnnot[fixedLength] => s"serializerContainer.write[String]($paramName.${t.name}, hints = hints ++ Seq(SizeInByteHint(value = ${readWithFixedLength(t).size})):_*)"
+        case t if GenericOps.isString(t.tpe) && t.hasAnnot[fixedLength] => s"serializerContainer.write[String]($paramName.${t.name}, hints = hints ++ Seq(SizeInByteHint(value = ${readWithFixedLength(t).size})):_*)"
 
         case t if t.hasAnnot[injectListSize] => write_buildCode_callSerializer(tpe = t.tpe, paramName = s"$paramName.${readInjectCount(t).fromField}.size.to${t.tpe}").trim
         case t if t.hasAnnot[injectLength] => write_buildCode_callSerializer(tpe = t.tpe, paramName = s"$paramName.${readInjectLength(t).fromField}.length.to${t.tpe}").trim

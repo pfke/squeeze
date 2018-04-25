@@ -178,6 +178,18 @@ object AnnotationOps {
   ): Option[A] = prg.AnnotationOps.instantiate[A](in)
 
   /**
+    * Returns the wanted annotation
+    */
+  def getAnnot[A <: StaticAnnotation] (
+    in: List[ru.Annotation]
+  ) (
+    implicit
+    classTag: ClassTag[A],
+    typeTag: ru.TypeTag[A],
+    classLoader: ClassLoader = in.getClass.getClassLoader
+  ): Option[A] = instantiateAnnot[A](in = in)
+
+  /**
     * Returns true, if the given field descr has the wanted annot
     */
   def hasAnnot[A <: StaticAnnotation](
@@ -237,6 +249,15 @@ trait AnnotationOpsIncludes {
       classTag: ClassTag[A],
       typeTag: ru.TypeTag[A]
     ): Option[A] = AnnotationOps.instantiateAnnot[A](in)
+
+    /**
+      * Returns the wanted annotation
+      */
+    def getAnnot[A <: StaticAnnotation] (
+      implicit
+      classTag: ClassTag[A],
+      typeTag: ru.TypeTag[A]
+    ): Option[A] = AnnotationOps.getAnnot[A](in)
 
     /**
       * Returns true, if the given field descr has the wanted annot
