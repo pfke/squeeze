@@ -14,20 +14,20 @@ import scala.reflect.runtime.{universe => ru}
 
 object AnythingIterator {
   def apply (
-    in: ByteIterator,
-    bitAlignment: BitStringAlignment
+    in: ByteIterator
   ) (
     implicit
     byteOrder: ByteOrder
-  ): AnythingIterator = new AnythingIterator(iter = in, bitAlignment = bitAlignment)
+  ): AnythingIterator = new AnythingIterator(iter = in, bitAlignment = BitStringAlignment._32Bit)
 
   def apply (
-    in: ByteString,
-    bitAlignment: BitStringAlignment
+    in: ByteString
   ) (
     implicit
     byteOrder: ByteOrder
-  ): AnythingIterator = apply(in = in.iterator, bitAlignment = bitAlignment)
+  ): AnythingIterator = apply(in = in.iterator)
+
+  def empty: AnythingIterator = apply(in = ByteString())(byteOrder = ByteOrder.LITTLE_ENDIAN)
 }
 
 class AnythingIterator (

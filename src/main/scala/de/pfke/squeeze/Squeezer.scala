@@ -126,7 +126,7 @@ class Squeezer(
     version: Option[PatchLevelVersion] = initialFromVersion,
     classTag: ClassTag[A],
     typeTag: ru.TypeTag[A]
-  ) = read[A](iter = AnythingIterator(in, bitAlignment = BitStringAlignment._32Bit))
+  ) = read[A](iter = AnythingIterator(in))
 
   /**
     * Serialize the input
