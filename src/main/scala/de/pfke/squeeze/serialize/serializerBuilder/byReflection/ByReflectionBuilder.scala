@@ -1,4 +1,4 @@
-package de.pfke.squeeze.serialize.serializerBuilder
+package de.pfke.squeeze.serialize.serializerBuilder.byReflection
 
 import de.pfke.squeeze.annots.classAnnots.{fromIfaceToType, toVersion}
 import de.pfke.squeeze.annots.fields.{fixedLength, injectLength, injectListSize}
@@ -8,17 +8,18 @@ import de.pfke.squeeze.core.refl._
 import de.pfke.squeeze.core.refl.custom.{FieldDescr, FieldHelper, SizeOf}
 import de.pfke.squeeze.core.refl.generic.{ClassInfo, ClassOps, EnumOps, GenericOps}
 import de.pfke.squeeze.serialize.SerializerBuildException
+import de.pfke.squeeze.serialize.serializerBuilder.{BuiltSerializer, SerializerBuilder}
 
 import scala.annotation.StaticAnnotation
 import scala.collection.mutable.ArrayBuffer
 import scala.reflect.ClassTag
 import scala.reflect.runtime.{universe => ru}
 
-object BuildByReflection {
-  def apply() = new BuildByReflection()
+object ByReflectionBuilder {
+  def apply() = new ByReflectionBuilder()
 }
 
-class BuildByReflection
+class ByReflectionBuilder
   extends SerializerBuilder {
   /**
     * Build the serializer

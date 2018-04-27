@@ -1,0 +1,131 @@
+package de.pfke.squeeze.core.io.compress.archiver
+
+import java.nio.file.{Files, Path}
+
+import de.pfke.squeeze.core._
+import de.pfke.squeeze.core.crypto.ChecksumOps
+import de.pfke.squeeze.core.io.compress.{ArchiveAlgorithm, Archiver}
+import de.pfke.squeeze.core.io.jnio.PathOps
+import de.pfke.squeeze.testing.CleanFilesAfterAll
+import org.scalatest.{Matchers, WordSpecLike}
+
+class Archiver_archive_spec
+  extends WordSpecLike
+  with Matchers
+  with CleanFilesAfterAll {
+  "using method 'archive' with a list of src files" when {
+    val dir = PathOps.createTempDirectory(Some("Archiver_archive_spec"))().cleanFileAfter
+    val srcDir = dir.resolve("src").createDirectory()
+    val srcFiles = (0 to 10).map { i => srcDir.resolve(s"file$i").write(s"content file $i".asByteBuffer_iso8859_1) }.toList
+    val targetBase = dir.resolve("target")
+
+    "algo == tar" should {
+      val target = Archiver.archive(
+        src = srcFiles,
+        dest = targetBase,
+        algorithm = ArchiveAlgorithm.TAR
+      )
+
+      "archive should exist" in {
+        Files.exists(target) shouldBe (right = true)
+      }
+
+      "archive should end with '.tar" in {
+        PathOps.extension(target) should be("tar")
+      }
+
+      "return a valid archive" in {
+        val outDir = dir.resolve(s"$target.ent")
+
+        val (out, fl) = Archiver.unArchive(target, Some(outDir))
+
+        out should be(outDir)
+        fl.size should be(srcFiles.length)
+        fl.foreach { i =>
+          withClue(s"testing file $i:") {
+            srcFiles.find { ii => i.toString.endsWith(ii.toString) } match {
+              case Some(x: Path) => ChecksumOps.fromFile()(x.toFile) should be(ChecksumOps.fromFile()(i.toFile))
+              case _ => fail(s"$i not found in src file list")
+            }
+          }
+        }
+      }
+    }
+  }
+
+  "using method 'archive' with a list of src dir" when {
+    val dir = Files.createTempDirectory("ArchiverSpec").cleanFileAfter
+    val srcDir = dir.resolve("src").createDirectory()
+    val srcFiles = (0 to 10).map { i => srcDir.resolve(s"file$i").write(s"content file $i".asByteBuffer_iso8859_1) }.toList
+    val targetBase = dir.resolve("target")
+
+    "passing a dir" should {
+      val target = Archiver.archive(
+        src = List(srcDir),
+        dest = targetBase,
+        algorithm = ArchiveAlgorithm.ZIP
+      )
+
+      "archive should exist" in {
+        Files.exists(target) shouldBe (right = true)
+      }
+
+      "archive should end with '.zip" in {
+        PathOps.extension(target) should be ("zip")
+      }
+
+      "return a valid archive" in {
+        val outDir = dir.resolve(s"$target.ent")
+
+        val (out, fl) = Archiver.unArchive(target, Some(outDir))
+
+        out should be (outDir)
+        fl.size should be (srcFiles.length)
+        fl.foreach { i =>
+          withClue(s"testing file $i:") {
+            // suche mit endsWith, da der absolute Dateiname ein anderer ist
+            srcFiles.find { ii => i.toString.endsWith(ii.toString) } match {
+              case Some(x: Path) => ChecksumOps.fromFile()(x.toFile) should be (ChecksumOps.fromFile()(i.toFile))
+              case _ => fail(s"$i not found in src file list")
+            }}}}
+    }
+  }
+
+  "using method 'archive' with a root dir" when {
+    val dir = Files.createTempDirectory("ArchiverSpec").cleanFileAfter
+    val srcDir = dir.resolve("src").createDirectory()
+    val srcFiles = (0 to 10).map { i => srcDir.resolve(s"file$i").write(s"content file $i".asByteBuffer_iso8859_1) }.toList
+    val targetBase = dir.resolve("target")
+
+    "passing a dir" should {
+      val target = Archiver.archive(
+        src = List(srcDir),
+        dest = targetBase,
+        algorithm = ArchiveAlgorithm.TAR,
+        root = Some(srcDir)
+      )
+
+      "archive should exist" in {
+        Files.exists(target) shouldBe (right = true)
+      }
+
+      "archive should end with '.tar" in {
+        PathOps.extension(target) should be ("tar")
+      }
+
+      "return a valid archive" in {
+        val outDir = dir.resolve(s"$target.ent")
+
+        val (out, fl) = Archiver.unArchive(target, Some(outDir))
+
+        out should be (outDir)
+        fl.size should be (srcFiles.length)
+        fl.foreach { i =>
+          withClue("testing file $i") {
+            srcFiles.find { f => PathOps.filename(f) == PathOps.filename(i) } match {
+              case Some(x: Path) => ChecksumOps.fromFile()(x.toFile) should be (ChecksumOps.fromFile()(i.toFile))
+              case _ => fail(s"$i not found in src file list")
+            }}}}
+    }
+  }
+}

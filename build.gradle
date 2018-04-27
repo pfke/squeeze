@@ -23,6 +23,8 @@ dependencies {
     compile group: 'org.scala-lang', name: 'scala-compiler', version: scalaReleaseVersion
     compile group: 'org.scala-lang', name: 'scala-reflect', version: scalaReleaseVersion
 
+    compile group: 'org.apache.commons', name: 'commons-compress', version: '1.16.1'
+
     compile group: 'com.typesafe.akka', name: "akka-actor_$scalaVersion", version: '2.5.10'
 
     // Use Scalatest for testing our library
