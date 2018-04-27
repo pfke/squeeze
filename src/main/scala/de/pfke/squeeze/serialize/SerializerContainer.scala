@@ -2,9 +2,9 @@ package de.pfke.squeeze.serialize
 
 import java.nio.ByteOrder
 
+import de.pfke.squeeze.core.PatchLevelVersion
 import de.pfke.squeeze.core.data.collection.AnythingIterator
 import de.pfke.squeeze.serialize.serializerHints.SerializerHint
-import de.pfke.squeeze.zlib.{PatchLevelVersion, SerializerBuildException}
 
 import scala.reflect.ClassTag
 import scala.reflect.runtime.{universe => ru}

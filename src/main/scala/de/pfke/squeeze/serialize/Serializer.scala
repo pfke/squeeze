@@ -4,12 +4,12 @@ import java.nio.ByteOrder
 import java.nio.charset.{Charset, StandardCharsets}
 
 import akka.util.ByteStringBuilder
+import de.pfke.squeeze.core.PatchLevelVersion
 import de.pfke.squeeze.core.data.byTypes.complex.OptionOpsIncludes._
 import de.pfke.squeeze.core.data.collection.AnythingIterator
 import de.pfke.squeeze.core.data.length.digital.{BitLength, ByteLength, DigitalLength}
 import de.pfke.squeeze.core.refl.generic.GenericOps.TypeInfo
 import de.pfke.squeeze.serialize.serializerHints._
-import de.pfke.squeeze.zlib.{PatchLevelVersion, SerializerRunException}
 
 import scala.reflect.ClassTag
 import scala.reflect.runtime.{universe => ru}

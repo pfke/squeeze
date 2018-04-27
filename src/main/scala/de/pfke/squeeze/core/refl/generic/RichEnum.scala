@@ -140,6 +140,7 @@ object EnumOps {
   def isEnum(
     tpe: ru.Type
   ): Boolean = { // import scala.reflect.runtime.universe._: sorgt dafür, dass die haessliche 'abstract type pattern reflect.runtime.universe.AssignOrNamedArg is unchecked since it is eliminated by erasure' wegkommt
+    import scala.reflect.runtime.universe._
 
     tpe match {
       case t: ru.TypeRef if t.pre <:< ru.typeOf[Enumeration] => true

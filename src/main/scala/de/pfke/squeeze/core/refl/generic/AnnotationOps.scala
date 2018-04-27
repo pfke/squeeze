@@ -119,6 +119,7 @@ object AnnotationOps {
     annotClassTag: ClassTag[A],
     annotTypeTag: ru.TypeTag[A]
   ): A = { // import scala.reflect.runtime.universe._: sorgt dafür, dass die haessliche 'abstract type pattern reflect.runtime.universe.AssignOrNamedArg is unchecked since it is eliminated by erasure' wegkommt
+    import scala.reflect.runtime.universe._
 
     require(annot.tree.tpe =:= annotTypeTag.tpe, "passed argument does not match generic annotation type")
 

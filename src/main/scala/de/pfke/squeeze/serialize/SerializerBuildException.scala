@@ -1,4 +1,4 @@
-package de.pfke.squeeze.zlib
+package de.pfke.squeeze.serialize
 
 class SerializerBuildException(
   msg: String

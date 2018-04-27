@@ -4,7 +4,7 @@ import java.nio.ByteOrder
 
 import akka.util.ByteIterator
 import de.pfke.squeeze.core.data.length.digital.DigitalLength
-import de.pfke.squeeze.zlib.SerializerRunException
+import de.pfke.squeeze.serialize.SerializerRunException
 
 case class ReadFromByteIteratorHint(
   iter: ByteIterator,

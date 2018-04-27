@@ -1,15 +1,13 @@
 package de.pfke.squeeze.serialize.serializerBuilder
 
-import de.pfke.squeeze.annots.classAnnots.{toVersion, fromIfaceToType}
+import de.pfke.squeeze.annots.classAnnots.{fromIfaceToType, toVersion}
 import de.pfke.squeeze.annots.fields.{fixedLength, injectLength, injectListSize}
 import de.pfke.squeeze.core.data._
 import de.pfke.squeeze.core.data.collection.BitStringAlignment
 import de.pfke.squeeze.core.refl._
 import de.pfke.squeeze.core.refl.custom.{FieldDescr, FieldHelper, SizeOf}
 import de.pfke.squeeze.core.refl.generic.{ClassInfo, ClassOps, EnumOps, GenericOps}
-import de.pfke.squeeze.core.refl.generic.GenericOpsIncludes._
-import de.pfke.squeeze.zlib.FieldDescrIncludes._
-import de.pfke.squeeze.zlib.SerializerBuildException
+import de.pfke.squeeze.serialize.SerializerBuildException
 
 import scala.annotation.StaticAnnotation
 import scala.collection.mutable.ArrayBuffer

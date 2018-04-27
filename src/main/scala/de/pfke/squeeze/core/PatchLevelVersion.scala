@@ -1,4 +1,4 @@
-package de.pfke.squeeze.zlib
+package de.pfke.squeeze.core
 
 trait Version
   extends Ordered[Version]

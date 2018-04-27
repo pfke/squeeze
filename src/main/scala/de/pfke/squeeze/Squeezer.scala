@@ -3,12 +3,12 @@ package de.pfke.squeeze
 import java.nio.ByteOrder
 
 import akka.util.ByteString
+import de.pfke.squeeze.core.PatchLevelVersion
 import de.pfke.squeeze.core.data.collection.{AnythingIterator, BitStringAlignment}
 import de.pfke.squeeze.core.refl._
 import de.pfke.squeeze.core.refl.generic.GenericOps
 import de.pfke.squeeze.serialize.serializerHints.{ByteStringBuilderHint, SerializerHint}
-import de.pfke.squeeze.serialize.{SerializerContainer, SerializerWrapper}
-import de.pfke.squeeze.zlib.{PatchLevelVersion, SerializerRunException}
+import de.pfke.squeeze.serialize.{SerializerContainer, SerializerRunException, SerializerWrapper}
 
 import scala.collection.mutable
 import scala.reflect.ClassTag
