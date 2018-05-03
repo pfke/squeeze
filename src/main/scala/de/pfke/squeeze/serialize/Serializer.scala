@@ -57,7 +57,8 @@ trait Serializer[A] {
   def write(
     data: A,
     hints: SerializerHint*
-  )(implicit
+  )(
+    implicit
     byteOrder: ByteOrder,
     serializerContainer: SerializerContainer,
     version: Option[PatchLevelVersion]

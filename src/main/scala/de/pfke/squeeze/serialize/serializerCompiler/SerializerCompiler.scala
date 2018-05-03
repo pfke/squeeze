@@ -1,7 +1,7 @@
 package de.pfke.squeeze.serialize.serializerCompiler
 
 import de.pfke.squeeze.serialize.Serializer
-import de.pfke.squeeze.serialize.serializerBuilder.BuiltSerializer
+import de.pfke.squeeze.serialize.serializerAssembler.AssembledSerializer
 import javax.script.{Compilable, ScriptEngineManager}
 
 object SerializerCompiler {
@@ -12,7 +12,7 @@ object SerializerCompiler {
     * Compile the given script and return the result: the object itself
     */
   def compile[A](
-    reflectedSerializer: BuiltSerializer[A]
+    reflectedSerializer: AssembledSerializer[A]
   ): CompiledSerializer[A] = {
     val script = _engine.compile(reflectedSerializer.code)
     val compiled = script.eval().asInstanceOf[Serializer[A]]
