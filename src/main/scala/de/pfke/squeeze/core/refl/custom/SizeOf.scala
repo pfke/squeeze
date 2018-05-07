@@ -1,6 +1,6 @@
 package de.pfke.squeeze.core.refl.custom
 
-import de.pfke.squeeze.core.refl.generic.PrimitiveOps
+import de.pfke.squeeze.core.refl.generic.{MethodParameter, PrimitiveOps}
 
 import scala.reflect.ClassTag
 import scala.reflect.runtime.{universe => ru}
@@ -90,7 +90,7 @@ object SizeOf {
     * @param upperClassAnnots if no 'alignBitfieldsBy' is found the pure bit size is returned
     */
   def guess (
-    fields: List[FieldDescr],
+    fields: List[MethodParameter],
     upperClassAnnots: List[ru.Annotation]
   ): Int = {
     // TODO: mit squeeze entkoppeln
@@ -115,7 +115,7 @@ object SizeOf {
     //
     //      alignedBits / 8
     //    } else {
-    fields.foldLeft(0)((i, c) => i + guess(c.tpe, thisFieldAnnots = c.annos))
+    fields.foldLeft(0)((i, c) => i + guess(c.typeSignature, thisFieldAnnots = c.annotations))
     //    }
   }
 
@@ -126,7 +126,7 @@ object SizeOf {
     * @param upperClassAnnots if no 'alignBitfieldsBy' is found the pure bit size is returned
     */
   def guessBitsize (
-    fields: List[FieldDescr],
+    fields: List[MethodParameter],
     upperClassAnnots: List[ru.Annotation]
   ): Int = {
     // TODO: mit squeeze entkoppeln
@@ -151,7 +151,7 @@ object SizeOf {
     //
     //      alignedBits
     //    } else {
-    fields.foldLeft(0)((i, c) => i + guess(c.tpe, thisFieldAnnots = c.annos)) * 8
+    fields.foldLeft(0)((i, c) => i + guess(c.typeSignature, thisFieldAnnots = c.annotations)) * 8
     //    }
   }
 }

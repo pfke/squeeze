@@ -18,7 +18,7 @@ class InjectCountTwiceSpec
                 |
                 |class InjectCountTwiceMockSerializer
                 |  extends Serializer[de.pintono.tools.squeeze.core.mocks.InjectCountTwiceMock] {
-                |  override def objectTypeInfo = ReflHelper.generateTypeInfo[de.pintono.tools.squeeze.core.mocks.InjectCountTwiceMock]
+                |  override def objectTypeInfo = GenericOps.getTypeInfo[de.pintono.tools.squeeze.core.mocks.InjectCountTwiceMock]
                 |
                 |  override def read(
                 |    iter: AnythingIterator,

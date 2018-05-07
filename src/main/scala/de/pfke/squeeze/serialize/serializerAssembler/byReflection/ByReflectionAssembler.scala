@@ -4,8 +4,8 @@ import de.pfke.squeeze.annots.classAnnots.{fromIfaceToType, toVersion}
 import de.pfke.squeeze.annots.fields.{fixedLength, injectLength, injectListSize}
 import de.pfke.squeeze.core._
 import de.pfke.squeeze.core.data.collection.BitStringAlignment
-import de.pfke.squeeze.core.refl.custom.{FieldDescr, FieldHelper, SizeOf}
-import de.pfke.squeeze.core.refl.generic.{ClassInfo, ClassOps, EnumOps, GenericOps}
+import de.pfke.squeeze.core.refl.custom.SizeOf
+import de.pfke.squeeze.core.refl.generic._
 import de.pfke.squeeze.serialize.SerializerBuildException
 import de.pfke.squeeze.serialize.serializerAssembler.{AssembledSerializer, SerializerAssembler}
 
@@ -28,6 +28,8 @@ class ByReflectionAssembler
     classTag: ClassTag[A],
     typeTag: ru.TypeTag[A]
   ): AssembledSerializer[A] = {
+    require(GenericOps.isPrimitive(typeTag) || ClassOps.isCaseClass[A], s"$classTag is neither a primitive nor a case class")
+
     val namespaceClassName_r = """(.*)\.(.*)$""".r
 
     val (ns, name) = typeTag.tpe.toString match {
@@ -84,7 +86,7 @@ class ByReflectionAssembler
     classTag: ClassTag[A],
     typeTag: ru.TypeTag[A]
   ): String = {
-    def makeInstanceCodeCodeLine(in: FieldDescr): String = s"${in.name} = ${in.name}"
+    def makeInstanceCodeCodeLine(in: MethodParameter): String = s"${in.name} = ${in.name}"
     def makeInstanceCodeForComplex(): String = {
       val code = FieldHelper.getFields(typeTag.tpe)
         .map(makeInstanceCodeCodeLine)
@@ -296,10 +298,10 @@ class ByReflectionAssembler
 
   private def read_buildIterCode_forComplex(
     upperClassType: ru.Type,
-    allSubFields: List[FieldDescr],
-    groupedSubFields: List[List[FieldDescr]]
+    allSubFields: List[MethodParameter],
+    groupedSubFields: List[List[MethodParameter]]
   )(
-    fields: List[FieldDescr]
+    fields: List[MethodParameter]
   ): String = {
     fields match {
       case t if t.hasAsBitfield => read_buildIterCode_forComplex_bitfields(upperClassType = upperClassType, allSubFields = allSubFields, groupedSubFields = groupedSubFields)(fields = fields)
@@ -308,8 +310,8 @@ class ByReflectionAssembler
   }
 
   private def read_buildIterCode_forComplex_noBitfields(
-    allSubFields: List[FieldDescr],
-    fields: List[FieldDescr],
+    allSubFields: List[MethodParameter],
+    fields: List[MethodParameter],
     upperType: ru.Type
   ): String = {
     def makeLine(
@@ -329,8 +331,8 @@ class ByReflectionAssembler
       val foundWithFixedLengthAnnot = fields.getWithFixedLengthAnnot
 
       val lengthHint = foundInjectLengthAnnot orElse foundWithFixedLengthAnnot match {
-          case Some((x: injectLength, field: FieldDescr))    => Some(s"SizeInByteHint(value = ${field.name.replaceAll(field.name, field.name)})")
-          case Some((x: fixedLength, field: FieldDescr)) => Some(s"SizeInByteHint(value = ${x.size})")
+          case Some((x: injectLength, field: MethodParameter))    => Some(s"SizeInByteHint(value = ${field.name.replaceAll(field.name, field.name)})")
+          case Some((x: fixedLength, field: MethodParameter)) => Some(s"SizeInByteHint(value = ${x.size})")
           case _ => None
       }
 
@@ -346,7 +348,7 @@ class ByReflectionAssembler
     }
 
     def makeList(
-      field: FieldDescr
+      field: MethodParameter
     ): String = {
       val code = field.tpe.typeArgs.headOption.execOrThrow( i => makeLine(thisTpe = i), new SerializerBuildException(s"unknown sub type of this list: ${field.tpe}"))
 
@@ -370,17 +372,17 @@ class ByReflectionAssembler
 
   private def read_buildIterCode_forComplex_bitfields(
     upperClassType: ru.Type,
-    allSubFields: List[FieldDescr],
-    groupedSubFields: List[List[FieldDescr]]
+    allSubFields: List[MethodParameter],
+    groupedSubFields: List[List[MethodParameter]]
   )(
-    fields: List[FieldDescr]
+    fields: List[MethodParameter]
   ): String = {
     require(fields.nonEmpty, "given field list is empty")
     require(!fields.hasOneWithoutAsBitfield, "given chunk contains a field w/o 'asBitfield' annot")
     require(upperClassType.typeSymbol.annotations.hasAlignBitfieldsBy, "upper class does not have 'alignBitfieldsBy' annotation")
 
-    def buildName(field: FieldDescr) = s"${field.name}"
-    def buildPrefix(field: FieldDescr) = s"${buildName(field)}_"
+    def buildName(field: MethodParameter) = s"${field.name}"
+    def buildPrefix(field: MethodParameter) = s"${buildName(field)}_"
 
     val bitfieldIterName = if (!fields.hasAsBitfield) "" else {
       val upperClassAnnots = upperClassType.typeSymbol.annotations
@@ -402,13 +404,13 @@ class ByReflectionAssembler
       }
     }
 
-    def groupBitfieldsByAlignment(): List[List[FieldDescr]] = {
+    def groupBitfieldsByAlignment(): List[List[MethodParameter]] = {
       val upperClassAnnots = upperClassType.typeSymbol.annotations
 
       val alignment = upperClassAnnots.getAlignBitfieldsBy.execOrThrow(_.bits, new SerializerBuildException(s"class has no 'alignBitfieldsBy' annotation"))
 
-      val r1 = new ArrayBuffer[ArrayBuffer[FieldDescr]]()
-      r1 += new ArrayBuffer[FieldDescr]()
+      val r1 = new ArrayBuffer[ArrayBuffer[MethodParameter]]()
+      r1 += new ArrayBuffer[MethodParameter]()
       var currentSize = 0
       fields
         .foreach { i =>
@@ -419,7 +421,7 @@ class ByReflectionAssembler
 
           if (currentSize >= alignment) {
             currentSize = currentSize - alignment
-            r1 += new ArrayBuffer[FieldDescr]()
+            r1 += new ArrayBuffer[MethodParameter]()
           }
       }
 
@@ -453,11 +455,11 @@ class ByReflectionAssembler
   private def write_buildCode_callSerializer(
     tpe: ru.Type,
     paramName: String = "data",
-    field: Option[FieldDescr] = None
+    field: Option[MethodParameter] = None
   ): String = {
     // injectType annot?
     def buildValueFromField(
-      f: FieldDescr
+      f: MethodParameter
     ) = {
       f.annos
         .getInjectFieldType match {
@@ -490,11 +492,11 @@ class ByReflectionAssembler
     */
   private def makeWriteCodeForThisGroupedFields(
     upperClassType: ru.Type,
-    allSubFields: List[FieldDescr],
-    groupedSubFields: List[List[FieldDescr]],
+    allSubFields: List[MethodParameter],
+    groupedSubFields: List[List[MethodParameter]],
     paramName: String
   )(
-    field: List[FieldDescr]
+    field: List[MethodParameter]
   ): String = {
     field match {
       case t if t.hasAsBitfield => write_buildCode_forComplex_bitfields(upperClassType = upperClassType, allSubFields = allSubFields, groupedSubFields = groupedSubFields, paramName = paramName, fields = field)
@@ -507,37 +509,37 @@ class ByReflectionAssembler
     */
   private def write_buildCode_forComplex_noBitfields(
     upperClassType: ru.Type,
-    allSubFields: List[FieldDescr],
-    groupedSubFields: List[List[FieldDescr]],
+    allSubFields: List[MethodParameter],
+    groupedSubFields: List[List[MethodParameter]],
     paramName: String,
-    fields: List[FieldDescr]
+    fields: List[MethodParameter]
   ): String = {
-    def readAnnot[A <: StaticAnnotation] (field: FieldDescr)(
+    def readAnnot[A <: StaticAnnotation] (field: MethodParameter)(
       implicit
       classTag: ClassTag[A],
       typeTag: ru.TypeTag[A]
     ): A = field.getAnnot[A] execOrThrow ( i => i, new SerializerBuildException(s"$typeTag annot expected"))
-    def readInjectCount (field: FieldDescr): injectListSize = readAnnot[injectListSize](field)
-    def readInjectLength (field: FieldDescr): injectLength = readAnnot[injectLength](field)
-    def readWithFixedLength (field: FieldDescr): fixedLength = readAnnot[fixedLength](field)
+    def readInjectCount (field: MethodParameter): injectListSize = readAnnot[injectListSize](field)
+    def readInjectLength (field: MethodParameter): injectLength = readAnnot[injectLength](field)
+    def readWithFixedLength (field: MethodParameter): fixedLength = readAnnot[fixedLength](field)
 
     // get all fields
     fields
       .map {
-        case t if GenericOps.isList(t.tpe) =>
-          val code = t.tpe.typeArgs.headOption.execOrThrow(
+        case t if GenericOps.isList(t.typeSignature) =>
+          val code = t.typeSignature.typeArgs.headOption.execOrThrow(
             i => write_buildCode_callSerializer(tpe = i, paramName = "i"),
             new SerializerBuildException(s"unknown sub type of this list: $upperClassType")
           )
           s"$paramName.${t.name}.foreach { i => $code }"
 
-        case t if GenericOps.isString(t.tpe) && t.hasAnnot[fixedLength] => s"serializerContainer.write[String]($paramName.${t.name}, hints = hints ++ Seq(SizeInByteHint(value = ${readWithFixedLength(t).size})):_*)"
+        case t if GenericOps.isString(t.typeSignature) && t.hasAnnot[fixedLength] => s"serializerContainer.write[String]($paramName.${t.name}, hints = hints ++ Seq(SizeInByteHint(value = ${readWithFixedLength(t).size})):_*)"
 
-        case t if t.hasAnnot[injectListSize] => write_buildCode_callSerializer(tpe = t.tpe, paramName = s"$paramName.${readInjectCount(t).fromField}.size.to${t.tpe}").trim
-        case t if t.hasAnnot[injectLength] => write_buildCode_callSerializer(tpe = t.tpe, paramName = s"$paramName.${readInjectLength(t).fromField}.length.to${t.tpe}").trim
-        case t if t.hasAnnot[injectLength] => write_buildCode_callSerializer(tpe = t.tpe, paramName = s"${SizeOf.guess(upperClassType)}").trim // TODO: statisch oder dynamisc?
+        case t if t.hasAnnot[injectListSize] => write_buildCode_callSerializer(tpe = t.typeSignature, paramName = s"$paramName.${readInjectCount(t).fromField}.size.to${t.typeSignature}").trim
+        case t if t.hasAnnot[injectLength] => write_buildCode_callSerializer(tpe = t.typeSignature, paramName = s"$paramName.${readInjectLength(t).fromField}.length.to${t.typeSignature}").trim
+        case t if t.hasAnnot[injectLength] => write_buildCode_callSerializer(tpe = t.typeSignature, paramName = s"${SizeOf.guess(upperClassType)}").trim // TODO: statisch oder dynamisc?
 
-        case t => write_buildCode_callSerializer(tpe = t.tpe, paramName = s"$paramName.${t.name}", field = Some(t)).trim
+        case t => write_buildCode_callSerializer(tpe = t.typeSignature, paramName = s"$paramName.${t.name}", field = Some(t)).trim
       }
       .mkString("\n")
   }
@@ -547,10 +549,10 @@ class ByReflectionAssembler
     */
   private def write_buildCode_forComplex_bitfields(
     upperClassType: ru.Type,
-    allSubFields: List[FieldDescr],
-    groupedSubFields: List[List[FieldDescr]],
+    allSubFields: List[MethodParameter],
+    groupedSubFields: List[List[MethodParameter]],
     paramName: String,
-    fields: List[FieldDescr]
+    fields: List[MethodParameter]
   ): String = {
     require(!fields.hasOneWithoutAsBitfield, "given chunk contains a field w/o 'asBitfield' annot")
     require(upperClassType.typeSymbol.annotations.hasAlignBitfieldsBy, "upper class does not have 'alignBitfieldsBy' annotation")

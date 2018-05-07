@@ -18,7 +18,7 @@ class WithComplexSubTypesBuilderSpec
                 |
                 |class WithComplexSubTypesMockSerializer
                 |  extends Serializer[de.pintono.tools.squeeze.core.mocks.WithComplexSubTypesMock] {
-                |  override def objectTypeInfo = ReflHelper.generateTypeInfo[de.pintono.tools.squeeze.core.mocks.WithComplexSubTypesMock]
+                |  override def objectTypeInfo = GenericOps.getTypeInfo[de.pintono.tools.squeeze.core.mocks.WithComplexSubTypesMock]
                 |
                 |  override def read(
                 |    iter: AnythingIterator,

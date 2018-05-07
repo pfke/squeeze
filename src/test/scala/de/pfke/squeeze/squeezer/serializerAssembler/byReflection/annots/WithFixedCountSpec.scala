@@ -18,7 +18,7 @@ class WithFixedCountSpec
                 |
                 |class WithFixedCountMockSerializer
                 |  extends Serializer[de.pintono.tools.squeeze.core.mocks.WithFixedCountMock] {
-                |  override def objectTypeInfo = ReflHelper.generateTypeInfo[de.pintono.tools.squeeze.core.mocks.WithFixedCountMock]
+                |  override def objectTypeInfo = GenericOps.getTypeInfo[de.pintono.tools.squeeze.core.mocks.WithFixedCountMock]
                 |
                 |  override def read(
                 |    iter: AnythingIterator,

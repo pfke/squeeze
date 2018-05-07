@@ -19,7 +19,7 @@ class asBitfield_mock_unaligned_multiSpec
            |
            |class asBitfield_mock_unaligned_multiSerializer
            |  extends Serializer[de.pintono.tools.squeeze.core.mocks.asBitfieldSpecs.asBitfield_mock_unaligned_multi] {
-           |  override def objectTypeInfo = ReflHelper.generateTypeInfo[de.pintono.tools.squeeze.core.mocks.asBitfieldSpecs.asBitfield_mock_unaligned_multi]
+           |  override def objectTypeInfo = GenericOps.getTypeInfo[de.pintono.tools.squeeze.core.mocks.asBitfieldSpecs.asBitfield_mock_unaligned_multi]
            |
            |  override def read(
            |    iter: AnythingIterator,

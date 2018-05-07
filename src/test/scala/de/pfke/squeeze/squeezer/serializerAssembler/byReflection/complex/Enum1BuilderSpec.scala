@@ -18,7 +18,7 @@ class Enum1BuilderSpec
                 |
                 |class Enum1MockSerializer
                 |  extends Serializer[de.pintono.tools.squeeze.core.mocks.Enum1Mock.Enum1Mock] {
-                |  override def objectTypeInfo = ReflHelper.generateTypeInfo[de.pintono.tools.squeeze.core.mocks.Enum1Mock.Enum1Mock]
+                |  override def objectTypeInfo = GenericOps.getTypeInfo[de.pintono.tools.squeeze.core.mocks.Enum1Mock.Enum1Mock]
                 |
                 |  override def read(
                 |    iter: AnythingIterator,

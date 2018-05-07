@@ -18,7 +18,7 @@ class FullOfSimpleTypesBuilderSpec
                 |
                 |class FullOfSimpleTypesMockSerializer
                 |  extends Serializer[de.pintono.tools.squeeze.core.mocks.FullOfSimpleTypesMock] {
-                |  override def objectTypeInfo = ReflHelper.generateTypeInfo[de.pintono.tools.squeeze.core.mocks.FullOfSimpleTypesMock]
+                |  override def objectTypeInfo = GenericOps.getTypeInfo[de.pintono.tools.squeeze.core.mocks.FullOfSimpleTypesMock]
                 |
                 |  override def read(
                 |    iter: AnythingIterator,

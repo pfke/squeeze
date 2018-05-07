@@ -20,7 +20,8 @@ abstract class BaseSpec
   protected def checkThis[A](
     prefix: Option[String] = None,
     code: String
-  )(implicit
+  ) (
+    implicit
     classTag: ClassTag[A],
     typeTag: ru.TypeTag[A]
   ): Unit = {

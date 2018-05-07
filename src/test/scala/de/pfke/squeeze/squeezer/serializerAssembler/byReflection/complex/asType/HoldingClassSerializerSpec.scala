@@ -18,7 +18,7 @@ class HoldingClassSerializerSpec
                 |
                 |class HoldingClassSerializer
                 |  extends Serializer[de.pintono.tools.squeeze.core.mocks.asType.HoldingClass] {
-                |  override def objectTypeInfo = ReflHelper.generateTypeInfo[de.pintono.tools.squeeze.core.mocks.asType.HoldingClass]
+                |  override def objectTypeInfo = GenericOps.getTypeInfo[de.pintono.tools.squeeze.core.mocks.asType.HoldingClass]
                 |
                 |  override def read(
                 |    iter: AnythingIterator,

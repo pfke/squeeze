@@ -18,6 +18,11 @@ case class MethodParameter (
   lazy val clazz: Class[_] = Class.forName(typeSignature.typeSymbol.asClass.fullName)
 
   /**
+    * Return field annotations
+    */
+  def annotations: List[ru.Annotation] = symbol.annotations
+
+  /**
     * Return param name
     */
   def name: String = symbol.name.toString

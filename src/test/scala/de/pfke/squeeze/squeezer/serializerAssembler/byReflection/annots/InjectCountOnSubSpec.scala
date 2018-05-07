@@ -18,7 +18,7 @@ class InjectCountOnSubSpec
                 |
                 |class InjectCountOnSubMockSerializer
                 |  extends Serializer[de.pintono.tools.squeeze.core.mocks.InjectCountOnSubMock] {
-                |  override def objectTypeInfo = ReflHelper.generateTypeInfo[de.pintono.tools.squeeze.core.mocks.InjectCountOnSubMock]
+                |  override def objectTypeInfo = GenericOps.getTypeInfo[de.pintono.tools.squeeze.core.mocks.InjectCountOnSubMock]
                 |
                 |  override def read(
                 |    iter: AnythingIterator,

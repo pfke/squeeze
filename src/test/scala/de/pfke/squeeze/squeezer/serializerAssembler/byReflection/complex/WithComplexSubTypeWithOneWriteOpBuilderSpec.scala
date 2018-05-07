@@ -18,7 +18,7 @@ class WithComplexSubTypeWithOneWriteOpBuilderSpec
                 |
                 |class WithComplexSubTypeMockWithOneWriteOpSerializer
                 |  extends Serializer[de.pintono.tools.squeeze.core.mocks.WithComplexSubTypeMockWithOneWriteOp] {
-                |  override def objectTypeInfo = ReflHelper.generateTypeInfo[de.pintono.tools.squeeze.core.mocks.WithComplexSubTypeMockWithOneWriteOp]
+                |  override def objectTypeInfo = GenericOps.getTypeInfo[de.pintono.tools.squeeze.core.mocks.WithComplexSubTypeMockWithOneWriteOp]
                 |
                 |  override def read(
                 |    iter: AnythingIterator,

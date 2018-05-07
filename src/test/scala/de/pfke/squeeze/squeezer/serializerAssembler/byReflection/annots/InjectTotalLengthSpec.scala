@@ -18,7 +18,7 @@ class InjectTotalLengthSpec
                 |
                 |class InjectTotalLengthMockSerializer
                 |  extends Serializer[de.pintono.tools.squeeze.core.mocks.InjectTotalLengthMock] {
-                |  override def objectTypeInfo = ReflHelper.generateTypeInfo[de.pintono.tools.squeeze.core.mocks.InjectTotalLengthMock]
+                |  override def objectTypeInfo = GenericOps.getTypeInfo[de.pintono.tools.squeeze.core.mocks.InjectTotalLengthMock]
                 |
                 |  override def read(
                 |    iter: AnythingIterator,

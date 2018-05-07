@@ -20,7 +20,7 @@ class InjectLengthOnSubSpec
                   |
                   |class InjectLengthOnSubMockSerializer
                   |  extends Serializer[de.pintono.tools.squeeze.core.mocks.InjectLengthOnSubMock] {
-                  |  override def objectTypeInfo = ReflHelper.generateTypeInfo[de.pintono.tools.squeeze.core.mocks.InjectLengthOnSubMock]
+                  |  override def objectTypeInfo = GenericOps.getTypeInfo[de.pintono.tools.squeeze.core.mocks.InjectLengthOnSubMock]
                   |
                   |  override def read(
                   |    iter: AnythingIterator,

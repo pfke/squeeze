@@ -188,7 +188,7 @@ object ClassOps {
   /**
     * Test if the given type is a case class.
     */
-  def isCaseClass[T](
+  def isCaseClass[T] (
     implicit
     classTag: ClassTag[T]
   ): Boolean = isCaseClass(classTag.runtimeClass)
@@ -196,7 +196,7 @@ object ClassOps {
   /**
     * Test if the given type is a case class.
     */
-  def isCaseClass(
+  def isCaseClass (
     clazz: Class[_]
   ): Boolean = isCaseClass(RichRuntimeMirror(clazz).getClassSymbol(clazz.getName))
 

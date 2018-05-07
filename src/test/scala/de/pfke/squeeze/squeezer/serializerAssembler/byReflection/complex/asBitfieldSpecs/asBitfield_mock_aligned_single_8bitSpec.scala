@@ -19,7 +19,7 @@ class asBitfield_mock_aligned_single_8bitSpec
            |
            |class asBitfield_mock_aligned_single_8bitSerializer
            |  extends Serializer[de.pintono.tools.squeeze.core.mocks.asBitfieldSpecs.asBitfield_mock_aligned_single_8bit] {
-           |  override def objectTypeInfo = ReflHelper.generateTypeInfo[de.pintono.tools.squeeze.core.mocks.asBitfieldSpecs.asBitfield_mock_aligned_single_8bit]
+           |  override def objectTypeInfo = GenericOps.getTypeInfo[de.pintono.tools.squeeze.core.mocks.asBitfieldSpecs.asBitfield_mock_aligned_single_8bit]
            |
            |  override def read(
            |    iter: AnythingIterator,

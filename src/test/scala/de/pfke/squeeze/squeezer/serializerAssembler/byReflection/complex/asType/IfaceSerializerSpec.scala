@@ -18,7 +18,7 @@ class IfaceSerializerSpec
                 |
                 |class IfaceSerializer
                 |  extends Serializer[de.pintono.tools.squeeze.core.mocks.asType.Iface] {
-                |  override def objectTypeInfo = ReflHelper.generateTypeInfo[de.pintono.tools.squeeze.core.mocks.asType.Iface]
+                |  override def objectTypeInfo = GenericOps.getTypeInfo[de.pintono.tools.squeeze.core.mocks.asType.Iface]
                 |
                 |  override def read(
                 |    iter: AnythingIterator,
