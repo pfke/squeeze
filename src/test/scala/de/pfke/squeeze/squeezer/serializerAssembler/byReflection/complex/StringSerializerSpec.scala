@@ -1,4 +1,4 @@
-package de.pfke.squeeze.squeezer.serializerAssembler.byReflection.simple
+package de.pfke.squeeze.squeezer.serializerAssembler.byReflection.complex
 
 import de.pfke.squeeze.squeezer.serializerAssembler.byReflection.BaseSpec
 

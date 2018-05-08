@@ -82,6 +82,16 @@ object AnnotationOps {
   ): A = get[A](classTypeTag.tpe)
 
   /**
+    * Returns true, if the given field descr has the wanted annot
+    */
+  def has[A <: StaticAnnotation](
+    in: List[ru.Annotation]
+  ) (
+    implicit
+    typeTag: ru.TypeTag[A]
+  ): Boolean = contains[A](in)
+
+  /**
     * Find annotation of the given type within the list and instantiate.
     *
     * @param annots list of annotations

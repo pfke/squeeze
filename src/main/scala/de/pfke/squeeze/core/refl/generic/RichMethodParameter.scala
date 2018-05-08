@@ -1,5 +1,9 @@
 package de.pfke.squeeze.core.refl.generic
 
+import de.pfke.squeeze.core._
+
+import scala.annotation.StaticAnnotation
+import scala.reflect.ClassTag
 import scala.reflect.runtime.{universe => ru}
 
 /**
@@ -32,6 +36,42 @@ case class RichMethodParameter (
 }
 
 object RichMethodParameterOps {
+  /**
+    * Returns the wanted annotation
+    */
+  def getAnnot[A <: StaticAnnotation] (
+    param: RichMethodParameter
+  ) (
+    implicit
+    classTag: ClassTag[A],
+    typeTag: ru.TypeTag[A],
+    classLoader: ClassLoader
+  ): Option[A] = AnnotationOps.instantiate[A](param.annotations)
+
+  def getAnnot[A <: StaticAnnotation] (
+    in: List[RichMethodParameter]
+  ) (
+    implicit
+    classTag: ClassTag[A],
+    typeTag: ru.TypeTag[A],
+    classLoader: ClassLoader
+  ): List[(A, RichMethodParameter)] = {
+    in
+      .map { i => getAnnot[A](i).execAndLift( ii => (ii, i)) } // wir wollen Some(injectLength, FieldDescr)
+      .filter { _.nonEmpty }
+      .map { _.get }
+  }
+
+  /**
+    * Returns true, if the given field descr has the wanted annot
+    */
+  def hasAnnot[A <: StaticAnnotation] (
+    param: RichMethodParameter
+  ) (
+    implicit
+    typeTag: ru.TypeTag[A]
+  ): Boolean = AnnotationOps.has[A](param.annotations)
+
   /**
     * Reflect apply param (symbol, index, default value)
     */

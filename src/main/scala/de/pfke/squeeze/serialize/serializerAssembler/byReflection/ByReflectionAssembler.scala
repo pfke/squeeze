@@ -4,7 +4,7 @@ import de.pfke.squeeze.annots.classAnnots.{fromIfaceToType, toVersion}
 import de.pfke.squeeze.annots.fields.{fixedLength, injectLength, injectListSize}
 import de.pfke.squeeze.core._
 import de.pfke.squeeze.core.data.collection.BitStringAlignment
-import de.pfke.squeeze.core.refl.custom.{CustomRichParameterOps, SizeOf}
+import de.pfke.squeeze.core.refl.custom.{RichMethodParameterOps, SizeOf}
 import de.pfke.squeeze.core.refl.generic._
 import de.pfke.squeeze.serialize.SerializerBuildException
 import de.pfke.squeeze.serialize.serializerAssembler.{AssembledSerializer, SerializerAssembler}
@@ -114,7 +114,7 @@ class ByReflectionAssembler
 
     def makeIterCodeForComplex(): String = {
       // code for iter
-      val groupedFields = CustomRichParameterOps.groupByBitfields(parameters = ctorParameter)
+      val groupedFields = RichMethodParameterOps.groupByBitfields(parameters = ctorParameter)
       val funcCurried = read_buildIterCode_forComplex(upperClassType = typeTag.tpe, allSubFields = ctorParameter, groupedSubFields = groupedFields) _
 
       groupedFields
@@ -489,7 +489,7 @@ class ByReflectionAssembler
     tpe: ru.Type,
     parameters: List[RichMethodParameter]
   ): String = {
-    val groupedFields = CustomRichParameterOps.groupByBitfields(parameters = parameters)
+    val groupedFields = RichMethodParameterOps.groupByBitfields(parameters = parameters)
     val funcCurried = makeWriteCodeForThisGroupedFields(upperClassType = tpe, allSubFields = parameters, groupedSubFields = groupedFields, paramName = "data") _
 
     groupedFields
