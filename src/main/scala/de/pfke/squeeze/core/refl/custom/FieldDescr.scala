@@ -2,7 +2,7 @@ package de.pfke.squeeze.core.refl.custom
 
 import de.pfke.squeeze.annots.fields._
 import de.pfke.squeeze.core._
-import de.pfke.squeeze.core.refl.generic.MethodParameter
+import de.pfke.squeeze.core.refl.generic.RichMethodParameter
 
 import scala.annotation.StaticAnnotation
 import scala.collection.mutable.ArrayBuffer
@@ -22,7 +22,7 @@ object FieldDescrIncludes
 
 trait FieldDescrIncludes {
   implicit class fromFieldDescr(
-    in: MethodParameter
+    in: RichMethodParameter
   ) {
     def getAsBitfield: Option[asBitfield] = getAnnot[asBitfield]
     def hasAsBitfield: Boolean = hasAnnot[asBitfield]
@@ -51,35 +51,6 @@ trait FieldDescrIncludes {
     ): Option[A] = in.annotations.getAnnot[A]
 
     /**
-      * Group all field of the passed class by bitfields and non-bitfields
-      */
-    def groupByBitfields: List[List[MethodParameter]] = {
-      val r1 = FieldHelper.getFields(tpe = in.typeSignature)
-
-      val sss = new ArrayBuffer[ArrayBuffer[MethodParameter]]()
-      var isBitfieldRun = false
-      r1.foreach { i =>
-        if (i.MethodParameter.hasAnnot[asBitfield]) {
-          if (!isBitfieldRun) {
-            sss += new ArrayBuffer[MethodParameter]()
-            isBitfieldRun = true
-          }
-
-          sss.last += i
-        } else {
-          if (isBitfieldRun) {
-            sss += new ArrayBuffer[MethodParameter]()
-          }
-
-          sss.last += i
-          isBitfieldRun = false
-        }
-      }
-
-      sss.map(_.toList).toList
-    }
-
-    /**
       * Returns true, if the given field descr has the wanted annot
       */
     def hasAnnot[A <: StaticAnnotation](
@@ -89,13 +60,13 @@ trait FieldDescrIncludes {
   }
 
   implicit class fromFieldDescrList(
-    in: List[MethodParameter]
+    in: List[RichMethodParameter]
   ) {
     def getAnnot[A <: StaticAnnotation](
       implicit
       classTag: ClassTag[A],
       typeTag: ru.TypeTag[A]
-    ): List[(A, MethodParameter)] = {
+    ): List[(A, RichMethodParameter)] = {
       in
         .map { i => i.getAnnot[A].execAndLift( ii => (ii, i)) } // wir wollen Some(injectLength, FieldDescr)
         .filter { _.nonEmpty }
@@ -109,7 +80,7 @@ trait FieldDescrIncludes {
     // get injectCount annot for this fields matching the passed name
     def getInjectCountAnnot(
       targetFieldName: String
-    ): Option[(injectListSize, MethodParameter)] = {
+    ): Option[(injectListSize, RichMethodParameter)] = {
       getAnnot[injectListSize]
         .find { _._1.fromField == targetFieldName }
         .execAndLift { i => (i._1, i._2) }
@@ -118,7 +89,7 @@ trait FieldDescrIncludes {
     // get injectLength annot for this fields matching the passed name
     def getInjectLengthAnnot(
       targetFieldName: String
-    ): Option[(injectLength, MethodParameter)] = {
+    ): Option[(injectLength, RichMethodParameter)] = {
       getAnnot[injectLength]
         .find { _._1.fromField == targetFieldName }
         .execAndLift { i => (i._1, i._2) }
@@ -127,14 +98,14 @@ trait FieldDescrIncludes {
     // get injectType annot for this fields matching the passed name
     def getInjectTypeAnnot(
       targetFieldName: String
-    ): Option[(injectFieldType, MethodParameter)] = {
+    ): Option[(injectFieldType, RichMethodParameter)] = {
       getAnnot[injectFieldType]
         .find { _._1.fromField == targetFieldName }
         .execAndLift { i => (i._1, i._2) }
     }
 
     // get withFixedLength annot for this fields
-    def getWithFixedLengthAnnot: Option[(fixedLength, MethodParameter)] = {
+    def getWithFixedLengthAnnot: Option[(fixedLength, RichMethodParameter)] = {
       getAnnot[fixedLength]
         .headOption
     }

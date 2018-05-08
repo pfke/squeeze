@@ -51,7 +51,7 @@ class RichClass (
     */
   def ctorRichMethodRefls: List[RichMethod] = _richClassMirror.ctorMethodRefls
   def ctorMethods: List[RichMethod] = ctorRichMethodRefls
-  def ctorMethodParameters: List[List[MethodParameter]] = ctorRichMethodRefls.map(_.parameter)
+  def ctorMethodParameters: List[List[RichMethodParameter]] = ctorRichMethodRefls.map(_.parameter)
 
   /**
     * Instantiate this class, using the passed args

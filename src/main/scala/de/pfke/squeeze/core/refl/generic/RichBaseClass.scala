@@ -161,7 +161,7 @@ abstract class RichBaseClass (
 
     val enrichedArgs = args.map { i => EnrichedArg(GenericOps.toScalaType(i), GenericOps.toScalaClass(i)) }
 
-    def mapParamToSimple(in: MethodParameter) = EnrichedArg(PrimitiveOps.toScalaType(in.typeSignature), in.clazz)
+    def mapParamToSimple(in: RichMethodParameter) = EnrichedArg(PrimitiveOps.toScalaType(in.typeSignature), in.clazz)
     def isAssignableFrom(_1: Class[_], _2: Class[_]) = _1.isAssignableFrom(_2)
     def isTypeFrom(_1: ru.Type, _2: ru.Type) = _1 <:< _2
 

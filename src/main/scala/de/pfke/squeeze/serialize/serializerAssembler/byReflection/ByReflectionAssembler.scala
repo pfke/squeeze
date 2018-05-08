@@ -4,7 +4,7 @@ import de.pfke.squeeze.annots.classAnnots.{fromIfaceToType, toVersion}
 import de.pfke.squeeze.annots.fields.{fixedLength, injectLength, injectListSize}
 import de.pfke.squeeze.core._
 import de.pfke.squeeze.core.data.collection.BitStringAlignment
-import de.pfke.squeeze.core.refl.custom.SizeOf
+import de.pfke.squeeze.core.refl.custom.{CustomRichParameterOps, SizeOf}
 import de.pfke.squeeze.core.refl.generic._
 import de.pfke.squeeze.serialize.SerializerBuildException
 import de.pfke.squeeze.serialize.serializerAssembler.{AssembledSerializer, SerializerAssembler}
@@ -20,6 +20,8 @@ object ByReflectionAssembler {
 
 class ByReflectionAssembler
   extends SerializerAssembler {
+  implicit val classLoader: ClassLoader = ClassOps.defaultClassLoader
+
   /**
     * Build the serializer
     */
@@ -86,9 +88,15 @@ class ByReflectionAssembler
     classTag: ClassTag[A],
     typeTag: ru.TypeTag[A]
   ): String = {
-    def makeInstanceCodeCodeLine(in: MethodParameter): String = s"${in.name} = ${in.name}"
+    val ctorParameter = RichMethod[A](RichMethod.TERMNAME_CTOR)
+      .headOption match {
+      case Some(x) => x.parameter
+      case None => throw new IllegalArgumentException(s"no ctor found for type $typeTag")
+    }
+
+    def makeInstanceCodeCodeLine(in: RichMethodParameter): String = s"${in.name} = ${in.name}"
     def makeInstanceCodeForComplex(): String = {
-      val code = FieldHelper.getFields(typeTag.tpe)
+      val code = ctorParameter
         .map(makeInstanceCodeCodeLine)
         .mkString(",\n")
 
@@ -106,8 +114,8 @@ class ByReflectionAssembler
 
     def makeIterCodeForComplex(): String = {
       // code for iter
-      val groupedFields = FieldHelper.groupByBitfields(tpe = typeTag.tpe)
-      val funcCurried = read_buildIterCode_forComplex(upperClassType = typeTag.tpe, allSubFields = FieldHelper.getFields(typeTag.tpe), groupedSubFields = groupedFields) _
+      val groupedFields = CustomRichParameterOps.groupByBitfields(parameters = ctorParameter)
+      val funcCurried = read_buildIterCode_forComplex(upperClassType = typeTag.tpe, allSubFields = ctorParameter, groupedSubFields = groupedFields) _
 
       groupedFields
         .map(funcCurried)
@@ -120,7 +128,7 @@ class ByReflectionAssembler
       }
     }
 
-    def makeWriteCode(): String = if (GenericOps.isAbstract(typeTag.tpe)) makeWriteCodeForTrait(tpe = typeTag.tpe) else makeWriteCodeForComplex(tpe = typeTag.tpe)
+    def makeWriteCode(): String = if (GenericOps.isAbstract(typeTag.tpe)) makeWriteCodeForTrait(tpe = typeTag.tpe) else makeWriteCodeForComplex(tpe = typeTag.tpe, ctorParameter)
 
     s"""override def read(
        |  iter: AnythingIterator,
@@ -246,8 +254,6 @@ class ByReflectionAssembler
     tpe: ru.Type
   ): String = {
     //---
-    implicit val classLoader = ClassOps.defaultClassLoader
-
     case class FoundAnnotsAsOpt(ifaceOpt: Option[fromIfaceToType], versionOpt: Option[toVersion])
     case class FoundAnnots(iface: fromIfaceToType, versionOpt: Option[toVersion])
     case class TypeToFoundAnnotsOpts(clazz: ClassInfo[_], foundAnnots: FoundAnnotsAsOpt)
@@ -298,10 +304,10 @@ class ByReflectionAssembler
 
   private def read_buildIterCode_forComplex(
     upperClassType: ru.Type,
-    allSubFields: List[MethodParameter],
-    groupedSubFields: List[List[MethodParameter]]
+    allSubFields: List[RichMethodParameter],
+    groupedSubFields: List[List[RichMethodParameter]]
   )(
-    fields: List[MethodParameter]
+    fields: List[RichMethodParameter]
   ): String = {
     fields match {
       case t if t.hasAsBitfield => read_buildIterCode_forComplex_bitfields(upperClassType = upperClassType, allSubFields = allSubFields, groupedSubFields = groupedSubFields)(fields = fields)
@@ -310,18 +316,21 @@ class ByReflectionAssembler
   }
 
   private def read_buildIterCode_forComplex_noBitfields(
-    allSubFields: List[MethodParameter],
-    fields: List[MethodParameter],
+    allSubFields: List[RichMethodParameter],
+    fields: List[RichMethodParameter],
     upperType: ru.Type
   ): String = {
     def makeLine(
       thisTpe: ru.Type,
       fieldName: String = ""
     ): String = {
-      val subFields = FieldHelper.getFields(upperType)
+      val subFields = RichMethod(upperType, RichMethod.TERMNAME_CTOR).headOption match {
+        case Some(x) => x.parameter
+        case None => throw new IllegalArgumentException(s"no ctor found for type $upperType")
+      }
 
       val typeHint = subFields.getInjectTypeAnnot(fieldName) match {
-        case Some(x) if GenericOps.isEnum(x._2.tpe) => Some(s"IfaceTypeHint(value = ${x._2.name}.id)")
+        case Some(x) if GenericOps.isEnum(x._2.typeSignature) => Some(s"IfaceTypeHint(value = ${x._2.name}.id)")
         case Some(x)                    => Some(s"IfaceTypeHint(value = ${x._2.name})")
         case None                       => None
       }
@@ -331,8 +340,8 @@ class ByReflectionAssembler
       val foundWithFixedLengthAnnot = fields.getWithFixedLengthAnnot
 
       val lengthHint = foundInjectLengthAnnot orElse foundWithFixedLengthAnnot match {
-          case Some((x: injectLength, field: MethodParameter))    => Some(s"SizeInByteHint(value = ${field.name.replaceAll(field.name, field.name)})")
-          case Some((x: fixedLength, field: MethodParameter)) => Some(s"SizeInByteHint(value = ${x.size})")
+          case Some((x: injectLength, field: RichMethodParameter))    => Some(s"SizeInByteHint(value = ${field.name.replaceAll(field.name, field.name)})")
+          case Some((x: fixedLength, field: RichMethodParameter)) => Some(s"SizeInByteHint(value = ${x.size})")
           case _ => None
       }
 
@@ -348,9 +357,9 @@ class ByReflectionAssembler
     }
 
     def makeList(
-      field: MethodParameter
+      field: RichMethodParameter
     ): String = {
-      val code = field.tpe.typeArgs.headOption.execOrThrow( i => makeLine(thisTpe = i), new SerializerBuildException(s"unknown sub type of this list: ${field.tpe}"))
+      val code = field.typeSignature.typeArgs.headOption.execOrThrow( i => makeLine(thisTpe = i), new SerializerBuildException(s"unknown sub type of this list: ${field.typeSignature}"))
 
       // annots auswerten
       val foundInjectCountAnnot = allSubFields.getInjectCountAnnot(field.name).execAndLift(_._2.name)
@@ -364,25 +373,25 @@ class ByReflectionAssembler
     // code for iter
     fields
       .map {
-        case t if GenericOps.isList(t.tpe) => s"val ${t.name} = ${makeList(t)}"
-        case t => s"val ${t.name} = ${makeLine(thisTpe = t.tpe, fieldName = t.name)}"
+        case t if GenericOps.isList(t.typeSignature) => s"val ${t.name} = ${makeList(t)}"
+        case t => s"val ${t.name} = ${makeLine(thisTpe = t.typeSignature, fieldName = t.name)}"
       }
       .mkString("\n")
   }
 
   private def read_buildIterCode_forComplex_bitfields(
     upperClassType: ru.Type,
-    allSubFields: List[MethodParameter],
-    groupedSubFields: List[List[MethodParameter]]
+    allSubFields: List[RichMethodParameter],
+    groupedSubFields: List[List[RichMethodParameter]]
   )(
-    fields: List[MethodParameter]
+    fields: List[RichMethodParameter]
   ): String = {
     require(fields.nonEmpty, "given field list is empty")
     require(!fields.hasOneWithoutAsBitfield, "given chunk contains a field w/o 'asBitfield' annot")
     require(upperClassType.typeSymbol.annotations.hasAlignBitfieldsBy, "upper class does not have 'alignBitfieldsBy' annotation")
 
-    def buildName(field: MethodParameter) = s"${field.name}"
-    def buildPrefix(field: MethodParameter) = s"${buildName(field)}_"
+    def buildName(field: RichMethodParameter) = s"${field.name}"
+    def buildPrefix(field: RichMethodParameter) = s"${buildName(field)}_"
 
     val bitfieldIterName = if (!fields.hasAsBitfield) "" else {
       val upperClassAnnots = upperClassType.typeSymbol.annotations
@@ -404,13 +413,13 @@ class ByReflectionAssembler
       }
     }
 
-    def groupBitfieldsByAlignment(): List[List[MethodParameter]] = {
+    def groupBitfieldsByAlignment(): List[List[RichMethodParameter]] = {
       val upperClassAnnots = upperClassType.typeSymbol.annotations
 
       val alignment = upperClassAnnots.getAlignBitfieldsBy.execOrThrow(_.bits, new SerializerBuildException(s"class has no 'alignBitfieldsBy' annotation"))
 
-      val r1 = new ArrayBuffer[ArrayBuffer[MethodParameter]]()
-      r1 += new ArrayBuffer[MethodParameter]()
+      val r1 = new ArrayBuffer[ArrayBuffer[RichMethodParameter]]()
+      r1 += new ArrayBuffer[RichMethodParameter]()
       var currentSize = 0
       fields
         .foreach { i =>
@@ -421,7 +430,7 @@ class ByReflectionAssembler
 
           if (currentSize >= alignment) {
             currentSize = currentSize - alignment
-            r1 += new ArrayBuffer[MethodParameter]()
+            r1 += new ArrayBuffer[RichMethodParameter]()
           }
       }
 
@@ -434,7 +443,7 @@ class ByReflectionAssembler
     // code for iter
     val iterCode = fields
       .map {
-        case t if t.hasAsBitfield => s"val ${buildName(t)} = serializerContainer.read[${t.tpe}]($bitfieldIterName, hints = SizeInBitHint(value = ${t.getAsBitfield.execOrThrow(_.bits, new SerializerBuildException(s"missing bitfield annotation on field ${t.name}"))}))"
+        case t if t.hasAsBitfield => s"val ${buildName(t)} = serializerContainer.read[${t.typeSignature}]($bitfieldIterName, hints = SizeInBitHint(value = ${t.getAsBitfield.execOrThrow(_.bits, new SerializerBuildException(s"missing bitfield annotation on field ${t.name}"))}))"
         case t => throw new SerializerBuildException(s"field '${t.name}' w/o 'asBitfield' annotation")
       }.mkString("\n")
 
@@ -455,13 +464,13 @@ class ByReflectionAssembler
   private def write_buildCode_callSerializer(
     tpe: ru.Type,
     paramName: String = "data",
-    field: Option[MethodParameter] = None
+    field: Option[RichMethodParameter] = None
   ): String = {
     // injectType annot?
     def buildValueFromField(
-      f: MethodParameter
+      f: RichMethodParameter
     ) = {
-      f.annos
+      f.annotations
         .getInjectFieldType match {
         case Some(x) => s"serializerContainer.getIfaceType(${paramName.replaceAll(f.name, x.fromField)}).to$tpe"
         case None => paramName
@@ -477,10 +486,11 @@ class ByReflectionAssembler
     * Gen write code for complex type (and its fields)
     */
   private def makeWriteCodeForComplex(
-    tpe: ru.Type
+    tpe: ru.Type,
+    parameters: List[RichMethodParameter]
   ): String = {
-    val groupedFields = FieldHelper.groupByBitfields(tpe = tpe)
-    val funcCurried = makeWriteCodeForThisGroupedFields(upperClassType = tpe, allSubFields = FieldHelper.getFields(tpe), groupedSubFields = groupedFields, paramName = "data") _
+    val groupedFields = CustomRichParameterOps.groupByBitfields(parameters = parameters)
+    val funcCurried = makeWriteCodeForThisGroupedFields(upperClassType = tpe, allSubFields = parameters, groupedSubFields = groupedFields, paramName = "data") _
 
     groupedFields
       .map(funcCurried)
@@ -492,11 +502,11 @@ class ByReflectionAssembler
     */
   private def makeWriteCodeForThisGroupedFields(
     upperClassType: ru.Type,
-    allSubFields: List[MethodParameter],
-    groupedSubFields: List[List[MethodParameter]],
+    allSubFields: List[RichMethodParameter],
+    groupedSubFields: List[List[RichMethodParameter]],
     paramName: String
   )(
-    field: List[MethodParameter]
+    field: List[RichMethodParameter]
   ): String = {
     field match {
       case t if t.hasAsBitfield => write_buildCode_forComplex_bitfields(upperClassType = upperClassType, allSubFields = allSubFields, groupedSubFields = groupedSubFields, paramName = paramName, fields = field)
@@ -509,19 +519,19 @@ class ByReflectionAssembler
     */
   private def write_buildCode_forComplex_noBitfields(
     upperClassType: ru.Type,
-    allSubFields: List[MethodParameter],
-    groupedSubFields: List[List[MethodParameter]],
+    allSubFields: List[RichMethodParameter],
+    groupedSubFields: List[List[RichMethodParameter]],
     paramName: String,
-    fields: List[MethodParameter]
+    fields: List[RichMethodParameter]
   ): String = {
-    def readAnnot[A <: StaticAnnotation] (field: MethodParameter)(
+    def readAnnot[A <: StaticAnnotation] (field: RichMethodParameter)(
       implicit
       classTag: ClassTag[A],
       typeTag: ru.TypeTag[A]
     ): A = field.getAnnot[A] execOrThrow ( i => i, new SerializerBuildException(s"$typeTag annot expected"))
-    def readInjectCount (field: MethodParameter): injectListSize = readAnnot[injectListSize](field)
-    def readInjectLength (field: MethodParameter): injectLength = readAnnot[injectLength](field)
-    def readWithFixedLength (field: MethodParameter): fixedLength = readAnnot[fixedLength](field)
+    def readInjectCount (field: RichMethodParameter): injectListSize = readAnnot[injectListSize](field)
+    def readInjectLength (field: RichMethodParameter): injectLength = readAnnot[injectLength](field)
+    def readWithFixedLength (field: RichMethodParameter): fixedLength = readAnnot[fixedLength](field)
 
     // get all fields
     fields
@@ -549,10 +559,10 @@ class ByReflectionAssembler
     */
   private def write_buildCode_forComplex_bitfields(
     upperClassType: ru.Type,
-    allSubFields: List[MethodParameter],
-    groupedSubFields: List[List[MethodParameter]],
+    allSubFields: List[RichMethodParameter],
+    groupedSubFields: List[List[RichMethodParameter]],
     paramName: String,
-    fields: List[MethodParameter]
+    fields: List[RichMethodParameter]
   ): String = {
     require(!fields.hasOneWithoutAsBitfield, "given chunk contains a field w/o 'asBitfield' annot")
     require(upperClassType.typeSymbol.annotations.hasAlignBitfieldsBy, "upper class does not have 'alignBitfieldsBy' annotation")
@@ -579,7 +589,7 @@ class ByReflectionAssembler
 
     // get all fields
     val code = fields.map {
-      case t if t.hasAsBitfield => s"serializerContainer.write[${t.tpe}]($paramName.${t.name}, hints = BitStringBuilderHint($bitfieldIterName), SizeInBitHint(value = ${t.getAsBitfield.execOrThrow(_.bits, new SerializerBuildException(s"missing bitfield annotation on field ${t.name}"))}))"
+      case t if t.hasAsBitfield => s"serializerContainer.write[${t.typeSignature}]($paramName.${t.name}, hints = BitStringBuilderHint($bitfieldIterName), SizeInBitHint(value = ${t.getAsBitfield.execOrThrow(_.bits, new SerializerBuildException(s"missing bitfield annotation on field ${t.name}"))}))"
       case t => throw new SerializerBuildException(s"field '${t.name}' w/o 'asBitfield' annotation")
     }.mkString("\n")
 

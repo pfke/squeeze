@@ -50,7 +50,7 @@ class RichCaseClass (
   require(applyMethods.nonEmpty, s"could not find any apply method of case class ${classSymbol.typeSignature}")
 
   def applyMethods: List[RichMethod] = _applyMethods
-  def applyMethodParameters: List[List[MethodParameter]] = applyMethods.map(_.parameter)
+  def applyMethodParameters: List[List[RichMethodParameter]] = applyMethods.map(_.parameter)
 
   /**
     * Instantiate this class, using the passed args
@@ -112,8 +112,8 @@ class RichCaseClass (
     classTag: ClassTag[A],
     typeTag: ru.TypeTag[A]
   ): A = {
-    case class ParamAndValueOpt(param: MethodParameter, value: Option[MethodParameterValue])
-    case class ParamAndValue(param: MethodParameter, value: MethodParameterValue, idx: Int)
+    case class ParamAndValueOpt(param: RichMethodParameter, value: Option[MethodParameterValue])
+    case class ParamAndValue(param: RichMethodParameter, value: MethodParameterValue, idx: Int)
 
     // prüfen, ob der Type der unsrige ist
     require(typeTag.tpe =:= classSymbol.selfType, s"passed generic is of type '${typeTag.tpe}', but has to be of '${classSymbol.selfType}'")
@@ -128,7 +128,7 @@ class RichCaseClass (
     require(names.forall { i => applyMethod.parameter.exists { c => c.name == i } }, s"one or more args passed which cannot be found in that apply method: '$applyMethod'")
 
     def buildMPV(methodName: String) = MethodParameterValue(methodName, call[Any](that, methodName))
-    def mergeParamValue(in: MethodParameter): ParamAndValueOpt = ParamAndValueOpt(in, args.find(_.name == in.name))
+    def mergeParamValue(in: RichMethodParameter): ParamAndValueOpt = ParamAndValueOpt(in, args.find(_.name == in.name))
     def enrichWithValues: PartialFunction[(ParamAndValueOpt, Int), ParamAndValue] = {
       case (ParamAndValueOpt(t, Some(v)), i) => ParamAndValue(t, v, i)
       case (ParamAndValueOpt(t, None),    i) => ParamAndValue(t, buildMPV(t.name), i)

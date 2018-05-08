@@ -4,7 +4,7 @@ import de.pfke.squeeze.core.refl.generic.{MethodParameterValue, RichCaseClass}
 import de.pfke.squeeze.core.refl.generic.richCaseClass.mocks.{CaseClassMock3Args_0Defaults, CaseClassMock_wOption}
 import org.scalatest.{Matchers, WordSpec}
 
-class RichCaseClass_class_copyA_1Any_2xxxMethodParameterValue_Spec
+class RichCaseClass_class_copyA_1Any_2XxxRichMethodParameterValue_Spec
   extends WordSpec
     with Matchers {
   "testing case class: 'CaseClassMock3Args_0Defaults'" when {

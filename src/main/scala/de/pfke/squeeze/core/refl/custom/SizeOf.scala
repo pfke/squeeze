@@ -1,6 +1,6 @@
 package de.pfke.squeeze.core.refl.custom
 
-import de.pfke.squeeze.core.refl.generic.{MethodParameter, PrimitiveOps}
+import de.pfke.squeeze.core.refl.generic.{RichMethodParameter, PrimitiveOps}
 
 import scala.reflect.ClassTag
 import scala.reflect.runtime.{universe => ru}
@@ -79,7 +79,7 @@ object SizeOf {
         0
 
       case t if t.typeSymbol.isAbstract => 0
-      case t => FieldHelper.groupByBitfields(tpe = t).foldLeft(0)((i, c) => i + guess(c, upperClassAnnots = thisClassAnnots))
+      case t => CustomRichParameterOps.groupByBitfields(tpe = t).foldLeft(0)((i, c) => i + guess(c, upperClassAnnots = thisClassAnnots))
     }
   }
 
@@ -90,7 +90,7 @@ object SizeOf {
     * @param upperClassAnnots if no 'alignBitfieldsBy' is found the pure bit size is returned
     */
   def guess (
-    fields: List[MethodParameter],
+    fields: List[RichMethodParameter],
     upperClassAnnots: List[ru.Annotation]
   ): Int = {
     // TODO: mit squeeze entkoppeln
@@ -126,7 +126,7 @@ object SizeOf {
     * @param upperClassAnnots if no 'alignBitfieldsBy' is found the pure bit size is returned
     */
   def guessBitsize (
-    fields: List[MethodParameter],
+    fields: List[RichMethodParameter],
     upperClassAnnots: List[ru.Annotation]
   ): Int = {
     // TODO: mit squeeze entkoppeln

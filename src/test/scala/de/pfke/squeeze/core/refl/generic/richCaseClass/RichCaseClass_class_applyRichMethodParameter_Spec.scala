@@ -1,12 +1,12 @@
 package de.pfke.squeeze.core.refl.generic.richCaseClass
 
-import de.pfke.squeeze.core.refl.generic.{MethodParameter, RichCaseClass}
+import de.pfke.squeeze.core.refl.generic.{RichMethodParameter, RichCaseClass}
 import de.pfke.squeeze.core.refl.generic.richCaseClass.mocks._
 import org.scalatest.{Matchers, WordSpec}
 
 import scala.reflect.runtime.{universe => ru}
 
-class RichCaseClass_class_applyMethodParameter_Spec
+class RichCaseClass_class_applyRichMethodParameter_Spec
   extends WordSpec
     with Matchers {
   "testing case class: 'CaseClassMock0Args'" when {
@@ -142,6 +142,6 @@ class RichCaseClass_class_applyMethodParameter_Spec
   }
 
   private def mapParam(
-    reflParam: MethodParameter
+    reflParam: RichMethodParameter
   ): (Int, String, ru.Type, Option[Any]) = (reflParam.index, reflParam.name, reflParam.symbol.typeSignature, reflParam.defaultValue)
 }
