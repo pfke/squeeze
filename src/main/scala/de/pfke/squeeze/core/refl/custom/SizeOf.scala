@@ -79,7 +79,7 @@ object SizeOf {
         0
 
       case t if t.typeSymbol.isAbstract => 0
-      case t => RichMethodParameterOps.groupByBitfields(tpe = t).foldLeft(0)((i, c) => i + guess(c, upperClassAnnots = thisClassAnnots))
+      case t => CustomRichMethodParameterOps.groupByBitfields(tpe = t).foldLeft(0)((i, c) => i + guess(c, upperClassAnnots = thisClassAnnots))
     }
   }
 

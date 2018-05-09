@@ -82,6 +82,19 @@ object AnnotationOps {
   ): A = get[A](classTypeTag.tpe)
 
   /**
+    * Get the class file annotation of the given class type.
+    * An exception is thrown if the given type is not annotated.
+    */
+  def get[A <: StaticAnnotation] (
+    in: List[ru.Annotation]
+  ) (
+    implicit
+    classLoader: ClassLoader,
+    classTag: ClassTag[A],
+    typeTag: ru.TypeTag[A],
+  ): Option[A] = instantiate[A](annots = in)
+
+  /**
     * Returns true, if the given field descr has the wanted annot
     */
   def has[A <: StaticAnnotation](
@@ -187,5 +200,59 @@ object AnnotationOps {
       .flatMap(_.tree.tpe.baseClasses) // get all base classes of this annotation
       .distinct                        // remove duplicates
       .exists(GenericOps.equals[A])    // exists searched type?
+  }
+}
+
+object AnnotationOpsIncludes
+  extends AnnotationOpsIncludes
+
+trait AnnotationOpsIncludes {
+  implicit class AnnotationOpsIncludes_from_annot (
+    in: ru.Annotation
+  ) {
+    def instantiateAnnot[A] (
+      implicit
+      classLoader: ClassLoader,
+      classTag: ClassTag[A],
+      typeTag: ru.TypeTag[A]
+    ): A = AnnotationOps.instantiate[A](in)
+  }
+
+  implicit class AnnotationOpsIncludes_from_annotList (
+    in: List[ru.Annotation]
+  ) {
+    def containsAnnot[A] (
+      implicit
+      typeTag: ru.TypeTag[A]
+    ): Boolean = AnnotationOps.contains[A](in)
+
+    def findAnnot[A] (
+      implicit
+      typeTag: ru.TypeTag[A]
+    ): Option[ru.Annotation] = AnnotationOps.find[A](in)
+
+    def getAnnot[A <: StaticAnnotation] (
+      implicit
+      classLoader: ClassLoader,
+      classTag: ClassTag[A],
+      typeTag: ru.TypeTag[A],
+    ): Option[A] = AnnotationOps.get[A](in)
+
+    def hasAnnot[A <: StaticAnnotation] (
+      implicit
+      typeTag: ru.TypeTag[A]
+    ): Boolean = AnnotationOps.contains[A](in)
+
+    def hasAnnotDerivedFrom[A] (
+      implicit
+      typeTag: ru.TypeTag[A]
+    ): Boolean = AnnotationOps.isDerivedFrom[A](in)
+
+    def instantiateAnnot[A]  (
+      implicit
+      classLoader: ClassLoader,
+      classTag: ClassTag[A],
+      typeTag: ru.TypeTag[A]
+    ): Option[A] = AnnotationOps.instantiate[A](in)
   }
 }

@@ -143,3 +143,37 @@ object RichMethodParameterOps {
     result
   }
 }
+
+object RichMethodParameterOpsIncludes
+  extends RichMethodParameterOpsIncludes
+
+trait RichMethodParameterOpsIncludes {
+  implicit class RichMethodParameterOpsIncludes_from_singleParam (
+    in: RichMethodParameter
+  ) {
+    def getAnnot[A <: StaticAnnotation] (
+      implicit
+      classTag: ClassTag[A],
+      typeTag: ru.TypeTag[A],
+      classLoader: ClassLoader = ClassOps.defaultClassLoader
+    ): Option[A] = RichMethodParameterOps.getAnnot[A](in)
+
+    def hasAnnot[A <: StaticAnnotation] (
+      implicit
+      typeTag: ru.TypeTag[A]
+    ): Boolean = RichMethodParameterOps.hasAnnot[A](in)
+  }
+
+  implicit class RichMethodParameterOpsIncludes_from_paramList (
+    in: List[RichMethodParameter]
+  ) {
+    def getAnnot[A <: StaticAnnotation] (
+      in: List[RichMethodParameter]
+    ) (
+      implicit
+      classTag: ClassTag[A],
+      typeTag: ru.TypeTag[A],
+      classLoader: ClassLoader = ClassOps.defaultClassLoader
+    ): List[(A, RichMethodParameter)] = RichMethodParameterOps.getAnnot[A](in)
+  }
+}
