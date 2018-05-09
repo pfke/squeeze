@@ -41,17 +41,17 @@ class SqueezerOnBooleanSpec
       val squeezer = Squeezer()
 
       "should unpack 0x01 as true" in {
-        squeezer.deSerialize[Boolean](ByteString(0x01)) should be (right = true)
+        squeezer.deSerialize[Boolean](ByteString(0x01)) shouldBe (right = true)
       }
 
       "should unpack 0x00 as false" in {
-        squeezer.deSerialize[Boolean](ByteString(0x00)) should be (right = false)
+        squeezer.deSerialize[Boolean](ByteString(0x00)) shouldBe (right = false)
       }
 
       "should unpack >0x00 as true" in {
         (1 to Byte.MaxValue).foreach{ i =>
           withClue(s"checking $i") {
-            squeezer.deSerialize[Boolean](ByteString(i)) should be(right = true)
+            squeezer.deSerialize[Boolean](ByteString(i)) shouldBe (right = true)
           }
         }
       }
@@ -62,17 +62,17 @@ class SqueezerOnBooleanSpec
       val squeezer = Squeezer()
 
       "should unpack 0x01 as true" in {
-        squeezer.deSerialize[Boolean](ByteString(0x01)) should be (right = true)
+        squeezer.deSerialize[Boolean](ByteString(0x01)) shouldBe (right = true)
       }
 
       "should unpack 0x00 as false" in {
-        squeezer.deSerialize[Boolean](ByteString(0x00)) should be (right = false)
+        squeezer.deSerialize[Boolean](ByteString(0x00)) shouldBe (right = false)
       }
 
       "should unpack >0x00 as true" in {
         (1 to Byte.MaxValue).foreach{ i =>
           withClue(s"checking $i") {
-            squeezer.deSerialize[Boolean](ByteString(i)) should be(right = true)
+            squeezer.deSerialize[Boolean](ByteString(i)) shouldBe(right = true)
           }
         }
       }

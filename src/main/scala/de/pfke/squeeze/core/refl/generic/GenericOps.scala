@@ -69,7 +69,7 @@ object GenericOps {
   /**
     * Return true if the passed type is complex
     */
-  def isComplex (in: ru.Type): Boolean = !isPrimitive(in)
+  def isComplex (in: ru.Type): Boolean = !isPrimitive(in) && !isString(in)
   def isComplex[A] (
     implicit
     typeTag: ru.TypeTag[A]

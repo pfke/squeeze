@@ -30,7 +30,7 @@ class ByReflectionAssembler
     classTag: ClassTag[A],
     typeTag: ru.TypeTag[A]
   ): AssembledSerializer[A] = {
-    require(GenericOps.isPrimitive(typeTag) || ClassOps.isCaseClass[A], s"$classTag is neither a primitive nor a case class")
+    require(GenericOps.isPrimitive(typeTag) || ClassOps.isCaseClass[A] || GenericOps.isString(typeTag.tpe), s"$classTag is neither a primitive nor a case class")
 
     val namespaceClassName_r = """(.*)\.(.*)$""".r
 
