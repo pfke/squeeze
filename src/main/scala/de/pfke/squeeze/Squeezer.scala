@@ -18,7 +18,7 @@ object Squeezer {
   /**
     * Create w/o PatchLevelVersion
     */
-  def apply()(
+  def apply () (
     implicit
     byteOrder: ByteOrder
   ): Squeezer = new Squeezer(initialFromVersion = None)
@@ -26,7 +26,7 @@ object Squeezer {
   /**
     * Create with parsed PatchLevelVersion
     */
-  def apply(
+  def apply (
     version: String
   ) (
     implicit
@@ -36,7 +36,7 @@ object Squeezer {
   /**
     * Create with PatchLevelVersion
     */
-  def apply(
+  def apply (
     version: PatchLevelVersion
   ) (
     implicit
@@ -44,12 +44,13 @@ object Squeezer {
   ): Squeezer = new Squeezer(initialFromVersion = Some(version))
 }
 
-class Squeezer(
+class Squeezer (
   initialFromVersion: Option[PatchLevelVersion]
-)(implicit
+)(
+  implicit
   byteOrder: ByteOrder
 ) extends SerializerContainer {
-  implicit val serialzierContainer = this
+  private implicit val serialzierContainer: SerializerContainer = this
 
   // fields
   private val _serializers = new mutable.HashMap[GenericOps.TypeInfo[_], SerializerWrapper[_]]()
@@ -57,9 +58,10 @@ class Squeezer(
   /**
     * Return the iface type of the given data (if its class is described with an annotation)
     */
-  override def getIfaceType[A](
+  override def getIfaceType[A] (
     in: A
-  )(implicit
+  ) (
+    implicit
     classTag: ClassTag[A],
     typeTag: ru.TypeTag[A]
   ): Long = {
@@ -84,10 +86,11 @@ class Squeezer(
     * @param version only imported for ifaces
     * @return deserialzed object
     */
-  def read[A](
+  def read[A] (
     iter: AnythingIterator,
     hints: SerializerHint*
-  )(implicit
+  ) (
+    implicit
     byteOrder: ByteOrder,
     version: Option[PatchLevelVersion] = initialFromVersion,
     classTag: ClassTag[A],
@@ -102,10 +105,11 @@ class Squeezer(
     * @param byteOrder BigEndian or LittleEndian
     * @param version only imported for ifaces
     */
-  def write[A](
+  def write[A] (
     data: A,
     hints: SerializerHint*
-  )(implicit
+  ) (
+    implicit
     byteOrder: ByteOrder,
     version: Option[PatchLevelVersion] = initialFromVersion,
     classTag: ClassTag[A],
@@ -119,14 +123,15 @@ class Squeezer(
     * @param version only imported for ifaces
     * @return deserialzed object
     */
-  def deSerialize[A](
+  def deSerialize[A] (
     in: ByteString
-  )(implicit
+  ) (
+    implicit
     byteOrder: ByteOrder,
     version: Option[PatchLevelVersion] = initialFromVersion,
     classTag: ClassTag[A],
     typeTag: ru.TypeTag[A]
-  ) = read[A](iter = AnythingIterator(in))
+  ): A = read[A](iter = AnythingIterator(in))
 
   /**
     * Serialize the input
@@ -135,9 +140,10 @@ class Squeezer(
     * @param byteOrder BigEndian or LittleEndian
     * @param version only imported for ifaces
     */
-  def serialize[A](
+  def serialize[A] (
     data: A
-  )(implicit
+  ) (
+    implicit
     byteOrder: ByteOrder,
     version: Option[PatchLevelVersion] = initialFromVersion,
     classTag: ClassTag[A],
@@ -153,13 +159,13 @@ class Squeezer(
   /**
     * Return a serializer for the given type
     */
-  private def getSerializer[A]()(
+  private def getSerializer[A] () (
     implicit
     classTag: ClassTag[A],
     typeTag: ru.TypeTag[A]
   ): SerializerWrapper[A] = {
     _serializers
-      .getOrElseUpdate(
+      .getOrElseUpdate (
         GenericOps.TypeInfo(classTag = classTag, typeTag = typeTag),
         new SerializerWrapper[A]()
       ).asInstanceOf[SerializerWrapper[A]]

@@ -15,7 +15,7 @@ object SerializerFactory {
   /**
     * Build serializer code string from given type.
     */
-  def build[A]()(
+  def build[A] () (
     implicit
     classTag: ClassTag[A],
     typeTag: ru.TypeTag[A]
@@ -24,7 +24,7 @@ object SerializerFactory {
   /**
     * Build AND compile serizalizer from given type
     */
-  def compile[A]()(
+  def compile[A] () (
     implicit
     classTag: ClassTag[A],
     typeTag: ru.TypeTag[A]

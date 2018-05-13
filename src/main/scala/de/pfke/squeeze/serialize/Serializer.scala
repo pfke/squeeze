@@ -14,6 +14,31 @@ import de.pfke.squeeze.serialize.serializerHints._
 import scala.reflect.ClassTag
 import scala.reflect.runtime.{universe => ru}
 
+object Serializer {
+  /**
+    * Encode a string
+    *
+    * @param in to encode
+    * @param length is the length of the string to encode (missing bytes will be filled up with \0)
+    *
+    * @return encoded bytes
+    */
+  private[serialize] def encodeString(
+    in: String,
+    length: Option[Int] = None
+  )(
+    implicit
+    charset: Charset = StandardCharsets.ISO_8859_1
+  ): Array[Byte] = {
+    def getLength = length.getOrElse(in.length)
+
+    in
+      .take(getLength)
+      .padTo(getLength, '\u0000')
+      .getBytes(charset.displayName())
+  }
+}
+
 /**
   * Trait to describe a serializer and deserializer for a specific object
   *
@@ -160,7 +185,7 @@ trait Serializer[A] {
     (findOneHint[StringBuilderHint](hints = hints), byteStringWriteOp, value) match {
       case (Some(x: BitStringBuilderHint), _, _) => x.builder.appendBits(lenToWrite(hints = hints).getOrElse(ByteLength(0)).toBits.toInt, value)(objectTypeInfo.classTag, objectTypeInfo.typeTag)
       case (Some(x: ByteStringBuilderHint), Some(writeOp), _) => writeOp(x.builder, value)
-      case (Some(x: ByteStringBuilderHint), None, t: String) => x.builder.putBytes(encodeString(t, lenToWrite(hints = hints).execAndLift(_.toByte.toInt)))
+      case (Some(x: ByteStringBuilderHint), None, t: String) => x.builder.putBytes(Serializer.encodeString(t, lenToWrite(hints = hints).execAndLift(_.toByte.toInt)))
       case (Some(x: ByteStringBuilderHint), None, _) => throw new SerializerRunException("want to write into a ByteStringBuilder, but no write op defined")
 
       case _ => throw new SerializerRunException("no ...StringBuilderHint given, don't know how to write data")
@@ -171,28 +196,4 @@ trait Serializer[A] {
     * Raises an exception with object type as prefix
     */
   protected def throwException(msg: String) = throw new SerializerRunException(s"[${objectTypeInfo.typeTag.toString()}] $msg")
-
-  /**
-   * Encode a string
-   *
-   * @param in to encode
-   * @param length is the length of the string to encode (missing bytes will be filled up with \0)
-   *
-   * @return encoded bytes
-   */
-  private def encodeString(
-    in: String,
-    length: Option[Int] = None
-  )(
-    implicit
-    charset: Charset = StandardCharsets.ISO_8859_1
-  ): Array[Byte] = {
-    def getLength = length.getOrElse(in.length)
-
-    in
-      .take(getLength)
-      .padTo(getLength, '\u0000')
-      .getBytes(charset.displayName())
-  }
-
 }

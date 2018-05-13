@@ -14,7 +14,7 @@ import scala.reflect.runtime.{universe => ru}
 /**
   * This class is used to wrap a (e.g. reflected) and compiled serializer and ist read and write calls
   */
-class SerializerWrapper[A]()(
+class SerializerWrapper[A]() (
   implicit
   classTag: ClassTag[A],
   typeTag: ru.TypeTag[A]
