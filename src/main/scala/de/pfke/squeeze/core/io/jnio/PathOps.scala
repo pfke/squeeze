@@ -57,7 +57,7 @@ object PathOps {
 
     require(!Files.exists(in), s"the given file already exists: $in")
 
-    Files.createDirectories(in.getParent, attrs:_*)
+    Files.createDirectories(in, attrs:_*)
   }
 
   /**

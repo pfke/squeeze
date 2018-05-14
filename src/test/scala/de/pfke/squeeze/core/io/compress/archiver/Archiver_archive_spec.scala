@@ -6,7 +6,7 @@ import de.pfke.squeeze.core._
 import de.pfke.squeeze.core.crypto.ChecksumOps
 import de.pfke.squeeze.core.io.compress.{ArchiveAlgorithm, Archiver}
 import de.pfke.squeeze.core.io.jnio.PathOps
-import de.pfke.squeeze.testing.CleanFilesAfterAll
+import de.pfke.squeeze.testing.{CleanFilesAfterAll, RandomHelper}
 import org.scalatest.{Matchers, WordSpecLike}
 
 class Archiver_archive_spec
@@ -60,21 +60,30 @@ class Archiver_archive_spec
     val targetBase = dir.resolve("target")
 
     "passing a dir" should {
-      val target = Archiver.archive(
-        src = List(srcDir),
-        dest = targetBase,
-        algorithm = ArchiveAlgorithm.ZIP
-      )
-
       "archive should exist" in {
-        Files.exists(target) shouldBe (right = true)
+        Files.exists(
+          Archiver.archive(
+            src = List(srcDir),
+            dest = targetBase.resolve(RandomHelper.nextString(10)),
+            algorithm = ArchiveAlgorithm.ZIP
+          )) shouldBe (right = true)
       }
 
       "archive should end with '.zip" in {
-        PathOps.extension(target) should be ("zip")
+        PathOps.extension(
+          Archiver.archive(
+            src = List(srcDir),
+            dest = targetBase.resolve(RandomHelper.nextString(10)),
+            algorithm = ArchiveAlgorithm.ZIP
+          )) should be ("zip")
       }
 
       "return a valid archive" in {
+        val target = Archiver.archive(
+          src = List(srcDir),
+          dest = targetBase.resolve(RandomHelper.nextString(10)),
+          algorithm = ArchiveAlgorithm.ZIP
+        )
         val outDir = dir.resolve(s"$target.ent")
 
         val (out, fl) = Archiver.unArchive(target, Some(outDir))
@@ -98,22 +107,33 @@ class Archiver_archive_spec
     val targetBase = dir.resolve("target")
 
     "passing a dir" should {
-      val target = Archiver.archive(
-        src = List(srcDir),
-        dest = targetBase,
-        algorithm = ArchiveAlgorithm.TAR,
-        root = Some(srcDir)
-      )
-
       "archive should exist" in {
-        Files.exists(target) shouldBe (right = true)
+        Files.exists(
+          Archiver.archive(
+            src = List(srcDir),
+            dest = targetBase,
+            algorithm = ArchiveAlgorithm.TAR,
+            root = Some(srcDir.resolve("archive_should_exist"))
+          )) shouldBe (right = true)
       }
 
       "archive should end with '.tar" in {
-        PathOps.extension(target) should be ("tar")
+        PathOps.extension(
+          Archiver.archive(
+            src = List(srcDir),
+            dest = targetBase,
+            algorithm = ArchiveAlgorithm.TAR,
+            root = Some(srcDir.resolve("archive_should_end_with_tar"))
+          )) should be ("tar")
       }
 
       "return a valid archive" in {
+        val target = Archiver.archive(
+          src = List(srcDir),
+          dest = targetBase,
+          algorithm = ArchiveAlgorithm.TAR,
+          root = Some(srcDir.resolve("return_a_valid_archive"))
+        )
         val outDir = dir.resolve(s"$target.ent")
 
         val (out, fl) = Archiver.unArchive(target, Some(outDir))
