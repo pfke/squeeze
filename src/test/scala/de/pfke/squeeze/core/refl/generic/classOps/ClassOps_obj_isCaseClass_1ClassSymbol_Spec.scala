@@ -22,7 +22,7 @@ class ClassOps_obj_isCaseClass_1ClassSymbol_Spec
 
     "passing an object" should {
       "should return true" in {
-        ClassOps.isCaseClass(RichRuntimeMirror().getClassSymbol("de.pfke.grind.core.refl.richCaseClass.mocks.ObjectMock")) shouldBe (right = false)
+        ClassOps.isCaseClass(RichRuntimeMirror().getClassSymbol("de.pfke.squeeze.core.refl.generic.richCaseClass.mocks.ObjectMock")) shouldBe (right = false)
       }
     }
   }

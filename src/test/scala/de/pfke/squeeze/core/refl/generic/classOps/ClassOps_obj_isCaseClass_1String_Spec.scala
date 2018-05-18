@@ -22,7 +22,7 @@ class ClassOps_obj_isCaseClass_1String_Spec
 
     "passing an object" should {
       "should return true" in {
-        ClassOps.isCaseClass("de.pfke.grind.core.refl.richCaseClass.mocks.ObjectMock") shouldBe (right = false)
+        ClassOps.isCaseClass("de.pfke.squeeze.core.refl.generic.richCaseClass.mocks.ObjectMock") shouldBe (right = false)
       }
     }
   }

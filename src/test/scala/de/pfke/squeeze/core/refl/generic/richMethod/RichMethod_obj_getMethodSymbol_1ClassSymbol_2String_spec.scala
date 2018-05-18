@@ -41,7 +41,7 @@ class RichMethod_obj_getMethodSymbol_1ClassSymbol_2String_spec
 
       "should return an instance w/ correct name" in {
         tto.head
-          .fullName should be ("de.pfke.grind.core.refl.richMethod.mocks.CaseClassMock2Args_wMethods.method1")
+          .fullName should be ("de.pfke.squeeze.core.refl.generic.richMethod.mocks.CaseClassMock2Args_wMethods.method1")
       }
 
       "should return 1 found method w/ 2 args" in {
@@ -60,7 +60,7 @@ class RichMethod_obj_getMethodSymbol_1ClassSymbol_2String_spec
 
       "should return an instance w/ correct name" in {
         tto.head
-          .fullName should be ("de.pfke.grind.core.refl.richMethod.mocks.CaseClassMock2Args_wMethods.method2")
+          .fullName should be ("de.pfke.squeeze.core.refl.generic.richMethod.mocks.CaseClassMock2Args_wMethods.method2")
       }
 
       "should return 1 found method w/ 2 args" in {
@@ -87,7 +87,7 @@ class RichMethod_obj_getMethodSymbol_1ClassSymbol_2String_spec
 
       "should return an instance w/ correct name" in {
         tto.head
-          .fullName should be ("de.pfke.grind.core.refl.richMethod.mocks.CaseClassMock2Args_wOverloadedMethods.method1")
+          .fullName should be ("de.pfke.squeeze.core.refl.generic.richMethod.mocks.CaseClassMock2Args_wOverloadedMethods.method1")
       }
 
       "should return 1st found method w/ 1 args" in {
@@ -106,7 +106,7 @@ class RichMethod_obj_getMethodSymbol_1ClassSymbol_2String_spec
 
       "should return 1st w/ correct name" in {
         tto.head
-          .fullName should be ("de.pfke.grind.core.refl.richMethod.mocks.CaseClassMock2Args_wOverloadedMethods.method2")
+          .fullName should be ("de.pfke.squeeze.core.refl.generic.richMethod.mocks.CaseClassMock2Args_wOverloadedMethods.method2")
       }
 
       "should return 1st found method w/ 1 args" in {
@@ -115,7 +115,7 @@ class RichMethod_obj_getMethodSymbol_1ClassSymbol_2String_spec
 
       "should return 2nd w/ correct name" in {
         tto(1)
-          .fullName should be ("de.pfke.grind.core.refl.richMethod.mocks.CaseClassMock2Args_wOverloadedMethods.method2")
+          .fullName should be ("de.pfke.squeeze.core.refl.generic.richMethod.mocks.CaseClassMock2Args_wOverloadedMethods.method2")
       }
 
       "should return 2nd found method w/ 2 args" in {
@@ -124,7 +124,7 @@ class RichMethod_obj_getMethodSymbol_1ClassSymbol_2String_spec
 
       "should return 3rd w/ correct name" in {
         tto(2)
-          .fullName should be ("de.pfke.grind.core.refl.richMethod.mocks.CaseClassMock2Args_wOverloadedMethods.method2")
+          .fullName should be ("de.pfke.squeeze.core.refl.generic.richMethod.mocks.CaseClassMock2Args_wOverloadedMethods.method2")
       }
 
       "should return 3rd found method w/ 3 args" in {

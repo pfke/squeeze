@@ -46,7 +46,7 @@ class GenericOps_isComplex_spec
 
     "passing complex" should {
       "String should return true" in {
-        GenericOps.isComplex(ru.typeOf[String]) shouldBe (right = true)
+        GenericOps.isComplex(ru.typeOf[String]) shouldBe (right = false)
       }
 
       "Option should return true" in {

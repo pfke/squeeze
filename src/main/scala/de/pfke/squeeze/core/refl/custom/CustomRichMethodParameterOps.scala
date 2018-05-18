@@ -145,26 +145,22 @@ object CustomRichMethodParameterOps {
   ): List[List[RichMethodParameter]] = {
     val result = new ArrayBuffer[ArrayBuffer[RichMethodParameter]]()
 
-    var isBitfieldRun = false
-    parameters.foreach { i =>
-      if (CustomAnnotationOps.hasAsBitfield(i.annotations)) {
-        if (!isBitfieldRun) {
-          result += new ArrayBuffer[RichMethodParameter]()
-          isBitfieldRun = true
-        }
-
-        result.last += i
-      } else {
-        if (isBitfieldRun) {
-          result += new ArrayBuffer[RichMethodParameter]()
-        }
-
-        result.last += i
-        isBitfieldRun = false
+    def add (
+      toAdd: RichMethodParameter
+    ): Unit = {
+      result.lastOption match {
+        case Some(x) if x.lastOption.isEmpty =>
+        case Some(x) if CustomAnnotationOps.hasAsBitfield(x.last.annotations) != CustomAnnotationOps.hasAsBitfield(toAdd.annotations) => result += new ArrayBuffer[RichMethodParameter]()
+        case Some(_) =>
+        case None => result += new ArrayBuffer[RichMethodParameter]()
       }
+
+      result.last += toAdd
     }
 
-    result.map(_.toList).toList
+    parameters.foreach(add)
+
+    result.filterNot(_.isEmpty).map(_.toList).toList
   }
 }
 

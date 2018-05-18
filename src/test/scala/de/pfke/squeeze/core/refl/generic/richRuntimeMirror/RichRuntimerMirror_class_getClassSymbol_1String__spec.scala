@@ -6,7 +6,7 @@ import org.scalatest.{Matchers, WordSpec}
 class RichRuntimerMirror_class_getClassSymbol_1String__spec
   extends WordSpec
       with Matchers {
-  val namespace = "de.pfke.grind.core.refl.richMethod.mocks"
+  val namespace = "de.pfke.squeeze.core.refl.generic.richRuntimeMirror.mocks"
   val richRuntimeMirror = RichRuntimeMirror()
 
   "testing w/ non-existing class name" when {

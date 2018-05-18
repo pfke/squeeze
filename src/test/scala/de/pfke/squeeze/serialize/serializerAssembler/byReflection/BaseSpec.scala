@@ -24,20 +24,20 @@ abstract class BaseSpec
     classTag: ClassTag[A],
     typeTag: ru.TypeTag[A]
   ): Unit = {
-    val tto = ByReflectionAssembler().assemble[A]()
     val typeInfo = GenericOps.getTypeInfo[A]
     val typeName = typeInfo.typeTag.tpe.toString
 
     s"testing ${prefix.getOrElse("")}$typeName type" should {
       "should return correct classTag" in {
-        tto.classTag should be (typeInfo.classTag)
+        ByReflectionAssembler().assemble[A]().classTag should be (typeInfo.classTag)
       }
 
       "should return correct typeTag" in {
-        tto.typeTag should be (typeInfo.typeTag)
+        ByReflectionAssembler().assemble[A]().typeTag should be (typeInfo.typeTag)
       }
 
       "should return correct code" in {
+        val tto = ByReflectionAssembler().assemble[A]()
         val errorPatch = if (tto.code != code) {
           val resFile = "cmp_res".createTempFile().cleanFileAfter
 
