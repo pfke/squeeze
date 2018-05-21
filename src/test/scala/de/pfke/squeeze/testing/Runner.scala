@@ -1,18 +1,20 @@
-package de.pfke.squeeze.serialize.serializerAssembler.byReflection
+package de.pfke.squeeze.testing
 
 import java.nio.ByteOrder
 import java.time.LocalDateTime
 
 import de.pfke.squeeze.Squeezer
+import de.pfke.squeeze.serialize.serializerAssembler.byReflection.ByReflectionAssembler
 import de.pfke.squeeze.serialize.serializerCompiler.SerializerCompiler
 import de.pfke.squeeze.testing.mocks.FullOfSimpleTypesMock
+import de.pfke.squeeze.testing.mocks.asBitfieldSpecs.asBitfield_mock_unaligned_blocks_multi
 
 object Runner {
   def main (args: Array[String]): Unit = {
     implicit val byteOrder = ByteOrder.BIG_ENDIAN
 
 //    val r1 = ByReflectionAssembler().assemble[Boolean]()
-    val r1 = ByReflectionAssembler().assemble[FullOfSimpleTypesMock]()
+    val r1 = ByReflectionAssembler().assemble[asBitfield_mock_unaligned_blocks_multi]()
     val r2 = SerializerCompiler.compile(r1)
 
     println(LocalDateTime.now())

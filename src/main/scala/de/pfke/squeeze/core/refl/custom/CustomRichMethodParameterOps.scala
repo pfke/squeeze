@@ -143,24 +143,60 @@ object CustomRichMethodParameterOps {
   def groupByBitfields (
     parameters: List[RichMethodParameter]
   ): List[List[RichMethodParameter]] = {
-    val result = new ArrayBuffer[ArrayBuffer[RichMethodParameter]]()
+    groupByBitfields_start(parameters)
+      .groupBy(_._1).toList.sortBy(_._1)
+      .map(_._2.map(_._2))
+  }
 
-    def add (
-      toAdd: RichMethodParameter
-    ): Unit = {
-      result.lastOption match {
-        case Some(x) if x.lastOption.isEmpty =>
-        case Some(x) if CustomAnnotationOps.hasAsBitfield(x.last.annotations) != CustomAnnotationOps.hasAsBitfield(toAdd.annotations) => result += new ArrayBuffer[RichMethodParameter]()
-        case Some(_) =>
-        case None => result += new ArrayBuffer[RichMethodParameter]()
-      }
-
-      result.last += toAdd
+  private def groupByBitfields_start (
+    parameters: List[RichMethodParameter]
+  ): List[(Int, RichMethodParameter)] = {
+    parameters match {
+      case i :: rest if CustomAnnotationOps.hasAsBitfield(i.annotations) => List((0, i)) ++ groupByBitfields_bitfield(0, rest)
+      case i :: rest                                                     => List((0, i)) ++ groupByBitfields_nonBitfield(0, rest)
+      case Nil => List.empty
     }
+  }
 
-    parameters.foreach(add)
+  private def groupByBitfields_bitfield (
+    idx: Int,
+    parameters: List[RichMethodParameter]
+  ): List[(Int, RichMethodParameter)] = {
+    parameters match {
+      case i :: rest if CustomAnnotationOps.hasAsBitfield(i.annotations) => List((idx, i)) ++ groupByBitfields_bitfield(idx, rest)
+      case i :: rest                                                     => List((idx + 1, i)) ++ groupByBitfields_nonBitfield(idx + 1, rest)
+      case Nil => List.empty
+    }
+  }
 
-    result.filterNot(_.isEmpty).map(_.toList).toList
+  private def groupByBitfields_nonBitfield (
+    idx: Int,
+    parameters: List[RichMethodParameter]
+  ): List[(Int, RichMethodParameter)] = {
+    parameters match {
+      case i :: rest if CustomAnnotationOps.hasAsBitfield(i.annotations) => List((idx + 1, i)) ++ groupByBitfields_bitfield(idx + 1, rest)
+      case i :: rest                                                     => List((idx, i)) ++ groupByBitfields_nonBitfield(idx, rest)
+      case Nil => List.empty
+    }
+  }
+
+  private def add (
+    in: ArrayBuffer[ArrayBuffer[RichMethodParameter]],
+    toAdd: RichMethodParameter
+  ): ArrayBuffer[ArrayBuffer[RichMethodParameter]] = {
+    in.last += toAdd
+
+    in
+  }
+
+  private def add_n_new (
+    in: ArrayBuffer[ArrayBuffer[RichMethodParameter]],
+    toAdd: RichMethodParameter
+  ): ArrayBuffer[ArrayBuffer[RichMethodParameter]] = {
+    in.last += toAdd
+    in += new ArrayBuffer[RichMethodParameter]()
+
+    in
   }
 }
 
