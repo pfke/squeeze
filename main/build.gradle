@@ -1,0 +1,9 @@
+dependencies {
+  // https://mvnrepository.com/artifact/org.scala-lang/scala-reflect
+  compile group: 'org.scala-lang', name: 'scala-reflect', version: scalaV
+
+  compile "com.typesafe.akka:akka-actor_$scalaMajorV:$akkaV"
+}
+
+tasks.withType(ScalaCompile) {
+}
