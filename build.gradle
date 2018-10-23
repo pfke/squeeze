@@ -1,0 +1,47 @@
+ext {
+    scalaMajorV = '2.12'
+    scalaMinorV = '7'
+    scalaV = scalaMajorV + '.' + scalaMinorV
+    akkaV = "2.5.17"
+    scalaTestV = "3.0.5"
+}
+
+allprojects {
+    tasks.withType(JavaCompile) {
+        sourceCompatibility = '1.8'
+        targetCompatibility = '1.8'
+    }
+}
+
+subprojects {
+    apply plugin: 'scala'
+
+    dependencies {
+        // Use Scala in our library project
+        compile group: 'org.scala-lang', name: 'scala-library', version: scalaV
+
+        // https://mvnrepository.com/artifact/org.junit.jupiter/junit-jupiter-api
+        testCompile group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: '5.3.1'
+        testCompile group: 'org.scalatest', name: "scalatest_$scalaMajorV", version: scalaTestV
+    }
+
+    // In this section you declare where to find the dependencies of your project
+    repositories {
+        mavenCentral()
+        // Use jcenter for resolving your dependencies.
+        // You can declare any Maven/Ivy/file repository here.
+        jcenter()
+    }
+
+    compileScala {
+        scalaCompileOptions.additionalParameters = [
+                '-feature',
+                '-language:existentials,reflectiveCalls,postfixOps,implicitConversions',
+                '-unchecked',
+                '-deprecation',
+                '-encoding', 'utf8',
+                '-Ywarn-adapted-args'
+        ]
+    }
+}
+

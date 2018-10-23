@@ -1,0 +1,4 @@
+include 'main'
+
+rootProject.name = 'squeeze'
+project(":main").name = "squeeze-main"
