@@ -4,4 +4,3 @@ trait Includes
   extends DoubleIncludes
     with IntegerIncludes
     with StringIncludes
-    with XmlIncludes

@@ -1,4 +1,6 @@
 include 'main'
+include 'testing'
 
 rootProject.name = 'squeeze'
 project(":main").name = "squeeze-main"
+project(":testing").name = "squeeze-testing"

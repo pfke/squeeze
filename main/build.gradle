@@ -1,8 +1,10 @@
 dependencies {
-  // https://mvnrepository.com/artifact/org.scala-lang/scala-reflect
+  compile group: 'org.scala-lang', name: 'scala-compiler', version: scalaV
   compile group: 'org.scala-lang', name: 'scala-reflect', version: scalaV
 
   compile "com.typesafe.akka:akka-actor_$scalaMajorV:$akkaV"
+
+  testCompile project(":squeeze-testing")
 }
 
 tasks.withType(ScalaCompile) {
