@@ -2,7 +2,7 @@ package de.pfke.squeeze.serialize.serializerBuilder.buildByReflection
 
 import de.pfke.squeeze.testing.FileCleanAfterAll
 import de.pfke.squeeze.zlib.data._
-import de.pintono.grind.io._
+import de.pfke.squeeze.zlib.io._
 import de.pintono.grind.refl.core.GeneralRefl
 import de.pfke.squeeze.serialize.serializerBuilder.BuildByReflection
 import org.scalatest.{Matchers, WordSpec}
