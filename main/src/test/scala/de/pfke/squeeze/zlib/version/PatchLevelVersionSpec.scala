@@ -76,11 +76,11 @@ class PatchLevelVersionSpec
 
   "comparing two PatchLevelVersions" should {
     "return -1 on 0.1-0 vs. 1.1-0" in {
-      PatchLevelVersion(0, 1, 0) compare PatchLevelVersion(1, 1, 0) should be < 0
+      PatchLevelVersion(0, 1) compare PatchLevelVersion(1, 1) should be < 0
     }
 
     "return  1 on 1.1-0 vs. 0.1-0" in {
-      PatchLevelVersion(1, 1, 0) compare PatchLevelVersion(0, 1, 0) should be > 0
+      PatchLevelVersion(1, 1) compare PatchLevelVersion(0, 1) should be > 0
     }
 
     "return  0 on 1.1-123 vs. 1.1-123" in {
@@ -88,7 +88,7 @@ class PatchLevelVersionSpec
     }
 
     "return -1 on 1.0-0 vs. 1.1-0" in {
-      PatchLevelVersion(1, 0, 0) compare PatchLevelVersion(1, 1, 0) should be < 0
+      PatchLevelVersion(1) compare PatchLevelVersion(1, 1) should be < 0
     }
 
     "return  1 on 1.1-2 vs. 1.1-1" in {
@@ -106,15 +106,15 @@ class PatchLevelVersionSpec
     }
 
     "return  1 on 0.1-0 vs. 1.1" in {
-      PatchLevelVersion(0, 1, 0) compare TwoNumberVersion(1, 1) should be < 0
+      PatchLevelVersion(0, 1) compare TwoNumberVersion(1, 1) should be < 0
     }
 
     "return  0 on 1.1-0 vs. 1.1" in {
-      PatchLevelVersion(1, 1, 0) compare TwoNumberVersion(1, 1) should be (0)
+      PatchLevelVersion(1, 1) compare TwoNumberVersion(1, 1) should be (0)
     }
 
     "return -1 on 1.1-0 vs. 1.0" in {
-      PatchLevelVersion(1, 1, 0) compare TwoNumberVersion(1, 0) should be > 0
+      PatchLevelVersion(1, 1) compare TwoNumberVersion(1) should be > 0
     }
 
     "return  1 on 1.1-9654 vs. 1.2" in {

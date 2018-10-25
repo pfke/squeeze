@@ -6,7 +6,7 @@ import akka.util.ByteString
 import de.pfke.squeeze.zlib.version.PatchLevelVersion
 import de.pfke.squeeze.zlib.data.collection.anythingString.AnythingIterator
 import de.pfke.squeeze.zlib.data.collection.bitString.BitStringAlignment
-import de.pintono.grind.refl.core.GeneralRefl
+import de.pfke.squeeze.zlib.refl.GeneralRefl
 import de.pfke.squeeze.annots._
 import de.pfke.squeeze.serialize.serializerHints.{ByteStringBuilderHint, SerializerHint}
 import de.pfke.squeeze.serialize.{SerializerContainer, SerializerWrapper}
@@ -51,7 +51,7 @@ class Squeezer(
 )(implicit
   byteOrder: ByteOrder
 ) extends SerializerContainer {
-  implicit val serialzierContainer = this
+  implicit val serialzierContainer: Squeezer = this
 
   // fields
   private val _serializers = new mutable.HashMap[GeneralRefl.TypeInfo[_], SerializerWrapper[_]]()
@@ -72,7 +72,7 @@ class Squeezer(
       .getTypeForIface match {
       case Some(x) if x.value.isInstanceOf[Int] => x.value.asInstanceOf[Int]
       case Some(x) if x.value.isInstanceOf[Long] => x.value.asInstanceOf[Long]
-      case Some(x) => throw new SerializerRunException(s"iface type for $typeTag is not in a valid format. Int or Long expected" +
+      case Some(_) => throw new SerializerRunException(s"iface type for $typeTag is not in a valid format. Int or Long expected" +
         s"")
       case None => throw new SerializerRunException(s"could not find iface type for $typeTag")
     }
@@ -94,7 +94,7 @@ class Squeezer(
     version: Option[PatchLevelVersion] = initialFromVersion,
     classTag: ClassTag[A],
     typeTag: ru.TypeTag[A]
-  ) = getSerializer[A]().read(iter = iter, hints = hints:_*)
+  ): A = getSerializer[A]().read(iter = iter, hints = hints:_*)
 
   /**
     * Serialize the input
@@ -112,7 +112,7 @@ class Squeezer(
     version: Option[PatchLevelVersion] = initialFromVersion,
     classTag: ClassTag[A],
     typeTag: ru.TypeTag[A]
-  ) = getSerializer[A]().write(data = data, hints = hints:_*)
+  ): Unit = getSerializer[A]().write(data = data, hints = hints:_*)
 
   /**
     * Read from given input and deserialize to an object A
@@ -128,7 +128,7 @@ class Squeezer(
     version: Option[PatchLevelVersion] = initialFromVersion,
     classTag: ClassTag[A],
     typeTag: ru.TypeTag[A]
-  ) = read[A](iter = AnythingIterator(in, bitAlignment = BitStringAlignment._32Bit))
+  ): A = read[A](iter = AnythingIterator(in, bitAlignment = BitStringAlignment._32Bit))
 
   /**
     * Serialize the input

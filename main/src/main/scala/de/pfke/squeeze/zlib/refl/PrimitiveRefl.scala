@@ -1,4 +1,4 @@
-package de.pintono.grind.refl.core
+package de.pfke.squeeze.zlib.refl
 
 import scala.reflect.runtime.{universe => ru}
 
@@ -6,7 +6,7 @@ trait PrimitiveReflIncludes {
   implicit class PrimitiveReflFrom_ruType(
     data: ru.Type
   ) {
-    def toScalaType = PrimitiveRefl.toScalaType(data)
+    def toScalaType: ru.Type = PrimitiveRefl.toScalaType(data)
   }
 }
 
@@ -40,14 +40,14 @@ object PrimitiveRefl {
     value: Any
   ): Option[ru.Type] = {
     value match {
-      case t: Boolean => Some(ru.typeOf[Boolean])
-      case t: Byte => Some(ru.typeOf[Byte])
-      case t: Char => Some(ru.typeOf[Char])
-      case t: Double => Some(ru.typeOf[Double])
-      case t: Float => Some(ru.typeOf[Float])
-      case t: Int => Some(ru.typeOf[Int])
-      case t: Long => Some(ru.typeOf[Long])
-      case t: Short => Some(ru.typeOf[Short])
+      case _: Boolean => Some(ru.typeOf[Boolean])
+      case _: Byte => Some(ru.typeOf[Byte])
+      case _: Char => Some(ru.typeOf[Char])
+      case _: Double => Some(ru.typeOf[Double])
+      case _: Float => Some(ru.typeOf[Float])
+      case _: Int => Some(ru.typeOf[Int])
+      case _: Long => Some(ru.typeOf[Long])
+      case _: Short => Some(ru.typeOf[Short])
 
       case _ => None
     }
@@ -69,7 +69,7 @@ object PrimitiveRefl {
       case t if t =:= ru.typeOf[Long] => true
       case t if t =:= ru.typeOf[Short] => true
 
-      case t => false
+      case _ => false
     }
   }
 
@@ -81,8 +81,8 @@ object PrimitiveRefl {
   ): Boolean = getType(value).nonEmpty
 
   /**
-   * Take a long as input and promote to given type.
-   */
+    * Take a long as input and promote to given type.
+    */
   def promoteTo[A](
     data: Long
   )(
@@ -91,12 +91,12 @@ object PrimitiveRefl {
   ): A = promoteTo(tpe = typeTag.tpe, data = data).asInstanceOf[A]
 
   /**
-   * Take a long as input and promote to given type.
-   *
-   * @param tpe this is the target type
-   * @param data is the data to convert
-   * @return converted value
-   */
+    * Take a long as input and promote to given type.
+    *
+    * @param tpe this is the target type
+    * @param data is the data to convert
+    * @return converted value
+    */
   def promoteTo(tpe: ru.Type, data: Long): Any = {
     toScalaType(tpe) match {
       case t if t =:= ru.typeOf[Char]    => data.toChar

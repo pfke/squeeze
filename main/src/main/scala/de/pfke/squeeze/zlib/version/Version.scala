@@ -18,5 +18,5 @@ trait HasMajorMinor {
   def major: Int
   def minor: Int
 
-  def compareMajorMinor(that: HasMajorMinor) = if(major != that.major) major - that.major else minor - that.minor
+  def compareMajorMinor(that: HasMajorMinor): Int = if(major != that.major) major - that.major else minor - that.minor
 }

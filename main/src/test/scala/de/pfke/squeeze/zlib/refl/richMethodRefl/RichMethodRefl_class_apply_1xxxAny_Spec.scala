@@ -1,7 +1,7 @@
-package de.pintono.grind.refl.core.richMethodRefl
+package de.pfke.squeeze.zlib.refl.richMethodRefl
 
-import de.pintono.grind.refl.core.richMethodRefl.mocks._
-import de.pintono.grind.refl.core.{RichMethodRefl, RichRuntimeMirror}
+import de.pfke.squeeze.zlib.refl.richMethodRefl.mocks._
+import de.pfke.squeeze.zlib.refl.{RichMethodRefl, RichRuntimeMirror}
 
 import scala.reflect.runtime.{universe => ru}
 

@@ -8,7 +8,7 @@ import de.pfke.squeeze.Squeezer
 class SqueezerOnDoubleSpec
   extends BaseSqueezerSpec {
   "testing squeezer with simple Double type" when {
-    implicit val byteOrder = ByteOrder.BIG_ENDIAN
+    implicit val byteOrder: ByteOrder = ByteOrder.BIG_ENDIAN
     val tto = Squeezer().serialize[Double](2147483648d)
 
     "testing with ByteOrder.BIG_ENDIAN" should {
@@ -22,7 +22,7 @@ class SqueezerOnDoubleSpec
     }
 
     "testing with ByteOrder.LITTLE_ENDIAN" should {
-      implicit val byteOrder = ByteOrder.LITTLE_ENDIAN
+      implicit val byteOrder: ByteOrder = ByteOrder.LITTLE_ENDIAN
       val tto = Squeezer().serialize[Double](0xf308.toDouble)
 
       "should return a ByteString with correct length" in {
@@ -37,7 +37,7 @@ class SqueezerOnDoubleSpec
 
   "testing Squeezer.unpack with simple Double type" when {
     "testing with ByteOrder.BIG_ENDIAN" should {
-      implicit val byteOrder = ByteOrder.BIG_ENDIAN
+      implicit val byteOrder: ByteOrder = ByteOrder.BIG_ENDIAN
       val value = 0x27451d3d
       val squeezer = Squeezer()
 
@@ -47,7 +47,7 @@ class SqueezerOnDoubleSpec
     }
 
     "testing with ByteOrder.LITTLE_ENDIAN" should {
-      implicit val byteOrder = ByteOrder.LITTLE_ENDIAN
+      implicit val byteOrder: ByteOrder = ByteOrder.LITTLE_ENDIAN
       val value = 0x27451d3d
       val squeezer = Squeezer()
 

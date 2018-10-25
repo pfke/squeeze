@@ -16,8 +16,8 @@ trait OptionIncludes {
      */
     @deprecated(message = "use 'matchToExec'", since = "3.0.81")
     def doOrDoNothing(
-      op: (T) => Unit
-      ) = {
+      op: T => Unit
+      ): Unit = {
       in match {
         case Some(x) => op(x)
         case None =>
@@ -31,7 +31,7 @@ trait OptionIncludes {
      */
     @deprecated(message = "use 'matchTo'", since = "3.0.81")
     def gettyOrDefault[E](
-      op: (T) => E,
+      op: T => E,
       default: E
       ): E = {
       in match {
@@ -47,7 +47,7 @@ trait OptionIncludes {
      */
     @deprecated(message = "use 'matchToOption'", since = "3.0.81")
     def gettyOr[E](
-      op: (T) => E
+      op: T => E
       ): Option[E] = {
       in match {
         case Some(x) => Some(op(x))
@@ -62,7 +62,7 @@ trait OptionIncludes {
      */
     @deprecated(message = "use 'matchToException'", since = "3.0.81")
     def gettyOr[E](
-      op: (T) => E,
+      op: T => E,
       exp: Exception
       ): Option[E] = {
       in match {
@@ -91,7 +91,7 @@ trait OptionIncludes {
      * Some("hello").gettyOr(_ + "heiko")
      */
     def matchTo[E](
-      op: (T) => E,
+      op: T => E,
       default: E
       ): E = {
       in match {
@@ -106,7 +106,7 @@ trait OptionIncludes {
      * Some("hello").gettyOr(_ + "heiko")
      */
     def matchToException[E](
-      op: (T) => E,
+      op: T => E,
       exp: Exception
       ): E = {
       in match {
@@ -121,8 +121,8 @@ trait OptionIncludes {
      * Some("hello").gettyOr(_ + "heiko")
      */
     def matchToExec(
-      op: (T) => Unit
-      ) = {
+      op: T => Unit
+      ): Unit = {
       in match {
         case Some(x) => op(x)
         case None =>
@@ -135,7 +135,7 @@ trait OptionIncludes {
      * Some("hello").gettyOr(_ + "heiko")
      */
     def matchToOption[E](
-      op: (T) => E
+      op: T => E
       ): Option[E] = {
       in match {
         case Some(x) => Some(op(x))

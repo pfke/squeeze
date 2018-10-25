@@ -4,7 +4,7 @@ import scala.collection.mutable
 
 class LimitedSizeQueue[A](
   val limit: Int
-  )
+)
   extends mutable.Queue[A] {
   override def enqueue(elems: A*): Unit = {
     if(elems.size > limit) {
@@ -17,8 +17,6 @@ class LimitedSizeQueue[A](
 
     super.enqueue(elems.reverse.slice(0, limit).reverse:_*)
   }
-
-//  override def enqueue(elems: A*): Unit = elems.foreach(enqueue) <- um eine 10er Potenz langsamer
 
   private def enqueue(elem: A): Unit = {
     if(size >= limit)

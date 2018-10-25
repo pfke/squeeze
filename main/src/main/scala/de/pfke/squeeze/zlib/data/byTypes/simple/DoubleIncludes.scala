@@ -13,8 +13,8 @@ trait DoubleIncludes {
   implicit class ByteFormatter (
     bytes: Double
   ) {
-    def asHumanReadableByte = format(value = bytes)
-    def asHumanReadableSiByte = format(value = bytes, isSI = true)
+    def asHumanReadableByte: String = format(value = bytes)
+    def asHumanReadableSiByte: String = format(value = bytes, isSI = true)
 
     /**
       * Formats the given byte count into a human readable string.
@@ -55,7 +55,7 @@ trait DoubleIncludes {
   implicit class TimeFormatterFromDouble (
     v: Double
   ) {
-    def asHumanReadableTime = v match {
+    def asHumanReadableTime: String = v match {
       case _ if v / 1d > 1.0           => asHumanReadableTime_s
       case _ if v / 0.001d > 1.0       => asHumanReadableTime_ms
       case _ if v / 0.000001d > 1.0    => asHumanReadableTime_µs
@@ -63,10 +63,10 @@ trait DoubleIncludes {
       case _                           => asHumanReadableTime_s
     }
 
-    def asHumanReadableTime_s  = "%.3fs".format(v)
-    def asHumanReadableTime_ms = "%.3fms".format(v * 1000)
-    def asHumanReadableTime_µs = "%.3fµs".format(v * 1000000)
-    def asHumanReadableTime_ns = "%.3fns".format(v * 1000000000)
+    def asHumanReadableTime_s: String = "%.3fs".format(v)
+    def asHumanReadableTime_ms: String = "%.3fms".format(v * 1000)
+    def asHumanReadableTime_µs: String = "%.3fµs".format(v * 1000000)
+    def asHumanReadableTime_ns: String = "%.3fns".format(v * 1000000000)
   }
 
   /**

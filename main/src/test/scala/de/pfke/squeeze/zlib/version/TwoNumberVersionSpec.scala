@@ -4,7 +4,7 @@ import org.scalatest.{Matchers, WordSpec}
 
 class TwoNumberVersionSpec
   extends WordSpec
-  with Matchers {
+    with Matchers {
   "implicit def apply(:String)" should {
     "convert 1.5" in {
       val ver: TwoNumberVersion = "1.5"
@@ -77,7 +77,7 @@ class TwoNumberVersionSpec
     }
 
     "return -1 on 1.0 vs. 1.1 " in {
-      TwoNumberVersion(1, 0) compare TwoNumberVersion(1, 1) should be (-1)
+      TwoNumberVersion(1) compare TwoNumberVersion(1, 1) should be (-1)
     }
 
     "return  1 on 1.2 vs. 1.1 " in {
@@ -89,11 +89,11 @@ class TwoNumberVersionSpec
     }
 
     "return  1 on 3.0 vs. 2.2 " in {
-      TwoNumberVersion(3, 0) compare TwoNumberVersion(2, 2) should be (1)
+      TwoNumberVersion(3) compare TwoNumberVersion(2, 2) should be (1)
     }
 
     "return -1 on 2.2 vs. 3.0 " in {
-      TwoNumberVersion(2, 2) compare TwoNumberVersion(3, 0) should be (-1)
+      TwoNumberVersion(2, 2) compare TwoNumberVersion(3) should be (-1)
     }
   }
 
@@ -103,15 +103,15 @@ class TwoNumberVersionSpec
     }
 
     "return  1 on 1.1 vs. 0.1-0 " in {
-      TwoNumberVersion(1, 1) compare PatchLevelVersion(0, 1, 0) should be > 0
+      TwoNumberVersion(1, 1) compare PatchLevelVersion(0, 1) should be > 0
     }
 
     "return  0 on 1.1 vs. 1.1-0 " in {
-      TwoNumberVersion(1, 1) compare PatchLevelVersion(1, 1, 0) should be (0)
+      TwoNumberVersion(1, 1) compare PatchLevelVersion(1, 1) should be (0)
     }
 
     "return -1 on 1.0 vs. 1.1-0 " in {
-      TwoNumberVersion(1, 0) compare PatchLevelVersion(1, 1, 0) should be < 0
+      TwoNumberVersion(1) compare PatchLevelVersion(1, 1) should be < 0
     }
 
     "return  1 on 1.2 vs. 1.1-9654 " in {

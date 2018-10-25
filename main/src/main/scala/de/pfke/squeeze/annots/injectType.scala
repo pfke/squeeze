@@ -10,4 +10,4 @@ import scala.annotation.StaticAnnotation
  */
 case class injectType(
   fromField: String
-  ) extends StaticAnnotation
+) extends StaticAnnotation

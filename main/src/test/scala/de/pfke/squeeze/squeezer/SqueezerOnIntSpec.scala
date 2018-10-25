@@ -8,7 +8,7 @@ import de.pfke.squeeze.Squeezer
 class SqueezerOnIntSpec
   extends BaseSqueezerSpec {
   "testing squeezer with simple Int type" when {
-    implicit val byteOrder = ByteOrder.BIG_ENDIAN
+    implicit val byteOrder: ByteOrder = ByteOrder.BIG_ENDIAN
     val value = 0x12350047
     val tto = Squeezer().serialize[Int](value)
 
@@ -23,7 +23,7 @@ class SqueezerOnIntSpec
     }
 
     "testing with ByteOrder.LITTLE_ENDIAN" should {
-      implicit val byteOrder = ByteOrder.LITTLE_ENDIAN
+      implicit val byteOrder: ByteOrder = ByteOrder.LITTLE_ENDIAN
       val value = 0xf308
       val tto = Squeezer().serialize[Int](value)
 
@@ -39,7 +39,7 @@ class SqueezerOnIntSpec
 
   "testing Squeezer.unpack with simple Int type" when {
     "testing with ByteOrder.BIG_ENDIAN" should {
-      implicit val byteOrder = ByteOrder.BIG_ENDIAN
+      implicit val byteOrder: ByteOrder = ByteOrder.BIG_ENDIAN
       val value = 0x27451d3
       val squeezer = Squeezer()
 
@@ -49,7 +49,7 @@ class SqueezerOnIntSpec
     }
 
     "testing with ByteOrder.LITTLE_ENDIAN" should {
-      implicit val byteOrder = ByteOrder.LITTLE_ENDIAN
+      implicit val byteOrder: ByteOrder = ByteOrder.LITTLE_ENDIAN
       val value = 0x27451d3
       val squeezer = Squeezer()
 

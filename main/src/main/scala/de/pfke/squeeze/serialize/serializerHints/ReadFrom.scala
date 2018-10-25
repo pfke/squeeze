@@ -33,7 +33,6 @@ trait ReadFrom {
     classTag: ClassTag[A]
   ): Option[A] = {
     hints
-      .collect { case t: A => t }
-      .headOption
+      .collectFirst { case t: A => t }
   }
 }

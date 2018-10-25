@@ -7,8 +7,8 @@ import akka.util.{ByteIterator, ByteString}
 import de.pfke.squeeze.zlib.data.collection.bitString.{BitIterator, BitStringAlignment}
 import de.pfke.squeeze.zlib.data.collection.bitString.BitStringAlignment.BitStringAlignment
 import de.pfke.squeeze.zlib.data.length.digital.{BitLength, ByteLength, DigitalLength}
-import de.pintono.grind.refl.core.{GeneralRefl, PrimitiveRefl}
-import de.pintono.grind.refl.sizeOf
+import de.pfke.squeeze.zlib.refl.{GeneralRefl, PrimitiveRefl}
+import de.pfke.squeeze.zlib.refl.sizeOf
 
 import scala.reflect.ClassTag
 import scala.reflect.runtime.{universe => ru}
@@ -63,6 +63,7 @@ class AnythingIterator(
   ): String = {
     getByteIterator
 
+    // TODO
     ???
   }
 
@@ -153,7 +154,7 @@ class AnythingIterator(
     /**
       * Lesen bei zuviel angeforderten Bytes (z.B. Datentyp hat 4 Bytes, es sollen aber 6 gelesen werden -> 4 lesen und den Rest weghauen)
       */
-    def readWPadding[B](op: (ByteIterator) => B): B = {
+    def readWPadding[B](op: ByteIterator => B): B = {
       val lenDavor = iterToUse.len
       val value = op(iterToUse)
       val lenDanach = iterToUse.len

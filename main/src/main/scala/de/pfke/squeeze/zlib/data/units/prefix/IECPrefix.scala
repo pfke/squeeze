@@ -15,7 +15,7 @@ sealed abstract class IECPrefix(
   val exp: Int,
   symbol: String,
   name: String
-  )
+)
   extends Prefix(
     base = math.pow(2, 10),
     exp = exp,

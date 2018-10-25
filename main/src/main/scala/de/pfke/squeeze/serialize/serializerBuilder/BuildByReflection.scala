@@ -1,15 +1,14 @@
 package de.pfke.squeeze.serialize.serializerBuilder
 
-import de.pintono.grind._
 import de.pfke.squeeze.zlib.data._
 import de.pfke.squeeze.zlib.data.collection.bitString.BitStringAlignment
-import de.pintono.grind.refl.core.ClassFinder.ClassInfo
-import de.pintono.grind.refl.core._
+import de.pfke.squeeze.zlib.refl.ClassFinder.ClassInfo
+import de.pfke.squeeze.zlib.refl._
 import de.pfke.squeeze.annots._
 import de.pfke.squeeze.annots.classAnnots.{fromVersion, typeForIface}
 import de.pfke.squeeze.zlib._
 import de.pfke.squeeze.zlib.FieldDescrIncludes._
-import de.pintono.grind.refl.{FieldDescr, FieldHelper, sizeOf}
+import de.pfke.squeeze.zlib.refl.{FieldDescr, FieldHelper, sizeOf}
 
 import scala.annotation.StaticAnnotation
 import scala.collection.mutable.ArrayBuffer
@@ -43,7 +42,7 @@ class BuildByReflection
                       |import de.pfke.squeeze.zlib.data.collection.anythingString.AnythingIterator
                       |import de.pfke.squeeze.zlib.data.collection.bitString.{BitStringAlignment, BitStringBuilder}
                       |import de.pfke.squeeze.zlib.data.length.digital.{BitLength, ByteLength}
-                      |import de.pintono.grind.refl.core.GeneralRefl
+                      |import de.pfke.squeeze.zlib.refl.GeneralRefl
                       |import de.pfke.squeeze.serialize.{Serializer, SerializerContainer}
                       |import de.pfke.squeeze.serialize.serializerHints._
                       |import de.pfke.squeeze.zlib._
@@ -248,7 +247,7 @@ class BuildByReflection
     tpe: ru.Type
   ): String = {
     //---
-    implicit val classLoader = ClassFinder.defaultClassLoader
+    implicit val classLoader: ClassLoader = ClassFinder.defaultClassLoader
 
     case class FoundAnnotsAsOpt(ifaceOpt: Option[typeForIface], versionOpt: Option[fromVersion])
     case class FoundAnnots(iface: typeForIface, versionOpt: Option[fromVersion])
@@ -282,7 +281,7 @@ class BuildByReflection
       }
     }
 
-    implicit def orderingTI[A <: TypeToFoundAnnotsOpts]: Ordering[A] = Ordering.by { i => s"${i.clazz.tpe.toString}${i.foundAnnots.versionOpt.getOrElse(fromVersion(0, 0, 0))}" }
+    implicit def orderingTI[A <: TypeToFoundAnnotsOpts]: Ordering[A] = Ordering.by { i => s"${i.clazz.tpe.toString}${i.foundAnnots.versionOpt.getOrElse(fromVersion(0, 0))}" }
 
     val code = allSubClasses
       .filterNot(_.foundAnnots.ifaceOpt.isEmpty)
@@ -307,7 +306,7 @@ class BuildByReflection
   ): String = {
     fields match {
       case t if t.hasAsBitfield => read_buildIterCode_forComplex_bitfields(upperClassType = upperClassType, allSubFields = allSubFields, groupedSubFields = groupedSubFields)(fields = fields)
-      case t => read_buildIterCode_forComplex_noBitfields(allSubFields = allSubFields, fields = fields, upperType = upperClassType)
+      case _ => read_buildIterCode_forComplex_noBitfields(allSubFields = allSubFields, fields = fields, upperType = upperClassType)
     }
   }
 
@@ -333,9 +332,9 @@ class BuildByReflection
       val foundWithFixedLengthAnnot = fields.getWithFixedLengthAnnot
 
       val lengthHint = foundInjectLengthAnnot orElse foundWithFixedLengthAnnot match {
-          case Some((x: injectLength, field: FieldDescr))    => Some(s"SizeInByteHint(value = ${field.name.replaceAll(field.name, field.name)})")
-          case Some((x: withFixedLength, field: FieldDescr)) => Some(s"SizeInByteHint(value = ${x.bytes})")
-          case _ => None
+        case Some((_: injectLength, field: FieldDescr)) => Some(s"SizeInByteHint(value = ${field.name.replaceAll(field.name, field.name)})")
+        case Some((x: withFixedLength, _: FieldDescr))  => Some(s"SizeInByteHint(value = ${x.bytes})")
+        case _ => None
       }
 
 
@@ -391,7 +390,7 @@ class BuildByReflection
 
       upperClassAnnots
         .getAlignBitfieldsBy match {
-        case Some(x) =>
+        case Some(_) =>
           val idxToString = Map(
             0 -> "st",
             1 -> "nd",
@@ -425,7 +424,7 @@ class BuildByReflection
             currentSize = currentSize - alignment
             r1 += new ArrayBuffer[FieldDescr]()
           }
-      }
+        }
 
       r1.map(_.toList).toList
     }
@@ -502,7 +501,7 @@ class BuildByReflection
   ): String = {
     field match {
       case t if t.hasAsBitfield => write_buildCode_forComplex_bitfields(upperClassType = upperClassType, allSubFields = allSubFields, groupedSubFields = groupedSubFields, paramName = paramName, fields = field)
-      case t                    => write_buildCode_forComplex_noBitfields(upperClassType = upperClassType, allSubFields = allSubFields, groupedSubFields = groupedSubFields, paramName = paramName, fields = field)
+      case _                    => write_buildCode_forComplex_noBitfields(upperClassType = upperClassType, allSubFields = allSubFields, groupedSubFields = groupedSubFields, paramName = paramName, fields = field)
     }
   }
 
@@ -564,7 +563,7 @@ class BuildByReflection
 
       upperClassAnnots
         .getAlignBitfieldsBy match {
-        case Some(x) =>
+        case Some(_) =>
           val idxToString = Map(
             0 -> "st",
             1 -> "nd",
@@ -586,7 +585,7 @@ class BuildByReflection
     }.mkString("\n")
 
     val upperClassAnnots = upperClassType.typeSymbol.annotations
-    val alignBitfieldsBy = upperClassAnnots.getAlignBitfieldsBy.matchTo(_.bits, 1)
+    val alignBitfieldsBy = upperClassAnnots.getAlignBitfieldsBy.matchTo(_.bits, default = 1)
     val bitFieldSize = sizeOf.guess(fields = fields, upperClassAnnots = List.empty) * 8
 
     val prefix = s"val $bitfieldIterName = BitStringBuilder.newBuilder(alignment = BitStringAlignment.${BitStringAlignment.enumFromWidth(alignBitfieldsBy)})\n"
@@ -601,7 +600,7 @@ class BuildByReflection
     tpe: ru.Type
   ): String = {
     //---
-    implicit val classLoader = ClassFinder.defaultClassLoader
+    implicit val classLoader: ClassLoader = ClassFinder.defaultClassLoader
 
     val derivedClasses = ClassFinder
       .findAllClassesDerivedFrom(tpe, packageName = "")

@@ -1,7 +1,7 @@
-package de.pintono.grind.refl.core.enumRefl
+package de.pfke.squeeze.zlib.refl.enumRefl
 
-import de.pintono.grind.refl.core.EnumRefl
-import de.pintono.grind.refl.core.enumRefl.mocks.Enum1Mock
+import de.pfke.squeeze.zlib.refl.EnumRefl
+import de.pfke.squeeze.zlib.refl.enumRefl.mocks.Enum1Mock
 import org.scalatest.{Matchers, WordSpec}
 
 import scala.reflect.runtime.{universe => ru}
@@ -15,10 +15,10 @@ class EnumReflSpec
         EnumRefl.isChild(ru.typeOf[Enum1Mock._4thEnum1Mock.type], ru.typeOf[Enum1Mock.Enum1Mock]) should be (right = true)
       }
 
-//      TODO
-//      "return false, when Enum#Value is not a child of Enum" in {
-//        EnumRefl.isChild(ru.typeOf[Enum2Mock._4thEnum1Mock.type], ru.typeOf[Enum1Mock.Enum1Mock]) should be (right = false)
-//      }
+      //      TODO
+      //      "return false, when Enum#Value is not a child of Enum" in {
+      //        EnumRefl.isChild(ru.typeOf[Enum2Mock._4thEnum1Mock.type], ru.typeOf[Enum1Mock.Enum1Mock]) should be (right = false)
+      //      }
     }
   }
 

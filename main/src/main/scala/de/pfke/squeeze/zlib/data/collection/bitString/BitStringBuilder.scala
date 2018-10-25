@@ -38,7 +38,7 @@ class BitStringBuilder(
   /**
     * Append byte to builder
     */
-  override def += (elem: Byte) = appendBits(bits = 8, value = elem)
+  override def += (elem: Byte): BitStringBuilder.this.type = appendBits(bits = 8, value = elem)
 
   /**
     * Build ByteString from our data
@@ -46,7 +46,7 @@ class BitStringBuilder(
   def result(): ByteString = {
     val builder = ByteString.newBuilder
 
-    val writeFunc: (Long) => Unit = alignment match {
+    val writeFunc: Long => Unit = alignment match {
       case BitStringAlignment._8Bit  => i => builder.putByte(i.toByte)
       case BitStringAlignment._16Bit => i => builder.putShort(i.toShort)
       case BitStringAlignment._32Bit => i => builder.putInt(i.toInt)
@@ -82,7 +82,7 @@ class BitStringBuilder(
   /**
     * Clear this bit stirng
     */
-  override def clear () = {
+  override def clear (): Unit = {
     _data.clear()
     _bitLength = 0
   }
@@ -90,7 +90,7 @@ class BitStringBuilder(
   /**
     * Return the bitlength
     */
-  def lengthBit = _bitLength
+  def lengthBit: Int = _bitLength
 
   /**
     * Append given number of bits
@@ -105,7 +105,7 @@ class BitStringBuilder(
   ): this.type = {
     val longValue = value match {
       case t: Boolean if t => 1l
-      case t: Boolean => 0l
+      case _: Boolean => 0l
 
       case t: Byte => t.toLong
       case t: Char => t.toLong
@@ -115,7 +115,7 @@ class BitStringBuilder(
       case t: Float => t.toLong
       case t: Double => t.toLong
 
-      case t => throw new IllegalArgumentException(s"unsupported type to write, only value types are supported")
+      case _ => throw new IllegalArgumentException(s"unsupported type to write, only value types are supported")
     }
 
     appendBits(bits = bits, value = longValue)
@@ -137,10 +137,10 @@ class BitStringBuilder(
   /**
     * Or the given data to our array
     */
-  def |(in: Byte) = or(bits = 8, value = in.toLong)
-  def |(in: Short) = or(bits = 16, value = in.toLong)
-  def |(in: Int) = or(bits = 32, value = in.toLong)
-  def |(in: Long) = or(bits = 64, value = in.toLong)
+  def |(in: Byte): Unit = or(bits = 8, value = in.toLong)
+  def |(in: Short): Unit = or(bits = 16, value = in.toLong)
+  def |(in: Int): Unit = or(bits = 32, value = in.toLong)
+  def |(in: Long): Unit = or(bits = 64, value = in.toLong)
 
   /**
     * Or the given data to our array
@@ -158,7 +158,7 @@ class BitStringBuilder(
   /**
     * shl the complete array
     */
-  def <<(bits: Int) = shl(bits = bits)
+  def <<(bits: Int): Unit = shl(bits = bits)
   def shl (
     bits: Int
   ): Unit = {
@@ -196,7 +196,7 @@ class BitStringBuilder(
   private def ensureBits(bits: Int): Unit = {
     // create new array index, if necessary
     (_data.size until ((bits + 63) / 64))
-      .foreach { i => _data += 0l }
+      .foreach { _ => _data += 0l }
 
     // update our bitlength
     _bitLength = math.max(_bitLength, bits)

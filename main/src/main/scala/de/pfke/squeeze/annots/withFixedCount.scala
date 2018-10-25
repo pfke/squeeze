@@ -7,4 +7,4 @@ import scala.annotation.StaticAnnotation
  */
 case class withFixedCount(
   count: Int
-  ) extends StaticAnnotation
+) extends StaticAnnotation

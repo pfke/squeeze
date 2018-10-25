@@ -1,11 +1,11 @@
-package de.pintono.grind.refl.core
+package de.pfke.squeeze.zlib.refl
 
 import scala.reflect.ClassTag
 import scala.reflect.runtime.{universe => ru}
 
 object RichMethodRefl {
-  val TERMNAME_APPLY = ru.TermName("apply")
-  val TERMNAME_CTOR = ru.termNames.CONSTRUCTOR
+  val TERMNAME_APPLY: ru.termNames.NameType = ru.TermName("apply")
+  val TERMNAME_CTOR: ru.termNames.NameType = ru.termNames.CONSTRUCTOR
 
   /**
     * Create new object
@@ -108,7 +108,7 @@ class RichMethodRefl (
       case t if t.isConstructor => reflectCtorMethodMirror()
       case t if t.name == RichMethodRefl.TERMNAME_APPLY => reflectApplyMethodMirror() // TODO: für jede compagnion methode geeignet, nicht nur für apply
 
-      case t => throw new IllegalArgumentException("u want me to call an instance method - impossible, please provide an instance mirror")
+      case _ => throw new IllegalArgumentException("u want me to call an instance method - impossible, please provide an instance mirror")
     }
 
     methodMirror

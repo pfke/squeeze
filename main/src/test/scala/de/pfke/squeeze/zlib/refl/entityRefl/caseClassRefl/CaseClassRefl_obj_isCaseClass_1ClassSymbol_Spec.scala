@@ -1,8 +1,8 @@
-package de.pintono.grind.refl.core.entityRefl.caseClassRefl
+package de.pfke.squeeze.zlib.refl.entityRefl.caseClassRefl
 
-import de.pintono.grind.refl.core.entityRefl.caseClassRefl.mocks.{CaseClassMock3Args_0Defaults, ClassMock0Args}
-import de.pintono.grind.refl.core.RichRuntimeMirror
-import de.pintono.grind.refl.core.entityRefl.CaseClassRefl
+import de.pfke.squeeze.zlib.refl.entityRefl.caseClassRefl.mocks.{CaseClassMock3Args_0Defaults, ClassMock0Args}
+import de.pfke.squeeze.zlib.refl.RichRuntimeMirror
+import de.pfke.squeeze.zlib.refl.entityRefl.CaseClassRefl
 import org.scalatest.{Matchers, WordSpec}
 
 class CaseClassRefl_obj_isCaseClass_1ClassSymbol_Spec
@@ -23,7 +23,7 @@ class CaseClassRefl_obj_isCaseClass_1ClassSymbol_Spec
 
     "passing an object" should {
       "should return true" in {
-        CaseClassRefl.isCaseClass(RichRuntimeMirror().getClassSymbol("de.pintono.grind.refl.core.entityRefl.caseClassRefl.mocks.ObjectMock")) should be (right = false)
+        CaseClassRefl.isCaseClass(RichRuntimeMirror().getClassSymbol("de.pfke.squeeze.zlib.refl.entityRefl.caseClassRefl.mocks.ObjectMock")) should be (right = false)
       }
     }
   }

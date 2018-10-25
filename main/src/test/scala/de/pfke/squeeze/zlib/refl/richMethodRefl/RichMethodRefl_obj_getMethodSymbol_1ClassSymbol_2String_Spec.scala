@@ -1,12 +1,14 @@
-package de.pintono.grind.refl.core.richMethodRefl
+package de.pfke.squeeze.zlib.refl.richMethodRefl
 
-import de.pintono.grind.refl.core.richMethodRefl.mocks.{CaseClassMock0Args, CaseClassMock2Args_wMethods, CaseClassMock2Args_wOverloadedMethods}
-import de.pintono.grind.refl.core.{RichMethodRefl, RichRuntimeMirror}
+import de.pfke.squeeze.zlib.refl.richMethodRefl.mocks.{CaseClassMock0Args, CaseClassMock2Args_wMethods, CaseClassMock2Args_wOverloadedMethods}
+import de.pfke.squeeze.zlib.refl.{RichMethodRefl, RichRuntimeMirror}
 import org.scalatest.{Matchers, WordSpec}
 
 class RichMethodRefl_obj_getMethodSymbol_1ClassSymbol_2String_Spec
   extends WordSpec
     with Matchers {
+  // TODO
+
 //  "testing case class with 0 args" when {
 //    "reflecting method 'apply'" should {
 //      "should return 0 methods" in {
@@ -39,7 +41,7 @@ class RichMethodRefl_obj_getMethodSymbol_1ClassSymbol_2String_Spec
 //
 //      "should return an instance w/ correct name" in {
 //        tto.head
-//          .fullName should be ("de.pintono.grind.refl.core.richMethodRefl.mocks.CaseClassMock2Args_wMethods.method1")
+//          .fullName should be ("de.pfke.squeeze.zlib.refl.richMethodRefl.mocks.CaseClassMock2Args_wMethods.method1")
 //      }
 //
 //      "should return 1 found method w/ 2 args" in {
@@ -58,7 +60,7 @@ class RichMethodRefl_obj_getMethodSymbol_1ClassSymbol_2String_Spec
 //
 //      "should return an instance w/ correct name" in {
 //        tto.head
-//          .fullName should be ("de.pintono.grind.refl.core.richMethodRefl.mocks.CaseClassMock2Args_wMethods.method2")
+//          .fullName should be ("de.pfke.squeeze.zlib.refl.richMethodRefl.mocks.CaseClassMock2Args_wMethods.method2")
 //      }
 //
 //      "should return 1 found method w/ 2 args" in {
@@ -85,7 +87,7 @@ class RichMethodRefl_obj_getMethodSymbol_1ClassSymbol_2String_Spec
 //
 //      "should return an instance w/ correct name" in {
 //        tto.head
-//          .fullName should be ("de.pintono.grind.refl.core.richMethodRefl.mocks.CaseClassMock2Args_wOverloadedMethods.method1")
+//          .fullName should be ("de.pfke.squeeze.zlib.refl.richMethodRefl.mocks.CaseClassMock2Args_wOverloadedMethods.method1")
 //      }
 //
 //      "should return 1st found method w/ 1 args" in {
@@ -104,7 +106,7 @@ class RichMethodRefl_obj_getMethodSymbol_1ClassSymbol_2String_Spec
 //
 //      "should return 1st w/ correct name" in {
 //        tto.head
-//          .fullName should be ("de.pintono.grind.refl.core.richMethodRefl.mocks.CaseClassMock2Args_wOverloadedMethods.method2")
+//          .fullName should be ("de.pfke.squeeze.zlib.refl.richMethodRefl.mocks.CaseClassMock2Args_wOverloadedMethods.method2")
 //      }
 //
 //      "should return 1st found method w/ 1 args" in {
@@ -113,7 +115,7 @@ class RichMethodRefl_obj_getMethodSymbol_1ClassSymbol_2String_Spec
 //
 //      "should return 2nd w/ correct name" in {
 //        tto(1)
-//          .fullName should be ("de.pintono.grind.refl.core.richMethodRefl.mocks.CaseClassMock2Args_wOverloadedMethods.method2")
+//          .fullName should be ("de.pfke.squeeze.zlib.refl.richMethodRefl.mocks.CaseClassMock2Args_wOverloadedMethods.method2")
 //      }
 //
 //      "should return 2nd found method w/ 2 args" in {
@@ -122,7 +124,7 @@ class RichMethodRefl_obj_getMethodSymbol_1ClassSymbol_2String_Spec
 //
 //      "should return 3rd w/ correct name" in {
 //        tto(2)
-//          .fullName should be ("de.pintono.grind.refl.core.richMethodRefl.mocks.CaseClassMock2Args_wOverloadedMethods.method2")
+//          .fullName should be ("de.pfke.squeeze.zlib.refl.richMethodRefl.mocks.CaseClassMock2Args_wOverloadedMethods.method2")
 //      }
 //
 //      "should return 3rd found method w/ 3 args" in {

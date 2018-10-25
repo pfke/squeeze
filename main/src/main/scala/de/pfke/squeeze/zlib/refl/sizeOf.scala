@@ -1,6 +1,4 @@
-package de.pintono.grind.refl
-
-import de.pintono.grind.refl.core.PrimitiveRefl
+package de.pfke.squeeze.zlib.refl
 
 import scala.reflect.ClassTag
 import scala.reflect.runtime.{universe => ru}
@@ -69,13 +67,13 @@ object sizeOf {
       case t if t <:< ru.typeOf[Long] => sizeOf.Long
       case t if t <:< ru.typeOf[Short] => sizeOf.Short
 
-// TODO: mit squeeze entkoppeln      case t if t <:< ru.typeOf[String] && thisFieldAnnots.hasWithFixedLength => thisFieldAnnots.getWithFixedLengthOr(default = 0)
+      // TODO: mit squeeze entkoppeln      case t if t <:< ru.typeOf[String] && thisFieldAnnots.hasWithFixedLength => thisFieldAnnots.getWithFixedLengthOr(default = 0)
       case t if t <:< ru.typeOf[String] => 0
 
       case t if t <:< ru.typeOf[List[_]] =>
-// TODO: mit squeeze entkoppeln        val sizeOfOne = t.typeArgs.headOption.matchTo(guess(_), default = 0)
-// TODO: mit squeeze entkoppeln        val multi = thisFieldAnnots.getWithFixedCountOr(default = 0)
-// TODO: mit squeeze entkoppeln        multi * sizeOfOne
+        // TODO: mit squeeze entkoppeln        val sizeOfOne = t.typeArgs.headOption.matchTo(guess(_), default = 0)
+        // TODO: mit squeeze entkoppeln        val multi = thisFieldAnnots.getWithFixedCountOr(default = 0)
+        // TODO: mit squeeze entkoppeln        multi * sizeOfOne
         0
 
       case t if t.typeSymbol.isAbstract => 0
@@ -93,30 +91,30 @@ object sizeOf {
     fields: List[FieldDescr],
     upperClassAnnots: List[ru.Annotation]
   ): Int = {
-// TODO: mit squeeze entkoppeln
-//    require(
-//      (fields.hasAsBitfield && !fields.hasOneWithoutAsBitfield) || (!fields.hasAsBitfield),
-//      s"got a mixed list decorated with 'asBitfield' and w/o (${fields.mkString(", ")})"
-//    )
-//
-//    if (fields.hasAsBitfield) {
-//      val bits = fields.foldLeft(0)((i, c) =>
-//        i + c.getAsBitfield.matchToException(
-//          _.bits,
-//          new SerializerBuildException(s"given field: ${c.name} does not have 'asBitfield' annot")
-//        )
-//      )
-//
-//      val alignTo = upperClassAnnots
-//        .getAlignBitfieldsBy
-//        .matchTo(_.bits, 1)
-//
-//      val alignedBits = if ((bits % alignTo) == 0) bits else bits + (alignTo - (bits % alignTo))
-//
-//      alignedBits / 8
-//    } else {
-      fields.foldLeft(0)((i, c) => i + guess(c.tpe, thisFieldAnnots = c.annos))
-//    }
+    // TODO: mit squeeze entkoppeln
+    //    require(
+    //      (fields.hasAsBitfield && !fields.hasOneWithoutAsBitfield) || (!fields.hasAsBitfield),
+    //      s"got a mixed list decorated with 'asBitfield' and w/o (${fields.mkString(", ")})"
+    //    )
+    //
+    //    if (fields.hasAsBitfield) {
+    //      val bits = fields.foldLeft(0)((i, c) =>
+    //        i + c.getAsBitfield.matchToException(
+    //          _.bits,
+    //          new SerializerBuildException(s"given field: ${c.name} does not have 'asBitfield' annot")
+    //        )
+    //      )
+    //
+    //      val alignTo = upperClassAnnots
+    //        .getAlignBitfieldsBy
+    //        .matchTo(_.bits, 1)
+    //
+    //      val alignedBits = if ((bits % alignTo) == 0) bits else bits + (alignTo - (bits % alignTo))
+    //
+    //      alignedBits / 8
+    //    } else {
+    fields.foldLeft(0)((i, c) => i + guess(c.tpe, thisFieldAnnots = c.annos))
+    //    }
   }
 
   /**
@@ -129,29 +127,29 @@ object sizeOf {
     fields: List[FieldDescr],
     upperClassAnnots: List[ru.Annotation]
   ): Int = {
-// TODO: mit squeeze entkoppeln
-//    require(
-//      (fields.hasAsBitfield && !fields.hasOneWithoutAsBitfield) || (!fields.hasAsBitfield),
-//      s"got a mixed list decorated with 'asBitfield' and w/o (${fields.mkString(", ")})"
-//    )
-//
-//    if (fields.hasAsBitfield) {
-//      val bits = fields.foldLeft(0)((i, c) =>
-//        i + c.getAsBitfield.matchToException(
-//          _.bits,
-//          new SerializerBuildException(s"given field: ${c.name} does not have 'asBitfield' annot")
-//        )
-//      )
-//
-//      val alignTo = upperClassAnnots
-//        .getAlignBitfieldsBy
-//        .matchTo(_.bits, 1)
-//
-//      val alignedBits = if ((bits % alignTo) == 0) bits else bits + (alignTo - (bits % alignTo))
-//
-//      alignedBits
-//    } else {
-      fields.foldLeft(0)((i, c) => i + guess(c.tpe, thisFieldAnnots = c.annos)) * 8
-//    }
+    // TODO: mit squeeze entkoppeln
+    //    require(
+    //      (fields.hasAsBitfield && !fields.hasOneWithoutAsBitfield) || (!fields.hasAsBitfield),
+    //      s"got a mixed list decorated with 'asBitfield' and w/o (${fields.mkString(", ")})"
+    //    )
+    //
+    //    if (fields.hasAsBitfield) {
+    //      val bits = fields.foldLeft(0)((i, c) =>
+    //        i + c.getAsBitfield.matchToException(
+    //          _.bits,
+    //          new SerializerBuildException(s"given field: ${c.name} does not have 'asBitfield' annot")
+    //        )
+    //      )
+    //
+    //      val alignTo = upperClassAnnots
+    //        .getAlignBitfieldsBy
+    //        .matchTo(_.bits, 1)
+    //
+    //      val alignedBits = if ((bits % alignTo) == 0) bits else bits + (alignTo - (bits % alignTo))
+    //
+    //      alignedBits
+    //    } else {
+    fields.foldLeft(0)((i, c) => i + guess(c.tpe, thisFieldAnnots = c.annos)) * 8
+    //    }
   }
 }

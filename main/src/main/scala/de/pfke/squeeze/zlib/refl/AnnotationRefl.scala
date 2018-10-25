@@ -1,6 +1,6 @@
-package de.pintono.grind.refl.core
+package de.pfke.squeeze.zlib.refl
 
-import de.pintono.grind.refl.core.entityRefl.CaseClassRefl
+import de.pfke.squeeze.zlib.refl.entityRefl.CaseClassRefl
 
 import scala.annotation.StaticAnnotation
 import scala.reflect.ClassTag

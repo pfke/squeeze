@@ -9,7 +9,7 @@ class SqueezerOnBooleanSpec
   extends BaseSqueezerSpec {
   "testing Squeezer.pack with simple Boolean type" when {
     "testing with ByteOrder.BIG_ENDIAN" should {
-      implicit val byteOrder = ByteOrder.BIG_ENDIAN
+      implicit val byteOrder: ByteOrder = ByteOrder.BIG_ENDIAN
       val tto = Squeezer().serialize(true)
 
       "should return a ByteString with correct length" in {
@@ -22,7 +22,7 @@ class SqueezerOnBooleanSpec
     }
 
     "testing with ByteOrder.LITTLE_ENDIAN" should {
-      implicit val byteOrder = ByteOrder.LITTLE_ENDIAN
+      implicit val byteOrder: ByteOrder = ByteOrder.LITTLE_ENDIAN
       val tto = Squeezer().serialize(false)
 
       "should return a ByteString with correct length" in {
@@ -37,7 +37,7 @@ class SqueezerOnBooleanSpec
 
   "testing Squeezer.unpack with simple Boolean type" when {
     "testing with ByteOrder.BIG_ENDIAN" should {
-      implicit val byteOrder = ByteOrder.BIG_ENDIAN
+      implicit val byteOrder: ByteOrder =ByteOrder.BIG_ENDIAN
       val squeezer = Squeezer()
 
       "should unpack 0x01 as true" in {
@@ -58,7 +58,7 @@ class SqueezerOnBooleanSpec
     }
 
     "testing with ByteOrder.LITTLE_ENDIAN" should {
-      implicit val byteOrder = ByteOrder.LITTLE_ENDIAN
+      implicit val byteOrder: ByteOrder =ByteOrder.LITTLE_ENDIAN
       val squeezer = Squeezer()
 
       "should unpack 0x01 as true" in {

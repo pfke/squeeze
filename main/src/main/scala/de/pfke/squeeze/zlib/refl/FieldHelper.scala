@@ -1,4 +1,4 @@
-package de.pintono.grind.refl
+package de.pfke.squeeze.zlib.refl
 
 import scala.collection.mutable
 import scala.collection.mutable.ArrayBuffer

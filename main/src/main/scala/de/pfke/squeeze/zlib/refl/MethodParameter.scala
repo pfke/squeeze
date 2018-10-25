@@ -1,4 +1,4 @@
-package de.pintono.grind.refl.core
+package de.pfke.squeeze.zlib.refl
 
 import scala.reflect.runtime.{universe => ru}
 
@@ -13,15 +13,15 @@ case class MethodParameter (
   symbol: ru.Symbol,
   defaultValue: Option[Any] = None
 ) {
-  lazy val clazz = Class.forName(typeSignature.typeSymbol.asClass.fullName)
+  lazy val clazz: Class[_] = Class.forName(typeSignature.typeSymbol.asClass.fullName)
 
   /**
     * Return param name
     */
-  def name = symbol.name.toString
+  def name: String = symbol.name.toString
 
   /**
     * Return param type
     */
-  def typeSignature = symbol.typeSignature
+  def typeSignature: ru.Type = symbol.typeSignature
 }

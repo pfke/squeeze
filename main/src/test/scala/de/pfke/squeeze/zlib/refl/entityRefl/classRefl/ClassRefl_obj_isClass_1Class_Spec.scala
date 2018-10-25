@@ -1,7 +1,7 @@
-package de.pintono.grind.refl.core.entityRefl.classRefl
+package de.pfke.squeeze.zlib.refl.entityRefl.classRefl
 
-import de.pintono.grind.refl.core.entityRefl.classRefl.mocks.{CaseClassMock3Args_0Defaults, ClassMock0Args}
-import de.pintono.grind.refl.core.entityRefl.ClassRefl
+import de.pfke.squeeze.zlib.refl.entityRefl.classRefl.mocks.{CaseClassMock3Args_0Defaults, ClassMock0Args}
+import de.pfke.squeeze.zlib.refl.entityRefl.ClassRefl
 import org.scalatest.{Matchers, WordSpec}
 
 class ClassRefl_obj_isClass_1Class_Spec

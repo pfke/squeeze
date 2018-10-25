@@ -1,8 +1,8 @@
 package de.pfke.squeeze.zlib
 
 import de.pfke.squeeze.zlib.data._
-import de.pintono.grind.refl.{FieldDescr, FieldHelper}
-import de.pintono.grind.refl.core.GeneralReflIncludes
+import de.pfke.squeeze.zlib.refl.{FieldDescr, FieldHelper}
+import de.pfke.squeeze.zlib.refl.GeneralReflIncludes
 import de.pfke.squeeze.annots.{asBitfield, injectCount, injectLength, injectType, withFixedCount, withFixedLength}
 import de.pfke.squeeze.annots.AnnotationHelperIncludes._
 

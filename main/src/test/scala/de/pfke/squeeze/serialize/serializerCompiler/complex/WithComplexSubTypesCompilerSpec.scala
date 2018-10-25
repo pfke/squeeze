@@ -9,8 +9,8 @@ import de.pfke.squeeze.serialize.serializerCompiler.BaseCompilerSpec
 class WithComplexSubTypesCompilerSpec
   extends BaseCompilerSpec {
   "testing with simple WithComplexSubTypesMock type [ByteOrder.BIG_ENDIAN]" when {
-    implicit val byteOrder = ByteOrder.BIG_ENDIAN
-    implicit val version = None
+    implicit val byteOrder: ByteOrder = ByteOrder.BIG_ENDIAN
+    implicit val version: None.type = None
 
     val tto = createTTO[WithComplexSubTypesMock]()
     val value = WithComplexSubTypesMock(

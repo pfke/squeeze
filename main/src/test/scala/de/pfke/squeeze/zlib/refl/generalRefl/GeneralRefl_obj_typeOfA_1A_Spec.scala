@@ -1,9 +1,9 @@
-package de.pintono.grind.refl.core.generalRefl
+package de.pfke.squeeze.zlib.refl.generalRefl
 
 import java.io.File
 
-import de.pintono.grind.refl.core.{GeneralRefl, RichInstanceMirror, RichRuntimeMirror}
-import de.pintono.grind.refl.core.generalRefl.mocks.Enum1Mock
+import de.pfke.squeeze.zlib.refl.{GeneralRefl, RichInstanceMirror}
+import de.pfke.squeeze.zlib.refl.generalRefl.mocks.Enum1Mock
 import org.scalatest.{Matchers, WordSpec}
 
 import scala.reflect.runtime.{universe => ru}

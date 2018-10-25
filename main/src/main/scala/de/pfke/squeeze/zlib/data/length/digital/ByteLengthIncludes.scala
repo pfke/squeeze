@@ -17,38 +17,38 @@ trait ByteLengthIncludes {
     in: Double
   ) {
     def byte = ByteLength(in, Prefix.No)
-    def bytes = byte
-    def B = byte
-    def Byte = byte
-    def Bytes = byte
+    def bytes: ByteLength = byte
+    def B: ByteLength = byte
+    def Byte: ByteLength = byte
+    def Bytes: ByteLength = byte
   }
 
   implicit class toByteLengthFromIEC (
     in: Double
   ) {
-    def Kibibyte = create(IECPrefix.Kibi)
-    def KiB = Kibibyte
+    def Kibibyte: ByteLength = create(IECPrefix.Kibi)
+    def KiB: ByteLength = Kibibyte
 
-    def Mebibyte = create(IECPrefix.Mebi)
-    def MiB = Mebibyte
+    def Mebibyte: ByteLength = create(IECPrefix.Mebi)
+    def MiB: ByteLength = Mebibyte
 
-    def Gibibyte = create(IECPrefix.Gibi)
-    def GiB = Gibibyte
+    def Gibibyte: ByteLength = create(IECPrefix.Gibi)
+    def GiB: ByteLength = Gibibyte
 
-    def Tebibyte = create(IECPrefix.Tebi)
-    def TiB = Tebibyte
+    def Tebibyte: ByteLength = create(IECPrefix.Tebi)
+    def TiB: ByteLength = Tebibyte
 
-    def Pebibyte = create(IECPrefix.Pebi)
-    def PiB = Pebibyte
+    def Pebibyte: ByteLength = create(IECPrefix.Pebi)
+    def PiB: ByteLength = Pebibyte
 
-    def Exbibyte = create(IECPrefix.Exbi)
-    def EiB = Exbibyte
+    def Exbibyte: ByteLength = create(IECPrefix.Exbi)
+    def EiB: ByteLength = Exbibyte
 
-    def Zebibyte = create(IECPrefix.Zebi)
-    def ZiB = Zebibyte
+    def Zebibyte: ByteLength = create(IECPrefix.Zebi)
+    def ZiB: ByteLength = Zebibyte
 
-    def Yobibyte = create(IECPrefix.Yobi)
-    def YiB = Yobibyte
+    def Yobibyte: ByteLength = create(IECPrefix.Yobi)
+    def YiB: ByteLength = Yobibyte
 
     private def create(prefix: Prefix) = ByteLength(in, prefix)
   }
@@ -56,36 +56,36 @@ trait ByteLengthIncludes {
   implicit class toByteLengthFromSI (
     in: Double
   ) {
-    def Kilobyte = create(SIPrefix.Kilo)
-    def KB = Kilobyte
+    def Kilobyte: ByteLength = create(SIPrefix.Kilo)
+    def KB: ByteLength = Kilobyte
 
-    def Megabyte = create(SIPrefix.Mega)
-    def MB = Megabyte
+    def Megabyte: ByteLength = create(SIPrefix.Mega)
+    def MB: ByteLength = Megabyte
 
-    def Gigabyte = create(SIPrefix.Giga)
-    def GB = Gigabyte
+    def Gigabyte: ByteLength = create(SIPrefix.Giga)
+    def GB: ByteLength = Gigabyte
 
-    def Terabyte = create(SIPrefix.Tera)
-    def TB = Terabyte
+    def Terabyte: ByteLength = create(SIPrefix.Tera)
+    def TB: ByteLength = Terabyte
 
-    def Petabyte = create(SIPrefix.Peta)
-    def PB = Petabyte
+    def Petabyte: ByteLength = create(SIPrefix.Peta)
+    def PB: ByteLength = Petabyte
 
-    def Exabyte = create(SIPrefix.Exa)
-    def EB = Exabyte
+    def Exabyte: ByteLength = create(SIPrefix.Exa)
+    def EB: ByteLength = Exabyte
 
-    def Zettabyte = create(SIPrefix.Zetta)
-    def ZB = Zettabyte
+    def Zettabyte: ByteLength = create(SIPrefix.Zetta)
+    def ZB: ByteLength = Zettabyte
 
-    def Yottabyte = create(SIPrefix.Yotta)
-    def YB = Yottabyte
+    def Yottabyte: ByteLength = create(SIPrefix.Yotta)
+    def YB: ByteLength = Yottabyte
 
     private def create(prefix: Prefix) = ByteLength(in, prefix)
   }
 
   /**
-   * Format byte value into a human readable string.
-   */
+    * Format byte value into a human readable string.
+    */
   implicit class SpeedFormatterFromByteLength (
     bytes: ByteLength
   )

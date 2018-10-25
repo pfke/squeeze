@@ -12,7 +12,7 @@ class FromVersion_SubClass_noLevelPassed_v00020001_spec
                 |import de.pfke.squeeze.zlib.data.collection.anythingString.AnythingIterator
                 |import de.pfke.squeeze.zlib.data.collection.bitString.{BitStringAlignment, BitStringBuilder}
                 |import de.pfke.squeeze.zlib.data.length.digital.{BitLength, ByteLength}
-                |import de.pintono.grind.refl.core.GeneralRefl
+                |import de.pfke.squeeze.zlib.refl.GeneralRefl
                 |import de.pfke.squeeze.serialize.{Serializer, SerializerContainer}
                 |import de.pfke.squeeze.serialize.serializerHints._
                 |import de.pfke.squeeze.zlib._

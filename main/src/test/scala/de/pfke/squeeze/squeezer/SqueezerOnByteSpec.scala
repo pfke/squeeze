@@ -9,7 +9,7 @@ class SqueezerOnByteSpec
   extends BaseSqueezerSpec {
   "testing squeezer with simple Byte type" when {
     "testing with ByteOrder.BIG_ENDIAN" should {
-      implicit val byteOrder = ByteOrder.BIG_ENDIAN
+      implicit val byteOrder: ByteOrder = ByteOrder.BIG_ENDIAN
       val tto = Squeezer().serialize[Byte](0x13)
 
       "should return a ByteString with correct length" in {
@@ -22,7 +22,7 @@ class SqueezerOnByteSpec
     }
 
     "testing with ByteOrder.LITTLE_ENDIAN" should {
-      implicit val byteOrder = ByteOrder.LITTLE_ENDIAN
+      implicit val byteOrder: ByteOrder = ByteOrder.LITTLE_ENDIAN
       val tto = Squeezer().serialize[Byte](0xf3.toByte)
 
       "should return a ByteString with correct length" in {
@@ -37,7 +37,7 @@ class SqueezerOnByteSpec
 
   "testing Squeezer.unpack with simple Byte type" when {
     "testing with ByteOrder.BIG_ENDIAN" should {
-      implicit val byteOrder = ByteOrder.BIG_ENDIAN
+      implicit val byteOrder: ByteOrder = ByteOrder.BIG_ENDIAN
       val value = 0x27.toByte
       val squeezer = Squeezer()
 
@@ -47,7 +47,7 @@ class SqueezerOnByteSpec
     }
 
     "testing with ByteOrder.LITTLE_ENDIAN" should {
-      implicit val byteOrder = ByteOrder.LITTLE_ENDIAN
+      implicit val byteOrder: ByteOrder = ByteOrder.LITTLE_ENDIAN
       val value = 0x13.toByte
       val squeezer = Squeezer()
 

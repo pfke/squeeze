@@ -1,12 +1,12 @@
-package de.pintono.grind.refl.core.richRuntimeMirror
+package de.pfke.squeeze.zlib.refl.richRuntimeMirror
 
-import de.pintono.grind.refl.core.RichRuntimeMirror
+import de.pfke.squeeze.zlib.refl.RichRuntimeMirror
 import org.scalatest.{Matchers, WordSpec}
 
 class RichRuntimerMirror_class_getInstanceMirror_1String_Spec
   extends WordSpec
       with Matchers {
-  val namespace = "de.pintono.grind.refl.core.richMethodRefl.mocks"
+  val namespace = "de.pfke.squeeze.zlib.refl.richMethodRefl.mocks"
   val richRuntimeMirror = RichRuntimeMirror()
 
   "testing w/ non-existing class name" when {

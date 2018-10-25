@@ -1,4 +1,4 @@
-package de.pintono.grind.refl.core.entityRefl.caseClassRefl.mocks
+package de.pfke.squeeze.zlib.refl.entityRefl.caseClassRefl.mocks
 
 object ObjectMock2Args_wOverloadedMethods {
   def method1() = "method1"

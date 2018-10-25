@@ -1,4 +1,4 @@
-package de.pintono.grind.refl.core
+package de.pfke.squeeze.zlib.refl
 
 import scala.reflect.ClassTag
 import scala.reflect.runtime.{universe => ru}
@@ -29,7 +29,7 @@ class RichRuntimeMirror(
   /**
     * Getter
     */
-  def classLoader = runtimeMirror.classLoader
+  def classLoader: ClassLoader = runtimeMirror.classLoader
 
   /**
     * Reflect a class mirror

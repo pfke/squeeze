@@ -10,8 +10,8 @@ import de.pfke.squeeze.serialize.serializerCompiler.BaseCompilerSpec
 class HoldingClassCompilerSpec
   extends BaseCompilerSpec {
   "testing with simple HoldingClass type: sub class is correct annotated" when {
-    implicit val byteOrder = ByteOrder.BIG_ENDIAN
-    implicit val version = None
+    implicit val byteOrder: ByteOrder = ByteOrder.BIG_ENDIAN
+    implicit val version: None.type = None
 
     val tto = createTTO[HoldingClass]()
     val value = HoldingClass(
@@ -53,8 +53,8 @@ class HoldingClassCompilerSpec
   }
 
   "testing with simple HoldingClass type: with version info: 1.5-123" when {
-    implicit val byteOrder = ByteOrder.BIG_ENDIAN
-    implicit val version = Some(PatchLevelVersion("1.5-123"))
+    implicit val byteOrder: ByteOrder = ByteOrder.BIG_ENDIAN
+    implicit val version: Some[PatchLevelVersion] = Some(PatchLevelVersion("1.5-123"))
 
     val tto = createTTO[HoldingClass]()
     val value = HoldingClass(
@@ -97,8 +97,8 @@ class HoldingClassCompilerSpec
   }
 
   "testing with simple HoldingClass type: with version info: 1.5-124" when {
-    implicit val byteOrder = ByteOrder.BIG_ENDIAN
-    implicit val version = Some(PatchLevelVersion("1.5-124"))
+    implicit val byteOrder: ByteOrder = ByteOrder.BIG_ENDIAN
+    implicit val version: Some[PatchLevelVersion] = Some(PatchLevelVersion("1.5-124"))
 
     val tto = createTTO[HoldingClass]()
     val value = HoldingClass(
@@ -142,8 +142,8 @@ class HoldingClassCompilerSpec
   }
 
   "testing with simple HoldingClass type: with version info: 1.6-123" when {
-    implicit val byteOrder = ByteOrder.BIG_ENDIAN
-    implicit val version = Some(PatchLevelVersion("1.6-123"))
+    implicit val byteOrder: ByteOrder = ByteOrder.BIG_ENDIAN
+    implicit val version: Some[PatchLevelVersion] = Some(PatchLevelVersion("1.6-123"))
 
     val tto = createTTO[HoldingClass]()
     val value = HoldingClass(
@@ -188,8 +188,8 @@ class HoldingClassCompilerSpec
   }
 
   "testing with simple HoldingClass type: with version info: 2.5-123" when {
-    implicit val byteOrder = ByteOrder.BIG_ENDIAN
-    implicit val version = Some(PatchLevelVersion("2.5-123"))
+    implicit val byteOrder: ByteOrder = ByteOrder.BIG_ENDIAN
+    implicit val version: Some[PatchLevelVersion] = Some(PatchLevelVersion("2.5-123"))
 
     val tto = createTTO[HoldingClass]()
     val value = HoldingClass(

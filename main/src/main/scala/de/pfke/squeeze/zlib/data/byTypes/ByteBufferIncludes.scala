@@ -27,8 +27,8 @@ trait ByteBufferIncludes {
       out
     }
 
-    def asString_iso8859_1 = asString(StandardCharsets.ISO_8859_1)
-    def asString_utf8 = asString(StandardCharsets.UTF_8)
+    def asString_iso8859_1: String = asString(StandardCharsets.ISO_8859_1)
+    def asString_utf8: String = asString(StandardCharsets.UTF_8)
 
     def asString(implicit charset: Charset = StandardCharsets.UTF_8): String = {
       try {
@@ -41,7 +41,7 @@ trait ByteBufferIncludes {
         in.position(oldPos)
         str
       } catch {
-        case e: Exception => ""
+        case _: Exception => ""
       }
     }
   }

@@ -17,7 +17,7 @@ trait ArchiverIncludes {
       target: Path,
       algorithm: ArchiveType = ArchiveType.TAR,
       rootDir: Option[Path] = None
-    ) = Archiver.archive(
+    ): Path = Archiver.archive(
       src.toList,
       target,
       algorithm = algorithm,

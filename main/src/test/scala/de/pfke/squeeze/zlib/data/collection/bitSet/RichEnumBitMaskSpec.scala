@@ -62,7 +62,7 @@ class RichEnumBitMaskSpec
   "method 'contains(.)'" when {
     "shift = 0, len-mask" should {
       "return false emtpy set" in {
-        val tto = RichEnumBitMask.apply(TestEnum).contains(TestEnum.e1) should be (right = false)
+        RichEnumBitMask.apply(TestEnum).contains(TestEnum.e1) should be (right = false)
       }
 
       "return true on non empty set" in {
@@ -76,7 +76,7 @@ class RichEnumBitMaskSpec
 
     "shift > 0, len >= msb" should {
       "return false emtpy set" in {
-        val tto = RichEnumBitMask.applyWithLen(TestEnum, shift = 6, len = 10).contains(TestEnum.e1) should be (right = false)
+        RichEnumBitMask.applyWithLen(TestEnum, shift = 6, len = 10).contains(TestEnum.e1) should be (right = false)
       }
 
       "return true on non empty set" in {
@@ -90,7 +90,7 @@ class RichEnumBitMaskSpec
 
     "shift > 0, len < msb" should {
       "return false emtpy set" in {
-        val tto = RichEnumBitMask.applyWithLen(TestEnum, shift = 6, len = 2).contains(TestEnum.e1) should be (right = false)
+        RichEnumBitMask.applyWithLen(TestEnum, shift = 6, len = 2).contains(TestEnum.e1) should be (right = false)
       }
 
       "return true on non empty set (not masked out)" in {

@@ -9,10 +9,10 @@ class LimitedSizeQueueSpec
       "queue size should not exceed the limit" in {
         val queue = new LimitedSizeQueue[Int](5)
 
-        queue.enqueue((0 until 5).map { i => i }.toSeq:_*)
+        queue.enqueue((0 until 5).map { i => i }:_*)
         queue.size should be (5)
 
-        queue.enqueue((0 until 5).map { i => i }.toSeq:_*)
+        queue.enqueue((0 until 5).map { i => i }:_*)
         queue.size should be (5)
       }
     }
@@ -36,10 +36,10 @@ class LimitedSizeQueueSpec
       "should only add the last elements" in {
         val queue = new LimitedSizeQueue[Int](5)
 
-        queue.enqueue((0 until 5).map { i => i }.toSeq:_*)
+        queue.enqueue((0 until 5).map { i => i }:_*)
         queue.size should be (5)
 
-        queue.enqueue((10 to 20).map { i => i }.toSeq:_*)
+        queue.enqueue((10 to 20).map { i => i }:_*)
 
         queue.dequeue() should be (16)
         queue.dequeue() should be (17)

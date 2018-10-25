@@ -9,8 +9,8 @@ import de.pfke.squeeze.serialize.serializerCompiler.BaseCompilerSpec
 class WithFixedLengthSpec
   extends BaseCompilerSpec {
   "testing with simple WithFixedLengthMock type [ByteOrder.BIG_ENDIAN]" when {
-    implicit val byteOrder = ByteOrder.BIG_ENDIAN
-    implicit val version = None
+    implicit val byteOrder: ByteOrder = ByteOrder.BIG_ENDIAN
+    implicit val version: None.type = None
 
     val tto = createTTO[WithFixedLengthMock]()
     val value = WithFixedLengthMock(

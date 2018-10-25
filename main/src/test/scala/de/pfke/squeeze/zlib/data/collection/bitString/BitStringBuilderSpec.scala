@@ -10,7 +10,7 @@ class BitStringBuilderSpec
     with Matchers {
   "testing method '|(Byte)' (32bit aligned)" when {
     "testing with an empty builder" should {
-      implicit val byteOrder = ByteOrder.BIG_ENDIAN
+      implicit val byteOrder: ByteOrder = ByteOrder.BIG_ENDIAN
       val alignment = BitStringAlignment._32Bit
 
       val tto = BitStringBuilder.newBuilder(alignment = alignment)
@@ -26,7 +26,7 @@ class BitStringBuilderSpec
     }
 
     "testing with an non-empty builder" should {
-      implicit val byteOrder = ByteOrder.BIG_ENDIAN
+      implicit val byteOrder: ByteOrder = ByteOrder.BIG_ENDIAN
 
       val tto = BitStringBuilder.newBuilder()
       tto | 0x80.toByte
@@ -43,7 +43,7 @@ class BitStringBuilderSpec
   }
 
   "testing method '<<(Int)' (8bit aligned) (BIG_ENDIAN)" when {
-    implicit val byteOrder = ByteOrder.BIG_ENDIAN
+    implicit val byteOrder: ByteOrder = ByteOrder.BIG_ENDIAN
     val alignment = BitStringAlignment._8Bit
 
     "testing with an empty builder" should {
@@ -159,7 +159,7 @@ class BitStringBuilderSpec
   }
 
   "testing method '<<(Int)' (16bit aligned) (BIG_ENDIAN)" when {
-    implicit val byteOrder = ByteOrder.BIG_ENDIAN
+    implicit val byteOrder: ByteOrder = ByteOrder.BIG_ENDIAN
     val alignment = BitStringAlignment._16Bit
 
     "testing with an empty builder" should {
@@ -375,7 +375,7 @@ class BitStringBuilderSpec
   }
 
   "testing method '<<(Int)' (32bit aligned) (BIG_ENDIAN)" when {
-    implicit val byteOrder = ByteOrder.BIG_ENDIAN
+    implicit val byteOrder: ByteOrder = ByteOrder.BIG_ENDIAN
     val alignment = BitStringAlignment._32Bit
 
     "testing with an empty builder" should {
@@ -511,7 +511,7 @@ class BitStringBuilderSpec
 
   "testing error on other specs" when {
     "using the test for aligned bits" should {
-      implicit val byteOrder = ByteOrder.BIG_ENDIAN
+      implicit val byteOrder: ByteOrder = ByteOrder.BIG_ENDIAN
       val tto = BitStringBuilder.newBuilder(alignment = BitStringAlignment._32Bit)
 
       tto.appendBits(bits = 8, value = 0x81)

@@ -1,4 +1,4 @@
-package de.pintono.grind.refl.core
+package de.pfke.squeeze.zlib.refl
 
 import java.io.{File, IOException}
 import java.net.URL

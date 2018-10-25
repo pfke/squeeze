@@ -1,4 +1,4 @@
-package de.pintono.grind.refl.core.entityRefl.classRefl.mocks
+package de.pfke.squeeze.zlib.refl.entityRefl.classRefl.mocks
 
 class ClassMock2Args_wOverloadedMethods(
   val arg1: String,

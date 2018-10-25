@@ -1,7 +1,7 @@
 package de.pfke.squeeze.annots
 
 import de.pfke.squeeze.zlib.data._
-import de.pintono.grind.refl.core.AnnotationRefl
+import de.pfke.squeeze.zlib.refl.AnnotationRefl
 import de.pfke.squeeze.annots.classAnnots.typeForIface
 
 import scala.annotation.StaticAnnotation

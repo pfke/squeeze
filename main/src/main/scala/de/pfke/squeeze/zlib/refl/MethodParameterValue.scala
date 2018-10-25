@@ -1,4 +1,4 @@
-package de.pintono.grind.refl.core
+package de.pfke.squeeze.zlib.refl
 
 /**
   * Parameter (used to pass arguments to instantiate a class).

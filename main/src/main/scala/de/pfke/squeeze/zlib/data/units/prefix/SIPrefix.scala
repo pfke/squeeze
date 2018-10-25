@@ -28,5 +28,5 @@ sealed abstract class SIPrefix(
   exp: Int,
   symbol: String,
   name: String
-  )
+)
   extends Prefix(10, exp, symbol, name)

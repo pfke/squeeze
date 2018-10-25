@@ -1,4 +1,4 @@
-package de.pintono.grind.refl.core.richRuntimeMirror.mocks
+package de.pfke.squeeze.zlib.refl.richRuntimeMirror.mocks
 
 case class CaseClassMock3Args_allDefaults(
   arg1: String = "hello",

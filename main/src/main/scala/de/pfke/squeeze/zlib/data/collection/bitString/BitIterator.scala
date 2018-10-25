@@ -41,11 +41,11 @@ class BitIterator (
   /**
     * Return remaining bytes
     */
-  def len = (_bitCount - _currentBitsPointer) + (iter.len * 8)
+  def len: Int = (_bitCount - _currentBitsPointer) + (iter.len * 8)
 
-  override def hasNext = ((_currentBitsPointer + 1) < _bitCount) || iter.hasNext
+  override def hasNext: Boolean = ((_currentBitsPointer + 1) < _bitCount) || iter.hasNext
 
-  override def next () = read(1).toByte
+  override def next (): Byte = read(1).toByte
 
   /**
     * Read bits from iterator.

@@ -8,7 +8,7 @@ import de.pfke.squeeze.zlib.data._
 import de.pfke.squeeze.zlib.version.PatchLevelVersion
 import de.pfke.squeeze.zlib.data.collection.anythingString.AnythingIterator
 import de.pfke.squeeze.zlib.data.length.digital.{BitLength, ByteLength, DigitalLength}
-import de.pintono.grind.refl.core.GeneralRefl.TypeInfo
+import de.pfke.squeeze.zlib.refl.GeneralRefl.TypeInfo
 import de.pfke.squeeze.serialize.serializerHints._
 import de.pfke.squeeze.zlib.SerializerRunException
 
@@ -102,8 +102,7 @@ trait Serializer[A] {
     classTag: ClassTag[B]
   ): Option[B] = {
     hints
-      .collect { case t: B => t }
-      .headOption
+      .collectFirst { case t: B => t }
   }
 
   /**
@@ -165,7 +164,7 @@ trait Serializer[A] {
       case (Some(x: BitStringBuilderHint), _, _) => x.builder.appendBits(lenToWrite(hints = hints).getOrElse(ByteLength(0)).toBits.toInt, value)(objectTypeInfo.classTag, objectTypeInfo.typeTag)
       case (Some(x: ByteStringBuilderHint), Some(writeOp), _) => writeOp(x.builder, value)
       case (Some(x: ByteStringBuilderHint), None, t: String) => x.builder.putBytes(encodeString(t, lenToWrite(hints = hints).matchToOption(_.toByte.toInt)))
-      case (Some(x: ByteStringBuilderHint), None, _) => throw new SerializerRunException("want to write into a ByteStringBuilder, but no write op defined")
+      case (Some(_: ByteStringBuilderHint), None, _) => throw new SerializerRunException("want to write into a ByteStringBuilder, but no write op defined")
 
       case _ => throw new SerializerRunException("no ...StringBuilderHint given, don't know how to write data")
     }

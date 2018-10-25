@@ -10,4 +10,4 @@ import scala.annotation.StaticAnnotation
  */
 case class asBitfield(
   bits: Int
-  ) extends StaticAnnotation
+) extends StaticAnnotation

@@ -1,4 +1,4 @@
-package de.pintono.grind.refl.core.richRuntimeMirror.mocks
+package de.pfke.squeeze.zlib.refl.richRuntimeMirror.mocks
 
 object ObjectMock {
 

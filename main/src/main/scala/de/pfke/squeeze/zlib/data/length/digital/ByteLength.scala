@@ -97,20 +97,20 @@ class ByteLength(
     *   - `x == 0` when `this == that`
     *   - `x > 0` when  `this > that`
     */
-  override def compare(that: ByteLength) = data.compareTo(that.data)
+  override def compare(that: ByteLength): Int = data.compareTo(that.data)
 
   /**
     * Equals implementation.
     */
-  override def equals(obj: scala.Any) = obj.isInstanceOf[ByteLength] && compare(obj.asInstanceOf[ByteLength]) == 0
+  override def equals(obj: scala.Any): Boolean = obj.isInstanceOf[ByteLength] && compare(obj.asInstanceOf[ByteLength]) == 0
 
   /**
     * Promote to best matching prefix.
     */
   def promoteTo: ByteLength = {
     prefix match {
-      case t: IECPrefix => promoteTo(ByteLength.getBestMatchingIECUnit(this))
-      case t: SIPrefix  => promoteTo(ByteLength.getBestMatchingSIUnit(this))
+      case _: IECPrefix => promoteTo(ByteLength.getBestMatchingIECUnit(this))
+      case _: SIPrefix  => promoteTo(ByteLength.getBestMatchingSIUnit(this))
 
       case _ => promoteTo(ByteLength.getBestMatchingSIUnit(this))
     }
@@ -124,38 +124,38 @@ class ByteLength(
   /**
     * Return the value as bits.
     */
-  override def toBits = toByte * 8
+  override def toBits: Double = toByte * 8
 
   /**
     * Return the value as byte.
     */
-  override def toByte = data * prefix.toValue
+  override def toByte: Double = data * prefix.toValue
 
   /**
     * Return the value as byte.
     */
   def asBits: Double = data * prefix.toValue
 
-  def asKiB = promoteTo(IECPrefix.Kibi)
-  def asMiB = promoteTo(IECPrefix.Mebi)
-  def asGiB = promoteTo(IECPrefix.Gibi)
-  def asTiB = promoteTo(IECPrefix.Tebi)
-  def asPiB = promoteTo(IECPrefix.Pebi)
-  def asEiB = promoteTo(IECPrefix.Exbi)
-  def asZiB = promoteTo(IECPrefix.Zebi)
-  def asYiB = promoteTo(IECPrefix.Yobi)
+  def asKiB: ByteLength = promoteTo(IECPrefix.Kibi)
+  def asMiB: ByteLength = promoteTo(IECPrefix.Mebi)
+  def asGiB: ByteLength = promoteTo(IECPrefix.Gibi)
+  def asTiB: ByteLength = promoteTo(IECPrefix.Tebi)
+  def asPiB: ByteLength = promoteTo(IECPrefix.Pebi)
+  def asEiB: ByteLength = promoteTo(IECPrefix.Exbi)
+  def asZiB: ByteLength = promoteTo(IECPrefix.Zebi)
+  def asYiB: ByteLength = promoteTo(IECPrefix.Yobi)
 
-  def asKB = promoteTo(SIPrefix.Kilo)
-  def asMB = promoteTo(SIPrefix.Mega)
-  def asGB = promoteTo(SIPrefix.Giga)
-  def asTB = promoteTo(SIPrefix.Tera)
-  def asPB = promoteTo(SIPrefix.Peta)
-  def asEB = promoteTo(SIPrefix.Exa)
-  def asZB = promoteTo(SIPrefix.Zetta)
-  def asYB = promoteTo(SIPrefix.Yotta)
+  def asKB: ByteLength = promoteTo(SIPrefix.Kilo)
+  def asMB: ByteLength = promoteTo(SIPrefix.Mega)
+  def asGB: ByteLength = promoteTo(SIPrefix.Giga)
+  def asTB: ByteLength = promoteTo(SIPrefix.Tera)
+  def asPB: ByteLength = promoteTo(SIPrefix.Peta)
+  def asEB: ByteLength = promoteTo(SIPrefix.Exa)
+  def asZB: ByteLength = promoteTo(SIPrefix.Zetta)
+  def asYB: ByteLength = promoteTo(SIPrefix.Yotta)
 
   /**
     * Creates a string with best-matching prefix
     */
-  override def toString = toByte.asHumanReadableSiByte
+  override def toString: String = toByte.asHumanReadableSiByte
 }

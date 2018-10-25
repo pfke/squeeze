@@ -9,4 +9,4 @@ import scala.annotation.StaticAnnotation
  */
 case class injectCount(
   fromField: String
-  ) extends StaticAnnotation
+) extends StaticAnnotation

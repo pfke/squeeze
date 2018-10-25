@@ -14,8 +14,8 @@ trait BitLengthIncludes {
     in: Double
     ) {
     def bit = BitLength(in)
-    def bits = bit
-    def Bit = bit
-    def Bits = bit
+    def bits: BitLength = bit
+    def Bit: BitLength = bit
+    def Bits: BitLength = bit
   }
 }

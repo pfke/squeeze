@@ -1,4 +1,4 @@
-package de.pintono.grind.refl.core
+package de.pfke.squeeze.zlib.refl
 
 import scala.reflect.runtime.{universe => ru}
 
@@ -59,5 +59,5 @@ class RichClassMirror (
   private lazy val _ctorMethodRefls = RichMethodRefl(classMirror.symbol, RichMethodRefl.TERMNAME_CTOR)
 
   // getter
-  def ctorMethodRefls = _ctorMethodRefls
+  def ctorMethodRefls: List[RichMethodRefl] = _ctorMethodRefls
 }

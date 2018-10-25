@@ -6,8 +6,6 @@ import de.pfke.squeeze.serialize.serializerBuilder.buildByReflection.BaseSpec
 class InjectLengthOnSubSpec
   extends BaseSpec {
     "testing serializer for InjectLengthOnSubMock type" when {
-      val r1 = "lköklö"
-      r1.length
       checkThis[InjectLengthOnSubMock](
         code = s"""
                   |import de.pintono.tools.squeeze.core.{Serializer, SerializerContainer}

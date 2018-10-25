@@ -15,12 +15,12 @@ abstract class DigitalLength
   def /(that: DigitalLength): DigitalLength = DigitalLength.fromBits(this.toBits / that.toBits)
 
   /**
-   * Return the value as bits.
-   */
+    * Return the value as bits.
+    */
   def toBits: Double
 
   /**
-   * Return the value as byte.
-   */
+    * Return the value as byte.
+    */
   def toByte: Double
 }

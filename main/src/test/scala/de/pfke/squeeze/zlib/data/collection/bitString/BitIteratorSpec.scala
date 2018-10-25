@@ -9,7 +9,7 @@ class BitIteratorSpec
   extends WordSpecLike
     with Matchers {
   "testing method 'apply(ByteSting, BitStringAlignment)" when {
-    implicit val byteOrder = ByteOrder.BIG_ENDIAN
+    implicit val byteOrder: ByteOrder = ByteOrder.BIG_ENDIAN
 
     "given ByteString is unaligned" should {
       "16Bit alignment with 1Byte input should throw an exception" in {
@@ -39,7 +39,7 @@ class BitIteratorSpec
   }
 
   "testing method 'getBits(Int)' with 8 bit aligned" when {
-    implicit val byteOrder = ByteOrder.BIG_ENDIAN
+    implicit val byteOrder: ByteOrder = ByteOrder.BIG_ENDIAN
 
     val inData = ByteString(
       0x81, 0x02, 0x03, 0x04,
@@ -106,7 +106,7 @@ class BitIteratorSpec
   }
 
   "testing method 'getBits(Int)' with 16 bit aligned" when {
-    implicit val byteOrder = ByteOrder.BIG_ENDIAN
+    implicit val byteOrder: ByteOrder = ByteOrder.BIG_ENDIAN
 
     val inData = ByteString(
       0x81, 0x02,
@@ -179,7 +179,7 @@ class BitIteratorSpec
   }
 
   "testing method 'getBits(Int)' with 32 bit aligned" when {
-    implicit val byteOrder = ByteOrder.BIG_ENDIAN
+    implicit val byteOrder: ByteOrder = ByteOrder.BIG_ENDIAN
 
     val inData = ByteString(
       0x81, 0x02, 0x03, 0x04,

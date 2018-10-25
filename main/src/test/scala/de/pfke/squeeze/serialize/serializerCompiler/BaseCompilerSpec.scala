@@ -25,7 +25,7 @@ trait BaseCompilerSpec
     implicit
     classTag: ClassTag[A],
     typeTag: ru.TypeTag[A]
-  ) = SerializerCompiler.compile[A](BuildByReflection().build())
+  ): CompiledSerializer[A] = SerializerCompiler.compile[A](BuildByReflection().build())
 
   /**
     * Read bits
@@ -41,7 +41,7 @@ trait BaseCompilerSpec
     serializerContainer: Option[SerializerContainer] = None,
     version: Option[PatchLevelVersion] = None
   ): A = {
-    implicit val realSerializerContainer = serializerContainer.getOrElse(Squeezer())
+    implicit val realSerializerContainer: SerializerContainer = serializerContainer.getOrElse(Squeezer())
 
     val bsb = BitStringBuilder.newBuilder(alignment = alignment)
 
@@ -68,7 +68,7 @@ trait BaseCompilerSpec
     classTag: ClassTag[A],
     typeTag: ru.TypeTag[A]
   ): A = {
-    implicit val realSerializerContainer = serializerContainer.getOrElse(Squeezer())
+    implicit val realSerializerContainer: SerializerContainer = serializerContainer.getOrElse(Squeezer())
 
     serializer.serializerObject.read(AnythingIterator(ByteString(data:_*), bitAlignment = BitStringAlignment._32Bit))
   }
@@ -89,7 +89,7 @@ trait BaseCompilerSpec
     classTag: ClassTag[A],
     typeTag: ru.TypeTag[A]
   ): ByteString = {
-    implicit val realSerializerContainer = serializerContainer.getOrElse(Squeezer())
+    implicit val realSerializerContainer: SerializerContainer = serializerContainer.getOrElse(Squeezer())
 
     val bsb = BitStringBuilder.newBuilder(alignment = alignment)
 
@@ -112,7 +112,7 @@ trait BaseCompilerSpec
     classTag: ClassTag[A],
     typeTag: ru.TypeTag[A]
   ): ByteString = {
-    implicit val realSerializerContainer = serializerContainer.getOrElse(Squeezer())
+    implicit val realSerializerContainer: SerializerContainer = serializerContainer.getOrElse(Squeezer())
 
     val bsb = ByteString.newBuilder
 

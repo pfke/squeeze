@@ -1,4 +1,4 @@
-package de.pintono.grind.refl.core
+package de.pfke.squeeze.zlib.refl
 
 import scala.reflect.runtime.{universe => ru}
 import scala.util.Try
@@ -84,7 +84,7 @@ class RichInstanceMirror (
   /**
     * Getter
     */
-  def applyMethodRefls = _applyMethodRefls
+  def applyMethodRefls: List[RichMethodRefl] = _applyMethodRefls
 
   def asType: ru.TypeSymbol = symbol.asType
   def asTpe: ru.Type = asType.toType

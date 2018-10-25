@@ -1,7 +1,7 @@
-package de.pintono.grind.refl.core.entityRefl.classRefl
+package de.pfke.squeeze.zlib.refl.entityRefl.classRefl
 
-import de.pintono.grind.refl.core.entityRefl.classRefl.mocks.{CaseClassMock3Args_0Defaults, ClassMock0Args}
-import de.pintono.grind.refl.core.entityRefl.ClassRefl
+import de.pfke.squeeze.zlib.refl.entityRefl.classRefl.mocks.{CaseClassMock3Args_0Defaults, ClassMock0Args}
+import de.pfke.squeeze.zlib.refl.entityRefl.ClassRefl
 import org.scalatest.{Matchers, WordSpec}
 
 class ClassRefl_obj_isClass_1String_Spec
@@ -22,7 +22,7 @@ class ClassRefl_obj_isClass_1String_Spec
 
     "passing an object" should {
       "should return true" in {
-        ClassRefl.isClass("de.pintono.grind.refl.core.entityRefl.caseClassRefl.mocks.ObjectMock") should be (right = true)
+        ClassRefl.isClass("de.pfke.squeeze.zlib.refl.entityRefl.caseClassRefl.mocks.ObjectMock") should be (right = true)
       }
     }
   }

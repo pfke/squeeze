@@ -1,6 +1,6 @@
-package de.pintono.grind.refl.core.richInstanceMirror
+package de.pfke.squeeze.zlib.refl.richInstanceMirror
 
-import de.pintono.grind.refl.core.RichInstanceMirror
+import de.pfke.squeeze.zlib.refl.RichInstanceMirror
 import org.scalatest.{Matchers, WordSpec}
 
 import scala.reflect.runtime.{universe => ru}
@@ -29,11 +29,12 @@ class RichInstanceMirrorSpec
   }
 
   "Build a RichInstanceMirror from a class" when {
-//    val tto = RichInstanceMirror(classOf[ClassMock])
+    //    val tto = RichInstanceMirror(classOf[ClassMock])
 
     "testing result" should {
       "should have the same type" in {
-//        tto.typeSignature should be (ru.typeOf[ClassMock])
+        // TODO
+        //        tto.typeSignature should be (ru.typeOf[ClassMock])
       }
     }
   }

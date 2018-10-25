@@ -1,6 +1,6 @@
-package de.pintono.grind.refl.core.richRuntimeMirror
+package de.pfke.squeeze.zlib.refl.richRuntimeMirror
 
-import de.pintono.grind.refl.core.RichRuntimeMirror
+import de.pfke.squeeze.zlib.refl.RichRuntimeMirror
 import org.scalatest.{Matchers, WordSpec}
 
 class RichRuntimerMirror_obj_apply_Spec

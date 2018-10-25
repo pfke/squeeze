@@ -32,10 +32,10 @@ class CipherHandler(
   algorithm: CipherAlgorithm
 ) {
   def decrypt(): Unit = {
-
+    // TODO
   }
 
   def encrypt(): Unit = {
-
+    // TODO
   }
 }

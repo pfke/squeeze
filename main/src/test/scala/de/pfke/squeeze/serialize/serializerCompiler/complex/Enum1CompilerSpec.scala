@@ -10,8 +10,8 @@ import de.pfke.squeeze.serialize.serializerCompiler.BaseCompilerSpec
 class Enum1CompilerSpec
   extends BaseCompilerSpec {
   "testing with simple Enum1Mock type [ByteOrder.BIG_ENDIAN]" when {
-    implicit val byteOrder = ByteOrder.BIG_ENDIAN
-    implicit val version = None
+    implicit val byteOrder: ByteOrder = ByteOrder.BIG_ENDIAN
+    implicit val version: None.type = None
 
     val tto = createTTO[Enum1Mock]()
 

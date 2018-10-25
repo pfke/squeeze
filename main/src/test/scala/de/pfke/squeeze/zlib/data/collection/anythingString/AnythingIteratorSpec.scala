@@ -11,7 +11,7 @@ class AnythingIteratorSpec
   extends WordSpecLike
     with Matchers {
   "testing exception on method 'read()'" when {
-    implicit val byteOrder = ByteOrder.BIG_ENDIAN
+    implicit val byteOrder: ByteOrder = ByteOrder.BIG_ENDIAN
 
     "passing an empty iterator" should {
       val tto = AnythingIterator(ByteString().iterator, bitAlignment = BitStringAlignment._32Bit)
@@ -79,7 +79,7 @@ class AnythingIteratorSpec
   }
 
   "testing exception on method 'read(DigitalLength)' (with BitLength)" when {
-    implicit val byteOrder = ByteOrder.BIG_ENDIAN
+    implicit val byteOrder: ByteOrder = ByteOrder.BIG_ENDIAN
 
     "passing an empty iterator" should {
       val tto = AnythingIterator(ByteString().iterator, bitAlignment = BitStringAlignment._32Bit)
@@ -147,7 +147,7 @@ class AnythingIteratorSpec
   }
 
   "testing exception on method 'read(DigitalLength)' (with matching ByteLength)" when {
-    implicit val byteOrder = ByteOrder.BIG_ENDIAN
+    implicit val byteOrder: ByteOrder = ByteOrder.BIG_ENDIAN
 
     "passing an empty iterator" should {
       val tto = AnythingIterator(ByteString().iterator, bitAlignment = BitStringAlignment._32Bit)
@@ -215,7 +215,7 @@ class AnythingIteratorSpec
   }
 
   "testing exception on method 'read(DigitalLength)' (with non-matching ByteLength)" when {
-    implicit val byteOrder = ByteOrder.BIG_ENDIAN
+    implicit val byteOrder: ByteOrder = ByteOrder.BIG_ENDIAN
 
     "passing an empty iterator" should {
       val tto = AnythingIterator(ByteString().iterator, bitAlignment = BitStringAlignment._32Bit)
@@ -283,7 +283,7 @@ class AnythingIteratorSpec
   }
 
   "testing read on certain types" when {
-    implicit val byteOrder = ByteOrder.BIG_ENDIAN
+    implicit val byteOrder: ByteOrder = ByteOrder.BIG_ENDIAN
 
     "type Boolean" should {
       "should read correct on method 'read()' (result is true)" in {

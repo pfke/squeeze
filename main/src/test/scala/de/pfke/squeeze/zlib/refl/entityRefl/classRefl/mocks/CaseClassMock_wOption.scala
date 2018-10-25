@@ -1,4 +1,4 @@
-package de.pintono.grind.refl.core.entityRefl.classRefl.mocks
+package de.pfke.squeeze.zlib.refl.entityRefl.classRefl.mocks
 
 case class CaseClassMock_wOption(
   arg1: Option[String] = None,

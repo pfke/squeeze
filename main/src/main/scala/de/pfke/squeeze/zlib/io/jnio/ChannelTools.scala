@@ -21,7 +21,7 @@ object ChannelTools {
     bytesToCopy: Long = Long.MaxValue,
     closeInput: Boolean = false,
     closeOutput: Boolean = false
-  ) {
+  ): Unit = {
     internalCopyChannels(input = input, output = output, bytesToCopy = bytesToCopy)
 
     // cleanup

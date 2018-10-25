@@ -29,7 +29,7 @@ trait StringIncludes {
           .newEncoder()
           .encode(CharBuffer.wrap(in))
       } catch {
-        case e: Exception => ByteBuffer.allocateDirect(0)
+        case _: Exception => ByteBuffer.allocateDirect(0)
       }
     }
   }
@@ -58,7 +58,7 @@ trait StringIncludes {
       try {
         Some(java.lang.Double.parseDouble(value.replace(',', '.')))
       } catch {
-        case e: NumberFormatException => None
+        case _: NumberFormatException => None
       }
     }
 
@@ -71,7 +71,7 @@ trait StringIncludes {
       try {
         Some(Integer.parseInt(value, radix))
       } catch {
-        case e: NumberFormatException => None
+        case _: NumberFormatException => None
       }
     }
 
@@ -84,7 +84,7 @@ trait StringIncludes {
       try {
         Some(java.lang.Long.parseLong(value, radix))
       } catch {
-        case e: NumberFormatException => None
+        case _: NumberFormatException => None
       }
     }
 
@@ -95,7 +95,7 @@ trait StringIncludes {
       try {
         Some(Integer.parseUnsignedInt(value, radix))
       } catch {
-        case e: NumberFormatException => None
+        case _: NumberFormatException => None
       }
     }
 
@@ -108,7 +108,7 @@ trait StringIncludes {
       try {
         Some(java.lang.Long.parseUnsignedLong(value, radix))
       } catch {
-        case e: NumberFormatException => None
+        case _: NumberFormatException => None
       }
     }
 
@@ -138,7 +138,7 @@ trait StringIncludes {
         Integer.parseInt(value, radix)
         true
       } catch {
-        case e: NumberFormatException => false
+        case _: NumberFormatException => false
       }
     }
 
@@ -150,7 +150,7 @@ trait StringIncludes {
         Integer.parseUnsignedInt(value, radix)
         true
       } catch {
-        case e: NumberFormatException => false
+        case _: NumberFormatException => false
       }
     }
 
@@ -162,7 +162,7 @@ trait StringIncludes {
         java.lang.Long.parseUnsignedLong(value, radix)
         true
       } catch {
-        case e: NumberFormatException => false
+        case _: NumberFormatException => false
       }
     }
   }

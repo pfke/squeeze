@@ -1,7 +1,7 @@
-package de.pintono.grind.refl.core.enumRefl
+package de.pfke.squeeze.zlib.refl.enumRefl
 
-import de.pintono.grind.refl.core.EnumRefl
-import de.pintono.grind.refl.core.enumRefl.mocks.Enum1Mock.Enum1Mock
+import de.pfke.squeeze.zlib.refl.EnumRefl
+import de.pfke.squeeze.zlib.refl.enumRefl.mocks.Enum1Mock.Enum1Mock
 import org.scalatest.{Matchers, WordSpec}
 
 import scala.reflect.runtime.{universe => ru}

@@ -1,4 +1,4 @@
-package de.pintono.grind.refl.core.entityRefl.caseClassRefl.mocks
+package de.pfke.squeeze.zlib.refl.entityRefl.caseClassRefl.mocks
 
 case class CaseClassMock3Args_0Defaults(
   arg1: String,

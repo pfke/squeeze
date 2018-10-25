@@ -9,14 +9,14 @@ import de.pfke.squeeze.serialize.serializerCompiler.BaseCompilerSpec
 class asBitfield_mock_aligned_multiSpec
   extends BaseCompilerSpec {
   "testing with simple asBitfield_mock_aligned_multi type [ByteOrder.BIG_ENDIAN]" when {
-    implicit val byteOrder = ByteOrder.BIG_ENDIAN
-    implicit val version = None
+    implicit val byteOrder: ByteOrder = ByteOrder.BIG_ENDIAN
+    implicit val version: None.type = None
 
     val tto = createTTO[asBitfield_mock_aligned_multi]()
     val value = asBitfield_mock_aligned_multi(
       field01 = 0x81.toByte,
-      field02 = 0x7e7e,
-      field03 = 0x32,
+      field02 = 0x6e7e.toShort,
+      field03 = 0x32.toByte,
       field04 = 0x12345678
     )
 

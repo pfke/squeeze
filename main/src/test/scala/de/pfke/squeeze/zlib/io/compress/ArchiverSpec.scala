@@ -3,7 +3,7 @@ package de.pfke.squeeze.zlib.io.compress
 import java.nio.file.Files
 
 import de.pfke.squeeze.testing.FileCleanAfterAll
-import de.pfke.squeeze.zlib.data.byTypes._
+import de.pfke.squeeze.zlib.data._
 import de.pfke.squeeze.zlib.crypto.ChecksumCalculator
 import de.pfke.squeeze.zlib.io.jnio._
 import org.scalatest.{Matchers, WordSpecLike}

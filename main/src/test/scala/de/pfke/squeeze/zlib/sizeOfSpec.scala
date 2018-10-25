@@ -1,6 +1,6 @@
 package de.pfke.squeeze.zlib
 
-import de.pintono.grind.refl.sizeOf
+import de.pfke.squeeze.zlib.refl.sizeOf
 import org.scalatest.{Matchers, WordSpec}
 
 class sizeOfSpec

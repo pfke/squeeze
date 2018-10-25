@@ -1,7 +1,6 @@
-package de.pintono.grind.refl.core.entityRefl
+package de.pfke.squeeze.zlib.refl.entityRefl
 
-import de.pintono.grind._
-import de.pintono.grind.refl.core.{GeneralRefl, MethodParameter, PrimitiveRefl, RichClassMirror, RichMethodRefl, RichRuntimeMirror}
+import de.pfke.squeeze.zlib.refl.{GeneralRefl, MethodParameter, PrimitiveRefl, RichClassMirror, RichMethodRefl, RichRuntimeMirror}
 
 import scala.reflect.ClassTag
 import scala.reflect.runtime.{universe => ru}
@@ -96,7 +95,7 @@ class ClassRefl (
   /**
     * Getter
     */
-  def ctorRichMethodRefls = _richClassMirror.ctorMethodRefls
+  def ctorRichMethodRefls: List[RichMethodRefl] = _richClassMirror.ctorMethodRefls
   def className: String = classSymbol.fullName
   def typeSignature: ru.Type = classSymbol.selfType
 

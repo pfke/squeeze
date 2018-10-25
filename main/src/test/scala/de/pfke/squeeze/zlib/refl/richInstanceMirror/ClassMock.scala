@@ -1,4 +1,4 @@
-package de.pintono.grind.refl.core.richInstanceMirror
+package de.pfke.squeeze.zlib.refl.richInstanceMirror
 
 class ClassMock(
   v1: String,

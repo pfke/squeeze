@@ -10,8 +10,8 @@ import de.pfke.squeeze.serialize.serializerCompiler.{BaseCompilerSpec, Serialize
 class InjectLengthSpec
   extends BaseCompilerSpec {
   "testing with simple InjectLengthMock type [ByteOrder.BIG_ENDIAN]" when {
-    implicit val byteOrder = ByteOrder.BIG_ENDIAN
-    implicit val version = None
+    implicit val byteOrder: ByteOrder = ByteOrder.BIG_ENDIAN
+    implicit val version: None.type = None
 
     val tto = createTTO[InjectLengthMock]()
     val value = InjectLengthMock(

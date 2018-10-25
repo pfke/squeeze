@@ -9,4 +9,4 @@ import scala.annotation.StaticAnnotation
  */
 case class withFixedLength(
   bytes: Int
-  ) extends StaticAnnotation
+) extends StaticAnnotation

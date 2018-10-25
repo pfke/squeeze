@@ -1,7 +1,6 @@
-package de.pintono.grind.refl.core.entityRefl
+package de.pfke.squeeze.zlib.refl.entityRefl
 
-import de.pintono.grind._
-import de.pintono.grind.refl.core.{MethodParameter, MethodParameterValue, RichInstanceMirror, RichMethodRefl, RichRuntimeMirror}
+import de.pfke.squeeze.zlib.refl.{MethodParameter, MethodParameterValue, RichInstanceMirror, RichMethodRefl, RichRuntimeMirror}
 
 import scala.reflect.ClassTag
 import scala.reflect.runtime.{universe => ru}

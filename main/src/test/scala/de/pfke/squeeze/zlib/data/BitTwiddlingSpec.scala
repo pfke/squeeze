@@ -18,7 +18,7 @@ class BitTwiddlingSpec
       "identify bit 0" in {
         object enum extends Enumeration {
           type enum = Value
-          val e1 = Value
+          val e1: enum.Value = Value
         }
         BitTwiddling.getMostSignificantBit(enum) should be (Some(0))
       }
@@ -26,8 +26,8 @@ class BitTwiddlingSpec
       "identify bit 127" in {
         object enum extends Enumeration {
           type enum = Value
-          val e1 = Value
-          val e2 = Value(127)
+          val e1: enum.Value = Value
+          val e2: enum.Value = Value(127)
         }
         BitTwiddling.getMostSignificantBit(enum) should be (Some(127))
       }

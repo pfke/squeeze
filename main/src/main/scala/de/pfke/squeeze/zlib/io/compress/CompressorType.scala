@@ -1,9 +1,11 @@
 package de.pfke.squeeze.zlib.io.compress
 
+import de.pfke.squeeze.zlib.io.compress
+
 object CompressorType
   extends Enumeration {
   type CompressorType = Value
 
-  val GZIP  = Value("gz")
-  val BZIP2 = Value("bz2")
+  val GZIP: compress.CompressorType.Value = Value("gz")
+  val BZIP2: compress.CompressorType.Value = Value("bz2")
 }

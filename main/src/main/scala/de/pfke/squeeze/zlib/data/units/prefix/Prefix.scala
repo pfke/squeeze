@@ -10,6 +10,6 @@ abstract class Prefix(
   symbol: String,
   name: String
   ) {
-  override def toString = symbol
+  override def toString: String = symbol
   def toValue: Double = math.pow(base, exp)
 }

@@ -9,8 +9,8 @@ import de.pfke.squeeze.serialize.serializerCompiler.BaseCompilerSpec
 class FullOfSimpleTypesCompilerSpec
   extends BaseCompilerSpec {
   "testing with simple FullOfSimpleTypesMock type [ByteOrder.BIG_ENDIAN]" when {
-    implicit val byteOrder = ByteOrder.BIG_ENDIAN
-    implicit val version = None
+    implicit val byteOrder: ByteOrder = ByteOrder.BIG_ENDIAN
+    implicit val version: None.type = None
 
     val tto = createTTO[FullOfSimpleTypesMock]()
     val value = FullOfSimpleTypesMock(

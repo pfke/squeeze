@@ -1,4 +1,4 @@
-package de.pintono.grind.refl.core.richRuntimeMirror.mocks
+package de.pfke.squeeze.zlib.refl.richRuntimeMirror.mocks
 
 case class CaseClassMock2Args_wMethods(
   arg1: String,

@@ -4,7 +4,7 @@ import java.nio.ByteOrder
 
 import de.pfke.squeeze.zlib.version.PatchLevelVersion
 import de.pfke.squeeze.zlib.data.collection.anythingString.AnythingIterator
-import de.pintono.grind.refl.core.GeneralRefl.TypeInfo
+import de.pfke.squeeze.zlib.refl.GeneralRefl.TypeInfo
 import de.pfke.squeeze.serialize.serializerCompiler.CompiledSerializer
 import de.pfke.squeeze.serialize.serializerHints.SerializerHint
 
