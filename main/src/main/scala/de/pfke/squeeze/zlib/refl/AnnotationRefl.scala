@@ -132,33 +132,8 @@ object AnnotationRefl {
       case ru.Literal(ru.Constant(m)) => m
     }
 
-    //if (args.size != annot.tree.children.tail.size) {
-    //  val r1 = args
-    //  val r2 = annot.tree.children
-    //
-    //
-    //  println()
-    //}
-
-    // TODO: merge w/ default args
-    val w1 = RichRuntimeMirror()(classLoader)
-    val w2 = RichInstanceMirror(annotType.typeSymbol.asClass)
-    val w3 = w2.applyMethodRefls
-    val w4 = new CaseClassRefl(annotType.typeSymbol.asClass)
-    val w5 = w4.instantiate[A](args:_*)
-    w5
-
-
-    //require(args.size == annot.tree.children.tail.size, s"wanted me to instantiate the annotation '${annot.tree.tpe}', but ALL arguments needs to be constant values (no enums either)")
-    //
-    //val runtimeMirror = ru.runtimeMirror(classLoader)                                     // get runtimeMirror
-    //val classSymbol = annotType.typeSymbol.asClass                                        // get ClassSymbol for the annotation class
-    //val classMirror = runtimeMirror.reflectClass(classSymbol)                             // get classMirror for the class
-    //val constructorMethodSymbol = annotType.decl(ru.termNames.CONSTRUCTOR).asMethod       // get MethodSymbol for the constructor method
-    //val constructorMethodMirror = classMirror.reflectConstructor(constructorMethodSymbol) // get constructorMethodMirror for the method
-    //val instance = constructorMethodMirror(args: _*).asInstanceOf[A]                      // use the constructor to instance the annotation class.  Pass in the arguments.
-    //
-    //instance
+    new CaseClassRefl(annotType.typeSymbol.asClass)
+      .instantiate[A](args:_*)
   }
 
   /**

@@ -33,10 +33,12 @@ class FromVersion_MasterClass_spec
                 |  ): de.pfke.squeeze.serialize.mocks.annots.classAnnots.FromVersion_MasterClass = {
                 |    require(iter.len.toByte >= 0, s"[de.pfke.squeeze.serialize.mocks.annots.classAnnots.FromVersion_MasterClass] given input has only $${iter.len} bytes left, but we need 0 byte")
                 |    // read iter
-                |    val _1stArg = serializerContainer.read[Short](iter)
+                |    val _1stArg = serializerContainer.read[de.pfke.squeeze.serialize.mocks.annots.classAnnots.FromVersion_SubClass_noLevelPassed](iter)
+                |    val _2ndArg = serializerContainer.read[de.pfke.squeeze.serialize.mocks.annots.classAnnots.FromVersion_SubClass_levelPassed](iter)
                 |    // create object
                 |    de.pfke.squeeze.serialize.mocks.annots.classAnnots.FromVersion_MasterClass(
-                |      _1stArg = _1stArg
+                |      _1stArg = _1stArg,
+                |      _2ndArg = _2ndArg
                 |    )
                 |  }
                 |
@@ -50,7 +52,8 @@ class FromVersion_MasterClass_spec
                 |    version: Option[PatchLevelVersion]
                 |  ): Unit = {
                 |    require(findOneHint[ByteStringBuilderHint](hints = hints).nonEmpty, s"[de.pfke.squeeze.serialize.mocks.annots.classAnnots.FromVersion_MasterClass] given input has no ByteStringBuilderHint")
-                |    serializerContainer.write[Short](data._1stArg, hints = hints:_*)
+                |    serializerContainer.write[de.pfke.squeeze.serialize.mocks.annots.classAnnots.FromVersion_SubClass_noLevelPassed](data._1stArg, hints = hints:_*)
+                |    serializerContainer.write[de.pfke.squeeze.serialize.mocks.annots.classAnnots.FromVersion_SubClass_levelPassed](data._2ndArg, hints = hints:_*)
                 |  }
                 |}
                 |new FromVersion_MasterClassSerializer()

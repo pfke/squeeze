@@ -8,17 +8,19 @@ class InjectLengthOnSubSpec
     "testing serializer for InjectLengthOnSubMock type" when {
       checkThis[InjectLengthOnSubMock](
         code = s"""
-                  |import de.pintono.tools.squeeze.core.{Serializer, SerializerContainer}
-                  |import de.pintono.tools.squeeze.core.serializerHints.{BitStringBuilderHint, ByteStringBuilderHint, SerializerHint, SizeInBitHint, SizeInByteHint}
-                  |import de.pintono.tools.squeeze.zlib.{PatchLevelVersion, ReflHelper}
-                  |import de.pintono.tools.squeeze.zlib.anythingString.AnythingIterator
-                  |import de.pintono.tools.squeeze.zlib.bitString.{BitStringAlignment, BitStringBuilder}
-                  |import de.pintono.tools.squeeze.zlib.length.digital.{BitLength, ByteLength}
+                  |import de.pfke.squeeze.zlib.version.PatchLevelVersion
+                  |import de.pfke.squeeze.zlib.data.collection.anythingString.AnythingIterator
+                  |import de.pfke.squeeze.zlib.data.collection.bitString.{BitStringAlignment, BitStringBuilder}
+                  |import de.pfke.squeeze.zlib.data.length.digital.{BitLength, ByteLength}
+                  |import de.pfke.squeeze.zlib.refl.GeneralRefl
+                  |import de.pfke.squeeze.serialize.{Serializer, SerializerContainer}
+                  |import de.pfke.squeeze.serialize.serializerHints._
+                  |import de.pfke.squeeze.zlib._
                   |import java.nio.ByteOrder
                   |
                   |class InjectLengthOnSubMockSerializer
-                  |  extends Serializer[de.pintono.tools.squeeze.core.mocks.InjectLengthOnSubMock] {
-                  |  override def objectTypeInfo = ReflHelper.generateTypeInfo[de.pintono.tools.squeeze.core.mocks.InjectLengthOnSubMock]
+                  |  extends Serializer[de.pfke.squeeze.serialize.mocks.annots.InjectLengthOnSubMock] {
+                  |  override def objectTypeInfo = GeneralRefl.generateTypeInfo[de.pfke.squeeze.serialize.mocks.annots.InjectLengthOnSubMock]
                   |
                   |  override def read(
                   |    iter: AnythingIterator,
@@ -28,18 +30,18 @@ class InjectLengthOnSubSpec
                   |    byteOrder: ByteOrder,
                   |    serializerContainer: SerializerContainer,
                   |    version: Option[PatchLevelVersion]
-                  |  ): de.pintono.tools.squeeze.core.mocks.InjectLengthOnSubMock = {
-                  |    require(iter.len.toByte >= 2, s"[de.pintono.tools.squeeze.core.mocks.InjectLengthOnSubMock] given input has only $${iter.len} bytes left, but we need 2 byte")
+                  |  ): de.pfke.squeeze.serialize.mocks.annots.InjectLengthOnSubMock = {
+                  |    require(iter.len.toByte >= 2, s"[de.pfke.squeeze.serialize.mocks.annots.InjectLengthOnSubMock] given input has only $${iter.len} bytes left, but we need 2 byte")
                   |    // read iter
-                  |    val _1stParam = serializerContainer.read[de.pintono.tools.squeeze.core.mocks.SubInjectLengthOnSubMock](iter)
+                  |    val _1stParam = serializerContainer.read[de.pfke.squeeze.serialize.mocks.annots.SubInjectLengthOnSubMock](iter)
                   |    // create object
-                  |    de.pintono.tools.squeeze.core.mocks.InjectLengthOnSubMock(
+                  |    de.pfke.squeeze.serialize.mocks.annots.InjectLengthOnSubMock(
                   |      _1stParam = _1stParam
                   |    )
                   |  }
                   |
                   |  override def write(
-                  |    data: de.pintono.tools.squeeze.core.mocks.InjectLengthOnSubMock,
+                  |    data: de.pfke.squeeze.serialize.mocks.annots.InjectLengthOnSubMock,
                   |    hints: SerializerHint*
                   |  )(
                   |    implicit
@@ -47,8 +49,8 @@ class InjectLengthOnSubSpec
                   |    serializerContainer: SerializerContainer,
                   |    version: Option[PatchLevelVersion]
                   |  ): Unit = {
-                  |    require(findOneHint[ByteStringBuilderHint](hints = hints).nonEmpty, s"[de.pintono.tools.squeeze.core.mocks.InjectLengthOnSubMock] given input has no ByteStringBuilderHint")
-                  |    serializerContainer.write[de.pintono.tools.squeeze.core.mocks.SubInjectLengthOnSubMock](data._1stParam, hints = hints:_*)
+                  |    require(findOneHint[ByteStringBuilderHint](hints = hints).nonEmpty, s"[de.pfke.squeeze.serialize.mocks.annots.InjectLengthOnSubMock] given input has no ByteStringBuilderHint")
+                  |    serializerContainer.write[de.pfke.squeeze.serialize.mocks.annots.SubInjectLengthOnSubMock](data._1stParam, hints = hints:_*)
                   |  }
                   |}
                   |new InjectLengthOnSubMockSerializer()

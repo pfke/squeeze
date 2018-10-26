@@ -18,9 +18,9 @@ class FromVersion_SubClass_noLevelPassed_spec
                 |import de.pfke.squeeze.zlib._
                 |import java.nio.ByteOrder
                 |
-                |class FromVersion_SubClass_noLevelPassed_v00020001Serializer
-                |  extends Serializer[de.pfke.squeeze.serialize.mocks.annots.classAnnots.FromVersion_SubClass_noLevelPassed_v00020001] {
-                |  override def objectTypeInfo = GeneralRefl.generateTypeInfo[de.pfke.squeeze.serialize.mocks.annots.classAnnots.FromVersion_SubClass_noLevelPassed_v00020001]
+                |class FromVersion_SubClass_noLevelPassedSerializer
+                |  extends Serializer[de.pfke.squeeze.serialize.mocks.annots.classAnnots.FromVersion_SubClass_noLevelPassed] {
+                |  override def objectTypeInfo = GeneralRefl.generateTypeInfo[de.pfke.squeeze.serialize.mocks.annots.classAnnots.FromVersion_SubClass_noLevelPassed]
                 |
                 |  override def read(
                 |    iter: AnythingIterator,
@@ -30,18 +30,21 @@ class FromVersion_SubClass_noLevelPassed_spec
                 |    byteOrder: ByteOrder,
                 |    serializerContainer: SerializerContainer,
                 |    version: Option[PatchLevelVersion]
-                |  ): de.pfke.squeeze.serialize.mocks.annots.classAnnots.FromVersion_SubClass_noLevelPassed_v00020001 = {
-                |    require(iter.len.toByte >= 2, s"[de.pfke.squeeze.serialize.mocks.annots.classAnnots.FromVersion_SubClass_noLevelPassed_v00020001] given input has only $${iter.len} bytes left, but we need 2 byte")
+                |  ): de.pfke.squeeze.serialize.mocks.annots.classAnnots.FromVersion_SubClass_noLevelPassed = {
+                |    require(iter.len.toByte >= 0, s"[de.pfke.squeeze.serialize.mocks.annots.classAnnots.FromVersion_SubClass_noLevelPassed] given input has only $${iter.len} bytes left, but we need 0 byte")
                 |    // read iter
-                |    val _1stArg = serializerContainer.read[Short](iter)
+                |    (findIfaceTypeHint(hints = hints), version) match {
+                |      case (None, None) => serializerContainer.read[de.pfke.squeeze.serialize.mocks.annots.classAnnots.FromVersion_SubClass_noLevelPassed_v00000000](iter, hints = hints:_*)
+                |      case (None, Some(PatchLevelVersion(2, 1, 0))) => serializerContainer.read[de.pfke.squeeze.serialize.mocks.annots.classAnnots.FromVersion_SubClass_noLevelPassed_v00020001](iter, hints = hints:_*)
+                |
+                |      case (t1, t2) => throw new SerializerRunException(s"trying to unsqueeze a trait (de.pfke.squeeze.serialize.mocks.annots.classAnnots.FromVersion_SubClass_noLevelPassed), but either iface type ($$t1) or version ($$t2) does not match")
+                |    }
                 |    // create object
-                |    de.pfke.squeeze.serialize.mocks.annots.classAnnots.FromVersion_SubClass_noLevelPassed_v00020001(
-                |      _1stArg = _1stArg
-                |    )
+                |    // no its a trait
                 |  }
                 |
                 |  override def write(
-                |    data: de.pfke.squeeze.serialize.mocks.annots.classAnnots.FromVersion_SubClass_noLevelPassed_v00020001,
+                |    data: de.pfke.squeeze.serialize.mocks.annots.classAnnots.FromVersion_SubClass_noLevelPassed,
                 |    hints: SerializerHint*
                 |  )(
                 |    implicit
@@ -49,11 +52,16 @@ class FromVersion_SubClass_noLevelPassed_spec
                 |    serializerContainer: SerializerContainer,
                 |    version: Option[PatchLevelVersion]
                 |  ): Unit = {
-                |    require(findOneHint[ByteStringBuilderHint](hints = hints).nonEmpty, s"[de.pfke.squeeze.serialize.mocks.annots.classAnnots.FromVersion_SubClass_noLevelPassed_v00020001] given input has no ByteStringBuilderHint")
-                |    serializerContainer.write[Short](data._1stArg, hints = hints:_*)
+                |    require(findOneHint[ByteStringBuilderHint](hints = hints).nonEmpty, s"[de.pfke.squeeze.serialize.mocks.annots.classAnnots.FromVersion_SubClass_noLevelPassed] given input has no ByteStringBuilderHint")
+                |    val written = data match {
+                |      case t: de.pfke.squeeze.serialize.mocks.annots.classAnnots.FromVersion_SubClass_noLevelPassed_v00000000 => serializerContainer.write[de.pfke.squeeze.serialize.mocks.annots.classAnnots.FromVersion_SubClass_noLevelPassed_v00000000](t, hints = hints:_*)
+                |      case t: de.pfke.squeeze.serialize.mocks.annots.classAnnots.FromVersion_SubClass_noLevelPassed_v00020001 => serializerContainer.write[de.pfke.squeeze.serialize.mocks.annots.classAnnots.FromVersion_SubClass_noLevelPassed_v00020001](t, hints = hints:_*)
+                |
+                |      case t => throw new SerializerRunException(s"trying to squeeze a trait (de.pfke.squeeze.serialize.mocks.annots.classAnnots.FromVersion_SubClass_noLevelPassed), but type is unknown")
+                |    }
                 |  }
                 |}
-                |new FromVersion_SubClass_noLevelPassed_v00020001Serializer()
+                |new FromVersion_SubClass_noLevelPassedSerializer()
                 |""".stripMargin
     )
   }

@@ -1,6 +1,6 @@
 package de.pfke.squeeze.serialize.mocks.annots.classAnnots
 
-import de.pfke.squeeze.annots.classAnnots.fromVersion
+import de.pfke.squeeze.annots.classAnnots.{fromVersion, typeForIface}
 
 trait FromVersion_SubClass_noLevelPassed
 

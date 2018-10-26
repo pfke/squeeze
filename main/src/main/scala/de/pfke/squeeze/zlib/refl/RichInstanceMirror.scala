@@ -99,7 +99,7 @@ class RichInstanceMirror (
     methodName: String,
     args: Any*
   ): Option[Any] = {
-    getMethodMirror("apply") match {
+    getMethodMirror(methodName = "apply") match {
       case Some(t) => Try(t.apply(args:_*)).toOption
       case None => throw new IllegalArgumentException("no apply method found")
     }

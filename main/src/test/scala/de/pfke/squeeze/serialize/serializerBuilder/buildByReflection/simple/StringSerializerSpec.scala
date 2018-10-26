@@ -6,18 +6,13 @@ class StringSerializerSpec
   extends BaseSpec {
   "testing serializer for simple String type" when {
     checkThis[java.lang.String](
+      prefix = Some("java.lang."),
       code = s"""
-                |import de.pintono.tools.squeeze.core.{Serializer, SerializerContainer}
-                |import de.pintono.tools.squeeze.core.serializerHints.{BitStringBuilderHint, ByteStringBuilderHint, SerializerHint, SizeInBitHint, SizeInByteHint}
-                |import de.pintono.tools.squeeze.zlib.{PatchLevelVersion, ReflHelper}
-                |import de.pintono.tools.squeeze.zlib.anythingString.AnythingIterator
-                |import de.pintono.tools.squeeze.zlib.bitString.{BitStringAlignment, BitStringBuilder}
-                |import de.pintono.tools.squeeze.zlib.length.digital.{BitLength, ByteLength}
-                |import java.nio.ByteOrder
+                |$baseImports
                 |
                 |class StringSerializer
-                |  extends Serializer[java.lang.String] {
-                |  override def objectTypeInfo = ReflHelper.generateTypeInfo[java.lang.String]
+                |  extends Serializer[String] {
+                |  override def objectTypeInfo = GeneralRefl.generateTypeInfo[String]
                 |
                 |  override protected def byteStringWriteOp(implicit byteOrder: ByteOrder) = None
                 |  override protected def defaultSize = None
@@ -28,17 +23,11 @@ class StringSerializerSpec
 
     checkThis[String](
       code = s"""
-                |import de.pintono.tools.squeeze.core.{Serializer, SerializerContainer}
-                |import de.pintono.tools.squeeze.core.serializerHints.{BitStringBuilderHint, ByteStringBuilderHint, SerializerHint, SizeInBitHint, SizeInByteHint}
-                |import de.pintono.tools.squeeze.zlib.{PatchLevelVersion, ReflHelper}
-                |import de.pintono.tools.squeeze.zlib.anythingString.AnythingIterator
-                |import de.pintono.tools.squeeze.zlib.bitString.{BitStringAlignment, BitStringBuilder}
-                |import de.pintono.tools.squeeze.zlib.length.digital.{BitLength, ByteLength}
-                |import java.nio.ByteOrder
+                |$baseImports
                 |
                 |class StringSerializer
                 |  extends Serializer[String] {
-                |  override def objectTypeInfo = ReflHelper.generateTypeInfo[String]
+                |  override def objectTypeInfo = GeneralRefl.generateTypeInfo[String]
                 |
                 |  override protected def byteStringWriteOp(implicit byteOrder: ByteOrder) = None
                 |  override protected def defaultSize = None

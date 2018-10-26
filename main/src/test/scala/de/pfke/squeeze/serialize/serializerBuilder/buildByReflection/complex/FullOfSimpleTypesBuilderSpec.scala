@@ -8,17 +8,11 @@ class FullOfSimpleTypesBuilderSpec
   "testing serializer for FullOfSimpleTypes type" when {
     checkThis[FullOfSimpleTypesMock](
       code = s"""
-                |import de.pintono.tools.squeeze.core.{Serializer, SerializerContainer}
-                |import de.pintono.tools.squeeze.core.serializerHints.{BitStringBuilderHint, ByteStringBuilderHint, SerializerHint, SizeInBitHint, SizeInByteHint}
-                |import de.pintono.tools.squeeze.zlib.{PatchLevelVersion, ReflHelper}
-                |import de.pintono.tools.squeeze.zlib.anythingString.AnythingIterator
-                |import de.pintono.tools.squeeze.zlib.bitString.{BitStringAlignment, BitStringBuilder}
-                |import de.pintono.tools.squeeze.zlib.length.digital.{BitLength, ByteLength}
-                |import java.nio.ByteOrder
+                |$baseImports
                 |
                 |class FullOfSimpleTypesMockSerializer
-                |  extends Serializer[de.pintono.tools.squeeze.core.mocks.FullOfSimpleTypesMock] {
-                |  override def objectTypeInfo = ReflHelper.generateTypeInfo[de.pintono.tools.squeeze.core.mocks.FullOfSimpleTypesMock]
+                |  extends Serializer[de.pfke.squeeze.serialize.mocks.FullOfSimpleTypesMock] {
+                |  override def objectTypeInfo = GeneralRefl.generateTypeInfo[de.pfke.squeeze.serialize.mocks.FullOfSimpleTypesMock]
                 |
                 |  override def read(
                 |    iter: AnythingIterator,
@@ -28,8 +22,8 @@ class FullOfSimpleTypesBuilderSpec
                 |    byteOrder: ByteOrder,
                 |    serializerContainer: SerializerContainer,
                 |    version: Option[PatchLevelVersion]
-                |  ): de.pintono.tools.squeeze.core.mocks.FullOfSimpleTypesMock = {
-                |    require(iter.len.toByte >= 30, s"[de.pintono.tools.squeeze.core.mocks.FullOfSimpleTypesMock] given input has only $${iter.len} bytes left, but we need 30 byte")
+                |  ): de.pfke.squeeze.serialize.mocks.FullOfSimpleTypesMock = {
+                |    require(iter.len.toByte >= 30, s"[de.pfke.squeeze.serialize.mocks.FullOfSimpleTypesMock] given input has only $${iter.len} bytes left, but we need 30 byte")
                 |    // read iter
                 |    val _1stParam = serializerContainer.read[Boolean](iter)
                 |    val _2ndParam = serializerContainer.read[Byte](iter)
@@ -40,7 +34,7 @@ class FullOfSimpleTypesBuilderSpec
                 |    val _7thParam = serializerContainer.read[Long](iter)
                 |    val _8thParam = serializerContainer.read[Short](iter)
                 |    // create object
-                |    de.pintono.tools.squeeze.core.mocks.FullOfSimpleTypesMock(
+                |    de.pfke.squeeze.serialize.mocks.FullOfSimpleTypesMock(
                 |      _1stParam = _1stParam,
                 |      _2ndParam = _2ndParam,
                 |      _3rdParam = _3rdParam,
@@ -53,7 +47,7 @@ class FullOfSimpleTypesBuilderSpec
                 |  }
                 |
                 |  override def write(
-                |    data: de.pintono.tools.squeeze.core.mocks.FullOfSimpleTypesMock,
+                |    data: de.pfke.squeeze.serialize.mocks.FullOfSimpleTypesMock,
                 |    hints: SerializerHint*
                 |  )(
                 |    implicit
@@ -61,7 +55,7 @@ class FullOfSimpleTypesBuilderSpec
                 |    serializerContainer: SerializerContainer,
                 |    version: Option[PatchLevelVersion]
                 |  ): Unit = {
-                |    require(findOneHint[ByteStringBuilderHint](hints = hints).nonEmpty, s"[de.pintono.tools.squeeze.core.mocks.FullOfSimpleTypesMock] given input has no ByteStringBuilderHint")
+                |    require(findOneHint[ByteStringBuilderHint](hints = hints).nonEmpty, s"[de.pfke.squeeze.serialize.mocks.FullOfSimpleTypesMock] given input has no ByteStringBuilderHint")
                 |    serializerContainer.write[Boolean](data._1stParam, hints = hints:_*)
                 |    serializerContainer.write[Byte](data._2ndParam, hints = hints:_*)
                 |    serializerContainer.write[Char](data._3rdParam, hints = hints:_*)

@@ -59,24 +59,7 @@ class GeneralRefl_obj_typeOfA_1A_Spec
           (r1 =:= r2) should be (right = true)
         }
 
-
-
-
-
-//        val f1 = RichRuntimeMirror()
-//        val f2 = f1.getInstanceMirror(Enum1Mock._2ndValue)
-//        val f3 = f2.symbol
-//        val f4 = f3.typeSignature
-//
-//        val a2 = f1.getInstanceMirror(Enum1Mock)
-//        val a3 = a2.symbol
-//        val a4 = a3.typeSignature
-//
-//        val r1 = GeneralRefl.typeOf(Enum1Mock._2ndValue)
-//        val r2 = ru.typeOf[Enum1Mock.Value]
-
         (GeneralRefl.typeOf(Enum1Mock._2ndValue) =:= ru.typeOf[Enum1Mock.Value]) should be (right = true)
-//        GeneralRefl.typeOf(Enum1Mock._2ndValue) should be (ru.typeOf[Enum1Mock.Value])
       }
     }
   }

@@ -15,6 +15,17 @@ abstract class BaseSpec
   extends WordSpec
     with Matchers
     with FileCleanAfterAll {
+  protected val baseImports: String =
+    """import de.pfke.squeeze.zlib.version.PatchLevelVersion
+      |import de.pfke.squeeze.zlib.data.collection.anythingString.AnythingIterator
+      |import de.pfke.squeeze.zlib.data.collection.bitString.{BitStringAlignment, BitStringBuilder}
+      |import de.pfke.squeeze.zlib.data.length.digital.{BitLength, ByteLength}
+      |import de.pfke.squeeze.zlib.refl.GeneralRefl
+      |import de.pfke.squeeze.serialize.{Serializer, SerializerContainer}
+      |import de.pfke.squeeze.serialize.serializerHints._
+      |import de.pfke.squeeze.zlib._
+      |import java.nio.ByteOrder""".stripMargin
+
   /**
     * Testing the serializer for the given type
     */
@@ -43,8 +54,8 @@ abstract class BaseSpec
           val resFile = cleanFileAfter("cmp_res".createTempFile())
 
           Seq(s"diff", "-du",
-            s"${cleanFileAfter("cmp_filea".createTempFile()).write(tto.code.asByteBuffer_iso8859_1)}",
-            s"${cleanFileAfter("cmp_fileb".createTempFile()).write(code.asByteBuffer_iso8859_1)}"
+            s"${cleanFileAfter("cmp_filea".createTempFile()).write(code.asByteBuffer_iso8859_1)}",
+            s"${cleanFileAfter("cmp_fileb".createTempFile()).write(tto.code.asByteBuffer_iso8859_1)}"
           ) #> resFile.toFile !
 
           resFile.read().asString_iso8859_1

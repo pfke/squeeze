@@ -6,18 +6,13 @@ class CharSerializerSpec
   extends BaseSpec {
   "testing serializer for simple Char type" when {
     checkThis[java.lang.Character](
+      prefix = Some("java.lang."),
       code = s"""
-                |import de.pintono.tools.squeeze.core.{Serializer, SerializerContainer}
-                |import de.pintono.tools.squeeze.core.serializerHints.{BitStringBuilderHint, ByteStringBuilderHint, SerializerHint, SizeInBitHint, SizeInByteHint}
-                |import de.pintono.tools.squeeze.zlib.{PatchLevelVersion, ReflHelper}
-                |import de.pintono.tools.squeeze.zlib.anythingString.AnythingIterator
-                |import de.pintono.tools.squeeze.zlib.bitString.{BitStringAlignment, BitStringBuilder}
-                |import de.pintono.tools.squeeze.zlib.length.digital.{BitLength, ByteLength}
-                |import java.nio.ByteOrder
+                |$baseImports
                 |
                 |class CharacterSerializer
-                |  extends Serializer[java.lang.Character] {
-                |  override def objectTypeInfo = ReflHelper.generateTypeInfo[java.lang.Character]
+                |  extends Serializer[Character] {
+                |  override def objectTypeInfo = GeneralRefl.generateTypeInfo[Character]
                 |
                 |  override protected def byteStringWriteOp(implicit byteOrder: ByteOrder) = Some({ (bsb,value) => bsb.putShort(value) })
                 |  override protected def defaultSize = Some(ByteLength(2))
@@ -29,17 +24,11 @@ class CharSerializerSpec
     checkThis[scala.Char](
       prefix = Some("scala."),
       code = s"""
-                |import de.pintono.tools.squeeze.core.{Serializer, SerializerContainer}
-                |import de.pintono.tools.squeeze.core.serializerHints.{BitStringBuilderHint, ByteStringBuilderHint, SerializerHint, SizeInBitHint, SizeInByteHint}
-                |import de.pintono.tools.squeeze.zlib.{PatchLevelVersion, ReflHelper}
-                |import de.pintono.tools.squeeze.zlib.anythingString.AnythingIterator
-                |import de.pintono.tools.squeeze.zlib.bitString.{BitStringAlignment, BitStringBuilder}
-                |import de.pintono.tools.squeeze.zlib.length.digital.{BitLength, ByteLength}
-                |import java.nio.ByteOrder
+                |$baseImports
                 |
                 |class CharSerializer
                 |  extends Serializer[Char] {
-                |  override def objectTypeInfo = ReflHelper.generateTypeInfo[Char]
+                |  override def objectTypeInfo = GeneralRefl.generateTypeInfo[Char]
                 |
                 |  override protected def byteStringWriteOp(implicit byteOrder: ByteOrder) = Some({ (bsb,value) => bsb.putShort(value) })
                 |  override protected def defaultSize = Some(ByteLength(2))
@@ -50,17 +39,11 @@ class CharSerializerSpec
 
     checkThis[Char](
       code = s"""
-                |import de.pintono.tools.squeeze.core.{Serializer, SerializerContainer}
-                |import de.pintono.tools.squeeze.core.serializerHints.{BitStringBuilderHint, ByteStringBuilderHint, SerializerHint, SizeInBitHint, SizeInByteHint}
-                |import de.pintono.tools.squeeze.zlib.{PatchLevelVersion, ReflHelper}
-                |import de.pintono.tools.squeeze.zlib.anythingString.AnythingIterator
-                |import de.pintono.tools.squeeze.zlib.bitString.{BitStringAlignment, BitStringBuilder}
-                |import de.pintono.tools.squeeze.zlib.length.digital.{BitLength, ByteLength}
-                |import java.nio.ByteOrder
+                |$baseImports
                 |
                 |class CharSerializer
                 |  extends Serializer[Char] {
-                |  override def objectTypeInfo = ReflHelper.generateTypeInfo[Char]
+                |  override def objectTypeInfo = GeneralRefl.generateTypeInfo[Char]
                 |
                 |  override protected def byteStringWriteOp(implicit byteOrder: ByteOrder) = Some({ (bsb,value) => bsb.putShort(value) })
                 |  override protected def defaultSize = Some(ByteLength(2))

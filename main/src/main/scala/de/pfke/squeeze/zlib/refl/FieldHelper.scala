@@ -1,7 +1,10 @@
 package de.pfke.squeeze.zlib.refl
 
+import de.pfke.squeeze.annots.AnnotationHelperIncludes._
+import de.pfke.squeeze.zlib.data._
+import de.pfke.squeeze.zlib.data.collection.bitString.BitStringAlignment
+
 import scala.collection.mutable
-import scala.collection.mutable.ArrayBuffer
 import scala.reflect.ClassTag
 import scala.reflect.runtime.{universe => ru}
 
@@ -44,43 +47,37 @@ object FieldHelper {
   }
 
   /**
-    * Group all field of the passed class by bitfields and non-bitfields.
-    * Group by alignment.
+    * Group all field by bitfields and non-bitfields and keep track of BitStringAlignment.
     */
   def groupByBitfields(
     tpe: ru.Type
   ): List[List[FieldDescr]] = {
-// TODO: mit squeeze entkoppeln
-//    val bitsToAlign = tpe
-//      .typeSymbol
-//      .annotations
-//      .getAlignBitfieldsBy
-//      .matchTo(_.bits, BitStringAlignment.bitWidth(BitStringAlignment._32Bit))
+    val bitsToAlign = tpe
+      .typeSymbol
+      .annotations
+      .getAlignBitfieldsBy
+      .matchTo(_.bits, BitStringAlignment.bitWidth(BitStringAlignment._32Bit))
+    val allFields = getFields(tpe = tpe)
 
-    val r1 = getFields(tpe = tpe)
+    def bothHasOrBothHasnt(a: FieldDescr, b: FieldDescr): Boolean = !(a.annos.hasAsBitfield ^ b.annos.hasAsBitfield)
+    def countBits(in: List[FieldDescr]): Int = in.foldLeft(0)((sum,iter) => sum + getBits(iter))
+    def getBits(in: FieldDescr): Int = in.annos.getAsBitfield.matchTo(_.bits, default = 0)
+    def groupBy(
+      resultList : List[List[FieldDescr]],
+      currentList: List[FieldDescr],
+      in         : List[FieldDescr]
+    ): List[List[FieldDescr]] = {
+      in match {
+        case Nil => resultList ++ List(currentList)
 
-    val sss = new ArrayBuffer[ArrayBuffer[FieldDescr]]()
-    var isBitfieldRun = false
-    r1.foreach { i =>
-// TODO: mit squeeze entkoppeln
-//      if (i.annos.hasAnnot[asBitfield]) {
-//        if (!isBitfieldRun) {
-//          sss += new ArrayBuffer[FieldDescr]()
-//          isBitfieldRun = true
-//        }
-//
-//        sss.last += i
-//      } else {
-        if (isBitfieldRun || sss.isEmpty) {
-          sss += new ArrayBuffer[FieldDescr]()
-        }
+        case head :: tail if (countBits(currentList) + getBits(head)) > bitsToAlign => groupBy(resultList ++ List(currentList), List(head), tail)
+        case head :: tail if bothHasOrBothHasnt(currentList.last, head)             => groupBy(resultList, currentList ++ List(head), tail)
 
-        sss.last += i
-        isBitfieldRun = false
-//      }
+        case head :: tail => groupBy(resultList ++ List(currentList), List(head), tail)
+      }
     }
 
-    sss.map(_.toList).toList
+    groupBy(List.empty, List(allFields.head), allFields.drop(1))
   }
 
   /**

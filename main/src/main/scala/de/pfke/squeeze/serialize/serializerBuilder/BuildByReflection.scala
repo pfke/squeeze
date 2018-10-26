@@ -265,29 +265,19 @@ class BuildByReflection
         }
       }
 
-    // any class defined w/o 'typeForIface' annot? -> exception
-    allSubClasses
-      .find(_.foundAnnots.ifaceOpt.isEmpty) match {
-      case Some(x) => throw new SerializerBuildException(s"build iter code for iface '$tpe', but at least one derived class (${x.clazz.tpe}) has no 'typeForIface' annotation")
-      case None =>
-    }
-
-    def getVersionMatcher(
+    def versionOptToString(
       annot: Option[fromVersion]
-    ): String = {
-      annot match {
-        case Some(x) => s"Some(PatchLevelVersion(${x.major}, ${x.minor}, ${x.level}))"
-        case None => "None"
-      }
-    }
+    ): String = annot.matchTo(i => s"Some(PatchLevelVersion(${i.major}, ${i.minor}, ${i.level}))", default = "None")
+
+    def ifaceOptToString(
+      annot: Option[typeForIface]
+    ): String = annot.matchTo(i => s"Some(${i.value})", default = "None")
 
     implicit def orderingTI[A <: TypeToFoundAnnotsOpts]: Ordering[A] = Ordering.by { i => s"${i.clazz.tpe.toString}${i.foundAnnots.versionOpt.getOrElse(fromVersion(0, 0))}" }
 
     val code = allSubClasses
-      .filterNot(_.foundAnnots.ifaceOpt.isEmpty)
       .sortBy { i => i }
-      .map { i => TypeToFoundAnnots(i.clazz, FoundAnnots(i.foundAnnots.ifaceOpt.get, i.foundAnnots.versionOpt)) }
-      .map { i => s"case (Some(${i.foundAnnots.iface.value}), ${getVersionMatcher(i.foundAnnots.versionOpt)}) => serializerContainer.read[${i.clazz.tpe}](iter, hints = hints:_*)" }
+      .map { i => s"case (${ifaceOptToString(i.foundAnnots.ifaceOpt)}, ${versionOptToString(i.foundAnnots.versionOpt)}) => serializerContainer.read[${i.clazz.tpe}](iter, hints = hints:_*)" }
       .mkString("\n")
 
     s"""(findIfaceTypeHint(hints = hints), version) match {
@@ -604,26 +594,16 @@ class BuildByReflection
 
     val derivedClasses = ClassFinder
       .findAllClassesDerivedFrom(tpe, packageName = "")
-      .map { i => i -> i.annotations.getAnnot[typeForIface] }
-
-    // any class defined w/o 'typeForIface' annot? -> exception
-    derivedClasses
-      .find(_._2.isEmpty) match {
-      case Some(x) => throw new SerializerBuildException(s"build write code for iface '$tpe', but at least one derived class (${x._1.tpe}) has no 'typeForIface' annotation")
-      case None =>
-    }
 
     val code = derivedClasses
-      .filterNot(_._2.isEmpty)
-      .sortBy(_._1.tpe.toString)
-      .map { i => i._1 -> i._2.get }
-      .map { i => s"case t: ${i._1.tpe} => serializerContainer.write[${i._1.tpe}](t, hints = hints:_*)" }
+      .sortBy(_.tpe.toString)
+      .map { i => s"case t: ${i.tpe} => serializerContainer.write[${i.tpe}](t, hints = hints:_*)" }
       .mkString("\n")
 
     s"""val written = data match {
        |  ${code.indent}
        |
        |  case t => throw new SerializerRunException(s"trying to squeeze a trait ($tpe), but type is unknown")
-       |}""".stripMargin//.replaceAll("\n", "\n    ").replaceAll("    \n", "\n")
+       |}""".stripMargin
   }
 }

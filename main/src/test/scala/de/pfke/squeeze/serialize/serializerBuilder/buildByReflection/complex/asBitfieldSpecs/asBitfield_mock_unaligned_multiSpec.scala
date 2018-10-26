@@ -9,17 +9,11 @@ class asBitfield_mock_unaligned_multiSpec
     checkThis[asBitfield_mock_unaligned_multi](
       code =
         s"""
-           |import de.pintono.tools.squeeze.core.{Serializer, SerializerContainer}
-           |import de.pintono.tools.squeeze.core.serializerHints.{BitStringBuilderHint, ByteStringBuilderHint, SerializerHint, SizeInBitHint, SizeInByteHint}
-           |import de.pintono.tools.squeeze.zlib.{PatchLevelVersion, ReflHelper}
-           |import de.pintono.tools.squeeze.zlib.anythingString.AnythingIterator
-           |import de.pintono.tools.squeeze.zlib.bitString.{BitStringAlignment, BitStringBuilder}
-           |import de.pintono.tools.squeeze.zlib.length.digital.{BitLength, ByteLength}
-           |import java.nio.ByteOrder
+           |$baseImports
            |
            |class asBitfield_mock_unaligned_multiSerializer
-           |  extends Serializer[de.pintono.tools.squeeze.core.mocks.asBitfieldSpecs.asBitfield_mock_unaligned_multi] {
-           |  override def objectTypeInfo = ReflHelper.generateTypeInfo[de.pintono.tools.squeeze.core.mocks.asBitfieldSpecs.asBitfield_mock_unaligned_multi]
+           |  extends Serializer[de.pfke.squeeze.serialize.mocks.asBitfieldSpecs.asBitfield_mock_unaligned_blocks_multi] {
+           |  override def objectTypeInfo = GeneralRefl.generateTypeInfo[de.pfke.squeeze.serialize.mocks.asBitfieldSpecs.asBitfield_mock_unaligned_blocks_multi]
            |
            |  override def read(
            |    iter: AnythingIterator,
@@ -29,22 +23,22 @@ class asBitfield_mock_unaligned_multiSpec
            |    byteOrder: ByteOrder,
            |    serializerContainer: SerializerContainer,
            |    version: Option[PatchLevelVersion]
-           |  ): de.pintono.tools.squeeze.core.mocks.asBitfieldSpecs.asBitfield_mock_unaligned_multi = {
-           |    require(iter.len.toByte >= 2, s"[de.pintono.tools.squeeze.core.mocks.asBitfieldSpecs.asBitfield_mock_unaligned_multi] given input has only $${iter.len} bytes left, but we need 2 byte")
+           |  ): de.pfke.squeeze.serialize.mocks.asBitfieldSpecs.asBitfield_mock_unaligned_blocks_multi = {
+           |    require(iter.len.toByte >= 23, s"[de.pfke.squeeze.serialize.mocks.asBitfieldSpecs.asBitfield_mock_unaligned_blocks_multi] given input has only $${iter.len} bytes left, but we need 23 byte")
            |    // read iter
            |    val _1stBitIter = iter.iterator(bitAlignment = BitStringAlignment._16Bit)
            |    _1stBitIter.read(BitLength(11)) // read padding bits
            |    val field01 = serializerContainer.read[Int](_1stBitIter, hints = SizeInBitHint(value = 2))
            |    val field02 = serializerContainer.read[Int](_1stBitIter, hints = SizeInBitHint(value = 3))
            |    // create object
-           |    de.pintono.tools.squeeze.core.mocks.asBitfieldSpecs.asBitfield_mock_unaligned_multi(
+           |    de.pfke.squeeze.serialize.mocks.asBitfieldSpecs.asBitfield_mock_unaligned_multi(
            |      field01 = field01,
            |      field02 = field02
            |    )
            |  }
            |
            |  override def write(
-           |    data: de.pintono.tools.squeeze.core.mocks.asBitfieldSpecs.asBitfield_mock_unaligned_multi,
+           |    data: de.pfke.squeeze.serialize.mocks.asBitfieldSpecs.asBitfield_mock_unaligned_multi,
            |    hints: SerializerHint*
            |  )(
            |    implicit
@@ -52,7 +46,7 @@ class asBitfield_mock_unaligned_multiSpec
            |    serializerContainer: SerializerContainer,
            |    version: Option[PatchLevelVersion]
            |  ): Unit = {
-           |    require(findOneHint[ByteStringBuilderHint](hints = hints).nonEmpty, s"[de.pintono.tools.squeeze.core.mocks.asBitfieldSpecs.asBitfield_mock_unaligned_multi] given input has no ByteStringBuilderHint")
+           |    require(findOneHint[ByteStringBuilderHint](hints = hints).nonEmpty, s"[de.pfke.squeeze.serialize.mocks.asBitfieldSpecs.asBitfield_mock_unaligned_multi] given input has no ByteStringBuilderHint")
            |    val _1stBitBuilder = BitStringBuilder.newBuilder(alignment = BitStringAlignment._16Bit)
            |    serializerContainer.write[Int](data.field01, hints = BitStringBuilderHint(_1stBitBuilder), SizeInBitHint(value = 2))
            |    serializerContainer.write[Int](data.field02, hints = BitStringBuilderHint(_1stBitBuilder), SizeInBitHint(value = 3))

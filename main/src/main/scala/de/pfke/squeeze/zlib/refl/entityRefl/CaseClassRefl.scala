@@ -188,8 +188,7 @@ class CaseClassRefl (
     require(names.distinct.size == args.size, s"There are duplicate names in passed args (${names.mkString(", ")})")
 
     // finden der Apply-Methode mit den meisten Argumenten (denn wir wollen ja ein komplett kopiertes Object)
-    val applyMethod = applyMethods
-      .sortBy(_.parameter.size).head
+    val applyMethod = applyMethods.minBy(_.parameter.size)
     // prüfen, alle übergebenen Parameter auch in der Apply-Methode genannt sind
     require(names.forall { i => applyMethod.parameter.exists { c => c.name == i } }, s"one or more args passed which cannot be found in that apply method: '$applyMethod'")
 

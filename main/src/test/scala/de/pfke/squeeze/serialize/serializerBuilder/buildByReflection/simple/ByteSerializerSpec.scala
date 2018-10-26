@@ -6,18 +6,13 @@ class ByteSerializerSpec
   extends BaseSpec {
   "testing serializer for simple Byte type" when {
     checkThis[java.lang.Byte](
+      prefix = Some("java.lang."),
       code = s"""
-                |import de.pintono.tools.squeeze.core.{Serializer, SerializerContainer}
-                |import de.pintono.tools.squeeze.core.serializerHints.{BitStringBuilderHint, ByteStringBuilderHint, SerializerHint, SizeInBitHint, SizeInByteHint}
-                |import de.pintono.tools.squeeze.zlib.{PatchLevelVersion, ReflHelper}
-                |import de.pintono.tools.squeeze.zlib.anythingString.AnythingIterator
-                |import de.pintono.tools.squeeze.zlib.bitString.{BitStringAlignment, BitStringBuilder}
-                |import de.pintono.tools.squeeze.zlib.length.digital.{BitLength, ByteLength}
-                |import java.nio.ByteOrder
+                |$baseImports
                 |
                 |class ByteSerializer
-                |  extends Serializer[java.lang.Byte] {
-                |  override def objectTypeInfo = ReflHelper.generateTypeInfo[java.lang.Byte]
+                |  extends Serializer[Byte] {
+                |  override def objectTypeInfo = GeneralRefl.generateTypeInfo[Byte]
                 |
                 |  override protected def byteStringWriteOp(implicit byteOrder: ByteOrder) = Some({ (bsb,value) => bsb.putByte(value) })
                 |  override protected def defaultSize = Some(ByteLength(1))
@@ -29,17 +24,11 @@ class ByteSerializerSpec
     checkThis[scala.Byte](
       prefix = Some("scala."),
       code = s"""
-                |import de.pintono.tools.squeeze.core.{Serializer, SerializerContainer}
-                |import de.pintono.tools.squeeze.core.serializerHints.{BitStringBuilderHint, ByteStringBuilderHint, SerializerHint, SizeInBitHint, SizeInByteHint}
-                |import de.pintono.tools.squeeze.zlib.{PatchLevelVersion, ReflHelper}
-                |import de.pintono.tools.squeeze.zlib.anythingString.AnythingIterator
-                |import de.pintono.tools.squeeze.zlib.bitString.{BitStringAlignment, BitStringBuilder}
-                |import de.pintono.tools.squeeze.zlib.length.digital.{BitLength, ByteLength}
-                |import java.nio.ByteOrder
+                |$baseImports
                 |
                 |class ByteSerializer
                 |  extends Serializer[Byte] {
-                |  override def objectTypeInfo = ReflHelper.generateTypeInfo[Byte]
+                |  override def objectTypeInfo = GeneralRefl.generateTypeInfo[Byte]
                 |
                 |  override protected def byteStringWriteOp(implicit byteOrder: ByteOrder) = Some({ (bsb,value) => bsb.putByte(value) })
                 |  override protected def defaultSize = Some(ByteLength(1))
@@ -50,17 +39,11 @@ class ByteSerializerSpec
 
     checkThis[Byte](
       code = s"""
-                |import de.pintono.tools.squeeze.core.{Serializer, SerializerContainer}
-                |import de.pintono.tools.squeeze.core.serializerHints.{BitStringBuilderHint, ByteStringBuilderHint, SerializerHint, SizeInBitHint, SizeInByteHint}
-                |import de.pintono.tools.squeeze.zlib.{PatchLevelVersion, ReflHelper}
-                |import de.pintono.tools.squeeze.zlib.anythingString.AnythingIterator
-                |import de.pintono.tools.squeeze.zlib.bitString.{BitStringAlignment, BitStringBuilder}
-                |import de.pintono.tools.squeeze.zlib.length.digital.{BitLength, ByteLength}
-                |import java.nio.ByteOrder
+                |$baseImports
                 |
                 |class ByteSerializer
                 |  extends Serializer[Byte] {
-                |  override def objectTypeInfo = ReflHelper.generateTypeInfo[Byte]
+                |  override def objectTypeInfo = GeneralRefl.generateTypeInfo[Byte]
                 |
                 |  override protected def byteStringWriteOp(implicit byteOrder: ByteOrder) = Some({ (bsb,value) => bsb.putByte(value) })
                 |  override protected def defaultSize = Some(ByteLength(1))
