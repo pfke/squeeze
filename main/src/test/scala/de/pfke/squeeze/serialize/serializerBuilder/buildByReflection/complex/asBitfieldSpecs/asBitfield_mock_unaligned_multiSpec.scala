@@ -12,8 +12,8 @@ class asBitfield_mock_unaligned_multiSpec
            |$baseImports
            |
            |class asBitfield_mock_unaligned_multiSerializer
-           |  extends Serializer[de.pfke.squeeze.serialize.mocks.asBitfieldSpecs.asBitfield_mock_unaligned_blocks_multi] {
-           |  override def objectTypeInfo = GeneralRefl.generateTypeInfo[de.pfke.squeeze.serialize.mocks.asBitfieldSpecs.asBitfield_mock_unaligned_blocks_multi]
+           |  extends Serializer[de.pfke.squeeze.serialize.mocks.asBitfieldSpecs.asBitfield_mock_unaligned_multi] {
+           |  override def objectTypeInfo = GeneralRefl.generateTypeInfo[de.pfke.squeeze.serialize.mocks.asBitfieldSpecs.asBitfield_mock_unaligned_multi]
            |
            |  override def read(
            |    iter: AnythingIterator,
@@ -23,11 +23,10 @@ class asBitfield_mock_unaligned_multiSpec
            |    byteOrder: ByteOrder,
            |    serializerContainer: SerializerContainer,
            |    version: Option[PatchLevelVersion]
-           |  ): de.pfke.squeeze.serialize.mocks.asBitfieldSpecs.asBitfield_mock_unaligned_blocks_multi = {
-           |    require(iter.len.toByte >= 23, s"[de.pfke.squeeze.serialize.mocks.asBitfieldSpecs.asBitfield_mock_unaligned_blocks_multi] given input has only $${iter.len} bytes left, but we need 23 byte")
+           |  ): de.pfke.squeeze.serialize.mocks.asBitfieldSpecs.asBitfield_mock_unaligned_multi = {
+           |    require(iter.len.toByte >= 2, s"[de.pfke.squeeze.serialize.mocks.asBitfieldSpecs.asBitfield_mock_unaligned_multi] given input has only $${iter.len} bytes left, but we need 2 byte")
            |    // read iter
            |    val _1stBitIter = iter.iterator(bitAlignment = BitStringAlignment._16Bit)
-           |    _1stBitIter.read(BitLength(11)) // read padding bits
            |    val field01 = serializerContainer.read[Int](_1stBitIter, hints = SizeInBitHint(value = 2))
            |    val field02 = serializerContainer.read[Int](_1stBitIter, hints = SizeInBitHint(value = 3))
            |    // create object

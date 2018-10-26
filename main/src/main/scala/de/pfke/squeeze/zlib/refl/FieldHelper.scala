@@ -52,12 +52,23 @@ object FieldHelper {
   def groupByBitfields(
     tpe: ru.Type
   ): List[List[FieldDescr]] = {
-    val bitsToAlign = tpe
-      .typeSymbol
-      .annotations
+    groupByBitfields(
+      fields = getFields(tpe = tpe),
+      upperClassAnnots = tpe.typeSymbol.annotations
+    )
+  }
+
+  /**
+    * Group all field by bitfields and non-bitfields and keep track of BitStringAlignment.
+    */
+  def groupByBitfields(
+    fields: List[FieldDescr],
+    upperClassAnnots: List[ru.Annotation]
+  ): List[List[FieldDescr]] = {
+    val bitsToAlign = upperClassAnnots
       .getAlignBitfieldsBy
       .matchTo(_.bits, BitStringAlignment.bitWidth(BitStringAlignment._32Bit))
-    val allFields = getFields(tpe = tpe)
+    val allFields = fields
 
     def bothHasOrBothHasnt(a: FieldDescr, b: FieldDescr): Boolean = !(a.annos.hasAsBitfield ^ b.annos.hasAsBitfield)
     def countBits(in: List[FieldDescr]): Int = in.foldLeft(0)((sum,iter) => sum + getBits(iter))

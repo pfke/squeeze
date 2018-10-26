@@ -24,7 +24,7 @@ class asBitfield_mock_unaligned_blocks_multiSpec
            |    serializerContainer: SerializerContainer,
            |    version: Option[PatchLevelVersion]
            |  ): de.pfke.squeeze.serialize.mocks.asBitfieldSpecs.asBitfield_mock_unaligned_blocks_multi = {
-           |    require(iter.len.toByte >= 23, s"[de.pfke.squeeze.serialize.mocks.asBitfieldSpecs.asBitfield_mock_unaligned_blocks_multi] given input has only $${iter.len} bytes left, but we need 23 byte")
+           |    require(iter.len.toByte >= 22, s"[de.pfke.squeeze.serialize.mocks.asBitfieldSpecs.asBitfield_mock_unaligned_blocks_multi] given input has only $${iter.len} bytes left, but we need 22 byte")
            |    // read iter
            |    val _1stBitIter = iter.iterator(bitAlignment = BitStringAlignment._32Bit)
            |    val field01 = serializerContainer.read[Byte](_1stBitIter, hints = SizeInBitHint(value = 8))

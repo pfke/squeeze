@@ -12,8 +12,8 @@ class asBitfield_mock_aligned_multiSpec
            |$baseImports
            |
            |class asBitfield_mock_aligned_multiSerializer
-           |  extends Serializer[de.pfke.squeeze.serialize.mocks.asBitfieldSpecs.asBitfield_mock_aligned_single_8bit] {
-           |  override def objectTypeInfo = GeneralRefl.generateTypeInfo[de.pfke.squeeze.serialize.mocks.asBitfieldSpecs.asBitfield_mock_aligned_single_8bit]
+           |  extends Serializer[de.pfke.squeeze.serialize.mocks.asBitfieldSpecs.asBitfield_mock_aligned_multi] {
+           |  override def objectTypeInfo = GeneralRefl.generateTypeInfo[de.pfke.squeeze.serialize.mocks.asBitfieldSpecs.asBitfield_mock_aligned_multi]
            |
            |  override def read(
            |    iter: AnythingIterator,
@@ -23,8 +23,8 @@ class asBitfield_mock_aligned_multiSpec
            |    byteOrder: ByteOrder,
            |    serializerContainer: SerializerContainer,
            |    version: Option[PatchLevelVersion]
-           |  ): de.pfke.squeeze.serialize.mocks.asBitfieldSpecs.asBitfield_mock_aligned_single_8bit = {
-           |    require(iter.len.toByte >= 4, s"[de.pfke.squeeze.serialize.mocks.asBitfieldSpecs.asBitfield_mock_aligned_single_8bit] given input has only $${iter.len} bytes left, but we need 4 byte")
+           |  ): de.pfke.squeeze.serialize.mocks.asBitfieldSpecs.asBitfield_mock_aligned_multi = {
+           |    require(iter.len.toByte >= 4, s"[de.pfke.squeeze.serialize.mocks.asBitfieldSpecs.asBitfield_mock_aligned_multi] given input has only $${iter.len} bytes left, but we need 4 byte")
            |    // read iter
            |    val _1stBitIter = iter.iterator(bitAlignment = BitStringAlignment._32Bit)
            |    val field01 = serializerContainer.read[Byte](_1stBitIter, hints = SizeInBitHint(value = 8))
@@ -32,7 +32,7 @@ class asBitfield_mock_aligned_multiSpec
            |    val field03 = serializerContainer.read[Byte](_1stBitIter, hints = SizeInBitHint(value = 8))
            |    val field04 = serializerContainer.read[Int](_1stBitIter, hints = SizeInBitHint(value = 32))
            |    // create object
-           |    de.pfke.squeeze.serialize.mocks.asBitfieldSpecs.asBitfield_mock_aligned_single_8bit(
+           |    de.pfke.squeeze.serialize.mocks.asBitfieldSpecs.asBitfield_mock_aligned_multi(
            |      field01 = field01,
            |      field02 = field02,
            |      field03 = field03,
@@ -41,7 +41,7 @@ class asBitfield_mock_aligned_multiSpec
            |  }
            |
            |  override def write(
-           |    data: de.pfke.squeeze.serialize.mocks.asBitfieldSpecs.asBitfield_mock_aligned_single_8bit,
+           |    data: de.pfke.squeeze.serialize.mocks.asBitfieldSpecs.asBitfield_mock_aligned_multi,
            |    hints: SerializerHint*
            |  )(
            |    implicit
@@ -49,7 +49,7 @@ class asBitfield_mock_aligned_multiSpec
            |    serializerContainer: SerializerContainer,
            |    version: Option[PatchLevelVersion]
            |  ): Unit = {
-           |    require(findOneHint[ByteStringBuilderHint](hints = hints).nonEmpty, s"[de.pfke.squeeze.serialize.mocks.asBitfieldSpecs.asBitfield_mock_aligned_single_8bit] given input has no ByteStringBuilderHint")
+           |    require(findOneHint[ByteStringBuilderHint](hints = hints).nonEmpty, s"[de.pfke.squeeze.serialize.mocks.asBitfieldSpecs.asBitfield_mock_aligned_multi] given input has no ByteStringBuilderHint")
            |    val _1stBitBuilder = BitStringBuilder.newBuilder(alignment = BitStringAlignment._32Bit)
            |    serializerContainer.write[Byte](data.field01, hints = BitStringBuilderHint(_1stBitBuilder), SizeInBitHint(value = 8))
            |    serializerContainer.write[Short](data.field02, hints = BitStringBuilderHint(_1stBitBuilder), SizeInBitHint(value = 16))

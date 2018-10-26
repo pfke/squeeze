@@ -1,5 +1,8 @@
 package de.pfke.squeeze.zlib.refl
 
+import de.pfke.squeeze.annots._
+import de.pfke.squeeze.zlib.data._
+
 import scala.reflect.ClassTag
 import scala.reflect.runtime.{universe => ru}
 
@@ -52,10 +55,15 @@ object sizeOf {
     */
   def guess (
     tpe: ru.Type,
-    thisFieldAnnots: List[ru.Annotation] = List.empty
+    thisFieldAnnots: List[ru.Annotation] = List.empty,
+    upperClassAnnots: List[ru.Annotation] = List.empty
   ): Int = {
     // collect class annotations, such as 'alignBitfieldBy'
-    val thisClassAnnots = tpe.typeSymbol.annotations
+//    val thisClassAnnots = tpe.typeSymbol.annotations
+
+//    val alignBitfieldsBy = math.max(1, upperClassAnnots.getAlignBitfieldsBy.matchTo(_.bits, default = 0))
+//    val bitFieldAnnotSizeOpt = thisFieldAnnots.getAsBitfield.matchToOption(i => ((i.bits + alignBitfieldsBy - 1) / alignBitfieldsBy) * alignBitfieldsBy / 8)
+//    val stringAnnotSizeOpt = thisFieldAnnots.getWithFixedLength.matchToOption(_.bytes)
 
     PrimitiveRefl.toScalaType(tpe) match {
       case t if t <:< ru.typeOf[Boolean] => sizeOf.Boolean
@@ -67,17 +75,12 @@ object sizeOf {
       case t if t <:< ru.typeOf[Long] => sizeOf.Long
       case t if t <:< ru.typeOf[Short] => sizeOf.Short
 
-      // TODO: mit squeeze entkoppeln      case t if t <:< ru.typeOf[String] && thisFieldAnnots.hasWithFixedLength => thisFieldAnnots.getWithFixedLengthOr(default = 0)
       case t if t <:< ru.typeOf[String] => 0
 
-      case t if t <:< ru.typeOf[List[_]] =>
-        // TODO: mit squeeze entkoppeln        val sizeOfOne = t.typeArgs.headOption.matchTo(guess(_), default = 0)
-        // TODO: mit squeeze entkoppeln        val multi = thisFieldAnnots.getWithFixedCountOr(default = 0)
-        // TODO: mit squeeze entkoppeln        multi * sizeOfOne
-        0
+      case t if t <:< ru.typeOf[List[_]] => 0
 
       case t if t.typeSymbol.isAbstract => 0
-      case t => FieldHelper.groupByBitfields(tpe = t).foldLeft(0)((i, c) => i + guess(c, upperClassAnnots = thisClassAnnots))
+      case t => guess(FieldHelper.getFields(tpe), upperClassAnnots = tpe.typeSymbol.annotations)
     }
   }
 
@@ -91,30 +94,28 @@ object sizeOf {
     fields: List[FieldDescr],
     upperClassAnnots: List[ru.Annotation]
   ): Int = {
-    // TODO: mit squeeze entkoppeln
-    //    require(
-    //      (fields.hasAsBitfield && !fields.hasOneWithoutAsBitfield) || (!fields.hasAsBitfield),
-    //      s"got a mixed list decorated with 'asBitfield' and w/o (${fields.mkString(", ")})"
-    //    )
-    //
-    //    if (fields.hasAsBitfield) {
-    //      val bits = fields.foldLeft(0)((i, c) =>
-    //        i + c.getAsBitfield.matchToException(
-    //          _.bits,
-    //          new SerializerBuildException(s"given field: ${c.name} does not have 'asBitfield' annot")
-    //        )
-    //      )
-    //
-    //      val alignTo = upperClassAnnots
-    //        .getAlignBitfieldsBy
-    //        .matchTo(_.bits, 1)
-    //
-    //      val alignedBits = if ((bits % alignTo) == 0) bits else bits + (alignTo - (bits % alignTo))
-    //
-    //      alignedBits / 8
-    //    } else {
-    fields.foldLeft(0)((i, c) => i + guess(c.tpe, thisFieldAnnots = c.annos))
-    //    }
+    val alignBitfieldsBy = math.max(1, upperClassAnnots.getAlignBitfieldsBy.matchTo(_.bits, default = 0))
+
+    def summarize(
+      in: List[FieldDescr]
+    ): Int = {
+      if (in.flatMap(_.annos).hasAsBitfield) {
+        val bits = in
+          .map(_.annos.getAsBitfield.matchTo(_.bits, default = 0))
+          .sum
+
+
+        val res = (bits + alignBitfieldsBy - 1) / alignBitfieldsBy * alignBitfieldsBy / 8
+
+        res
+      } else {
+        in.foldLeft(0)((sum,i) => sum + guess(i.tpe))
+      }
+    }
+
+    FieldHelper
+      .groupByBitfields(fields, upperClassAnnots = upperClassAnnots)
+      .foldLeft(0)((sum,i) => sum + summarize(i))
   }
 
   /**
