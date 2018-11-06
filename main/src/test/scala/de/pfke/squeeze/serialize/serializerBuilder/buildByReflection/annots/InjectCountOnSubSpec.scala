@@ -8,19 +8,11 @@ class InjectCountOnSubSpec
   "testing serializer for InjectCountOnSubMock type" when {
     checkThis[InjectCountOnSubMock](
       code = s"""
-                |import de.pfke.squeeze.zlib.version.PatchLevelVersion
-                |import de.pfke.squeeze.zlib.data.collection.anythingString.AnythingIterator
-                |import de.pfke.squeeze.zlib.data.collection.bitString.{BitStringAlignment, BitStringBuilder}
-                |import de.pfke.squeeze.zlib.data.length.digital.{BitLength, ByteLength}
-                |import de.pfke.squeeze.zlib.refl.GeneralRefl
-                |import de.pfke.squeeze.serialize.{Serializer, SerializerContainer}
-                |import de.pfke.squeeze.serialize.serializerHints._
-                |import de.pfke.squeeze.zlib._
-                |import java.nio.ByteOrder
+                |$baseImports
                 |
                 |class InjectCountOnSubMockSerializer
-                |  extends Serializer[de.pfke.squeeze.serialize.mocks.InjectCountOnSubMock] {
-                |  override def objectTypeInfo = GeneralRefl.generateTypeInfo[de.pfke.squeeze.serialize.mocks.InjectCountOnSubMock]
+                |  extends Serializer[de.pfke.squeeze.serialize.mocks.annots.InjectCountOnSubMock] {
+                |  override def objectTypeInfo = GeneralRefl.generateTypeInfo[de.pfke.squeeze.serialize.mocks.annots.InjectCountOnSubMock]
                 |
                 |  override def read(
                 |    iter: AnythingIterator,
@@ -30,18 +22,18 @@ class InjectCountOnSubSpec
                 |    byteOrder: ByteOrder,
                 |    serializerContainer: SerializerContainer,
                 |    version: Option[PatchLevelVersion]
-                |  ): de.pfke.squeeze.serialize.mocks.InjectCountOnSubMock = {
-                |    require(iter.len.toByte >= 6, s"[de.pfke.squeeze.serialize.mocks.InjectCountOnSubMock] given input has only $${iter.len} bytes left, but we need 6 byte")
+                |  ): de.pfke.squeeze.serialize.mocks.annots.InjectCountOnSubMock = {
+                |    require(iter.len.toByte >= 6, s"[de.pfke.squeeze.serialize.mocks.annots.InjectCountOnSubMock] given input has only $${iter.len} bytes left, but we need 6 byte")
                 |    // read iter
-                |    val _1stParam = serializerContainer.read[de.pfke.squeeze.serialize.mocks.SubInjectCountOnSubMock](iter)
+                |    val _1stParam = serializerContainer.read[de.pfke.squeeze.serialize.mocks.annots.SubInjectCountOnSubMock](iter)
                 |    // create object
-                |    de.pfke.squeeze.serialize.mocks.InjectCountOnSubMock(
+                |    de.pfke.squeeze.serialize.mocks.annots.InjectCountOnSubMock(
                 |      _1stParam = _1stParam
                 |    )
                 |  }
                 |
                 |  override def write(
-                |    data: de.pfke.squeeze.serialize.mocks.InjectCountOnSubMock,
+                |    data: de.pfke.squeeze.serialize.mocks.annots.InjectCountOnSubMock,
                 |    hints: SerializerHint*
                 |  )(
                 |    implicit
@@ -49,8 +41,8 @@ class InjectCountOnSubSpec
                 |    serializerContainer: SerializerContainer,
                 |    version: Option[PatchLevelVersion]
                 |  ): Unit = {
-                |    require(findOneHint[ByteStringBuilderHint](hints = hints).nonEmpty, s"[de.pfke.squeeze.serialize.mocks.InjectCountOnSubMock] given input has no ByteStringBuilderHint")
-                |    serializerContainer.write[de.pfke.squeeze.serialize.mocks.SubInjectCountOnSubMock](data._1stParam, hints = hints:_*)
+                |    require(findOneHint[ByteStringBuilderHint](hints = hints).nonEmpty, s"[de.pfke.squeeze.serialize.mocks.annots.InjectCountOnSubMock] given input has no ByteStringBuilderHint")
+                |    serializerContainer.write[de.pfke.squeeze.serialize.mocks.annots.SubInjectCountOnSubMock](data._1stParam, hints = hints:_*)
                 |  }
                 |}
                 |new InjectCountOnSubMockSerializer()

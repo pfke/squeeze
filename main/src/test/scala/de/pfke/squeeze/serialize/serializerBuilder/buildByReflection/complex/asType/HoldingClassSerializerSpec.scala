@@ -26,7 +26,7 @@ class HoldingClassSerializerSpec
                 |    require(iter.len.toByte >= 4, s"[de.pfke.squeeze.serialize.mocks.asType.HoldingClass] given input has only $${iter.len} bytes left, but we need 4 byte")
                 |    // read iter
                 |    val _ifaceType = serializerContainer.read[Int](iter)
-                |    val _iface = serializerContainer.read[de.pfke.squeeze.serialize.mocks.asType.Iface](iter, hints = de.pintono.tools.squeeze.core.serializerHints.IfaceTypeHint(value = _ifaceType))
+                |    val _iface = serializerContainer.read[de.pfke.squeeze.serialize.mocks.asType.Iface](iter, hints = IfaceTypeHint(value = _ifaceType))
                 |    // create object
                 |    de.pfke.squeeze.serialize.mocks.asType.HoldingClass(
                 |      _ifaceType = _ifaceType,

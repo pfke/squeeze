@@ -8,17 +8,11 @@ class InjectCountSpec
   "testing serializer for InjectCountMock type" when {
     checkThis[InjectCountMock](
       code = s"""
-                |import de.pintono.tools.squeeze.core.{Serializer, SerializerContainer}
-                |import de.pintono.tools.squeeze.core.serializerHints.{BitStringBuilderHint, ByteStringBuilderHint, SerializerHint, SizeInBitHint, SizeInByteHint}
-                |import de.pintono.tools.squeeze.zlib.{PatchLevelVersion, GeneralRefl}
-                |import de.pintono.tools.squeeze.zlib.anythingString.AnythingIterator
-                |import de.pintono.tools.squeeze.zlib.bitString.{BitStringAlignment, BitStringBuilder}
-                |import de.pintono.tools.squeeze.zlib.length.digital.{BitLength, ByteLength}
-                |import java.nio.ByteOrder
+                |$baseImports
                 |
                 |class InjectCountMockSerializer
-                |  extends Serializer[de.pfke.squeeze.serialize.mocks.InjectCountMock] {
-                |  override def objectTypeInfo = GeneralRefl.generateTypeInfo[de.pfke.squeeze.serialize.mocks.InjectCountMock]
+                |  extends Serializer[de.pfke.squeeze.serialize.mocks.annots.InjectCountMock] {
+                |  override def objectTypeInfo = GeneralRefl.generateTypeInfo[de.pfke.squeeze.serialize.mocks.annots.InjectCountMock]
                 |
                 |  override def read(
                 |    iter: AnythingIterator,
@@ -28,14 +22,14 @@ class InjectCountSpec
                 |    byteOrder: ByteOrder,
                 |    serializerContainer: SerializerContainer,
                 |    version: Option[PatchLevelVersion]
-                |  ): de.pfke.squeeze.serialize.mocks.InjectCountMock = {
-                |    require(iter.len.toByte >= 6, s"[de.pfke.squeeze.serialize.mocks.InjectCountMock] given input has only $${iter.len} bytes left, but we need 6 byte")
+                |  ): de.pfke.squeeze.serialize.mocks.annots.InjectCountMock = {
+                |    require(iter.len.toByte >= 6, s"[de.pfke.squeeze.serialize.mocks.annots.InjectCountMock] given input has only $${iter.len} bytes left, but we need 6 byte")
                 |    // read iter
                 |    val _1stParam = serializerContainer.read[Short](iter)
                 |    val _2ndParam = (0 until _1stParam).map { _ => serializerContainer.read[Byte](iter) }.toList
                 |    val _3rdParam = serializerContainer.read[Int](iter)
                 |    // create object
-                |    de.pfke.squeeze.serialize.mocks.InjectCountMock(
+                |    de.pfke.squeeze.serialize.mocks.annots.InjectCountMock(
                 |      _1stParam = _1stParam,
                 |      _2ndParam = _2ndParam,
                 |      _3rdParam = _3rdParam
@@ -43,7 +37,7 @@ class InjectCountSpec
                 |  }
                 |
                 |  override def write(
-                |    data: de.pfke.squeeze.serialize.mocks.InjectCountMock,
+                |    data: de.pfke.squeeze.serialize.mocks.annots.InjectCountMock,
                 |    hints: SerializerHint*
                 |  )(
                 |    implicit
@@ -51,7 +45,7 @@ class InjectCountSpec
                 |    serializerContainer: SerializerContainer,
                 |    version: Option[PatchLevelVersion]
                 |  ): Unit = {
-                |    require(findOneHint[ByteStringBuilderHint](hints = hints).nonEmpty, s"[de.pfke.squeeze.serialize.mocks.InjectCountMock] given input has no ByteStringBuilderHint")
+                |    require(findOneHint[ByteStringBuilderHint](hints = hints).nonEmpty, s"[de.pfke.squeeze.serialize.mocks.annots.InjectCountMock] given input has no ByteStringBuilderHint")
                 |    serializerContainer.write[Short](data._2ndParam.size.toShort, hints = hints:_*)
                 |    data._2ndParam.foreach { i => serializerContainer.write[Byte](i, hints = hints:_*) }
                 |    serializerContainer.write[Int](data._2ndParam.size.toInt, hints = hints:_*)

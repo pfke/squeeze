@@ -38,7 +38,7 @@ class BitIteratorSpec
     }
   }
 
-  "testing method 'getBits(Int)' with 8 bit aligned" when {
+  "testing method 'read(Int)' with 8 bit aligned" when {
     implicit val byteOrder: ByteOrder = ByteOrder.BIG_ENDIAN
 
     val inData = ByteString(
@@ -105,7 +105,7 @@ class BitIteratorSpec
     }
   }
 
-  "testing method 'getBits(Int)' with 16 bit aligned" when {
+  "testing method 'read(Int)' with 16 bit aligned" when {
     implicit val byteOrder: ByteOrder = ByteOrder.BIG_ENDIAN
 
     val inData = ByteString(
@@ -120,6 +120,17 @@ class BitIteratorSpec
       0x11, 0x12,
       0x13, 0x15
     )
+
+    "read out unalinged" should {
+      val tto = BitIterator(inData, BitStringAlignment._16Bit)
+
+      "should read correct" in {
+        withClue(s"3 bits") { tto.read(3) should be(4) }
+        withClue(s"4 bits") { tto.read(4) should be(0) }
+        withClue(s"2 bits") { tto.read(2) should be(2) }
+        withClue(s"16 bits") { tto.read(16) should be(0x406) }
+      }
+    }
 
     "read out 8bit-wise" should {
       val tto = BitIterator(inData, BitStringAlignment._16Bit)
@@ -178,7 +189,7 @@ class BitIteratorSpec
     }
   }
 
-  "testing method 'getBits(Int)' with 32 bit aligned" when {
+  "testing method 'read(Int)' with 32 bit aligned" when {
     implicit val byteOrder: ByteOrder = ByteOrder.BIG_ENDIAN
 
     val inData = ByteString(
@@ -296,6 +307,58 @@ class BitIteratorSpec
         withClue(s"21. 7bit") { tto.read(7) should be (0x10) }
         withClue(s"22. 7bit") { tto.read(7) should be (0x4c) }
         withClue(s"23. 6bit") { tto.read(6) should be (0x15) }
+      }
+    }
+  }
+
+  "testing method 'read(Int)' with 4 byte input" when {
+    implicit val byteOrder: ByteOrder = ByteOrder.BIG_ENDIAN
+
+    val inData = ByteString(
+      0x81, 0x02, 0x03, 0x40
+    )
+
+    "read out bit-wise" should {
+      val tto = BitIterator(inData, BitStringAlignment._16Bit)
+
+      "should read correct" in {
+        withClue(s"3 bits") { tto.read(3) should be(4) }
+        withClue(s"4 bits") { tto.read(4) should be(0) }
+        withClue(s"2 bits") { tto.read(2) should be(2) }
+        withClue(s"23 bits") { tto.read(16) should be(0x406) }
+      }
+    }
+  }
+
+  "testing method 'read(Int)' with fewer input bytes as alignment" when {
+    implicit val byteOrder: ByteOrder = ByteOrder.BIG_ENDIAN
+
+    val inData = ByteString(
+      0x81, 0x02
+    )
+
+    "read out bit-wise" should {
+      val tto = BitIterator(inData, BitStringAlignment._32Bit)
+
+      "should throw an exception" in {
+        an[IllegalArgumentException] shouldBe thrownBy(tto.read(3 ))
+      }
+    }
+  }
+
+  "testing method 'read(Int)' with 16 bit alignment and 2 bytes input" when {
+    implicit val byteOrder: ByteOrder = ByteOrder.BIG_ENDIAN
+
+    val inData = ByteString(
+      0x80, 0x1a
+    )
+
+    "read out bit-wise" should {
+      val tto = BitIterator(inData, BitStringAlignment._16Bit)
+
+      "should throw an exception" in {
+        withClue(s"3 bits") { tto.read(2) should be(2) }
+        withClue(s"2 bits") { tto.read(3) should be(0) }
       }
     }
   }

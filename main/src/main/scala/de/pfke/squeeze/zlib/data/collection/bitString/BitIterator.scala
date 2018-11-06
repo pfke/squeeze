@@ -68,9 +68,11 @@ class BitIterator (
 
     def readBits = _bitArray(currentArrayIdx) >>> relativeBitPos
 
+    val r0 = _bitArray(currentArrayIdx)
+    val r1 = readBits
+
     // alles in einem array-idx lesbar?
     val resultVal: Long = if (relativeBitPos < 0) {
-
       // read the bits from the current array idx
       val upperBitOffset = bits + relativeBitPos
       val upperValue = _bitArray(currentArrayIdx) & BitStringBuilder.bitmask(upperBitOffset)

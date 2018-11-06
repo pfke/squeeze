@@ -34,7 +34,7 @@ class IfaceSerializerSpec
                 |      case (Some(15), None) => serializerContainer.read[de.pfke.squeeze.serialize.mocks.asType.SubClassB](iter, hints = hints:_*)
                 |      case (Some(17), None) => serializerContainer.read[de.pfke.squeeze.serialize.mocks.asType.SubClassC](iter, hints = hints:_*)
                 |
-                |      case (t1, t2) => throw new de.pintono.tools.squeeze.core.SerializerRunException(s"trying to unsqueeze a trait (de.pfke.squeeze.serialize.mocks.asType.Iface), but either iface type ($$t1) or version ($$t2) does not match")
+                |      case (t1, t2) => throw new SerializerRunException(s"trying to unsqueeze a trait (de.pfke.squeeze.serialize.mocks.asType.Iface), but either iface type ($$t1) or version ($$t2) does not match")
                 |    }
                 |    // create object
                 |    // no its a trait
@@ -59,7 +59,7 @@ class IfaceSerializerSpec
                 |      case t: de.pfke.squeeze.serialize.mocks.asType.SubClassB_fromVersion_2_5_123 => serializerContainer.write[de.pfke.squeeze.serialize.mocks.asType.SubClassB_fromVersion_2_5_123](t, hints = hints:_*)
                 |      case t: de.pfke.squeeze.serialize.mocks.asType.SubClassC => serializerContainer.write[de.pfke.squeeze.serialize.mocks.asType.SubClassC](t, hints = hints:_*)
                 |
-                |      case t => throw new de.pintono.tools.squeeze.core.SerializerRunException(s"trying to squeeze a trait (de.pfke.squeeze.serialize.mocks.asType.Iface), but type is unknown")
+                |      case t => throw new SerializerRunException(s"trying to squeeze a trait (de.pfke.squeeze.serialize.mocks.asType.Iface), but type is unknown")
                 |    }
                 |  }
                 |}

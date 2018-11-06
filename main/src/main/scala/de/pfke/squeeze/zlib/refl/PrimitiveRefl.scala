@@ -149,4 +149,42 @@ object PrimitiveRefl {
       case t => t
     }
   }
+
+  /**
+    * Convert java types to scala types
+    */
+  def toScalaType(
+    clazz: Class[_]
+  ): Class[_] = {
+    clazz match {
+      case t if t == classOf[Boolean] => t
+      case t if t == classOf[java.lang.Boolean] => classOf[Boolean]
+
+      case t if t == classOf[Char] => t
+      case t if t == classOf[java.lang.Character] => classOf[Char]
+
+      case t if t == classOf[Byte] => t
+      case t if t == classOf[java.lang.Byte] => classOf[Byte]
+
+      case t if t == classOf[Double] => t
+      case t if t == classOf[java.lang.Double] => classOf[Double]
+
+      case t if t == classOf[Float] => t
+      case t if t == classOf[java.lang.Float] => classOf[Float]
+
+      case t if t == classOf[Int] => t
+      case t if t == classOf[java.lang.Integer] => classOf[Int]
+
+      case t if t == classOf[Long] => t
+      case t if t == classOf[java.lang.Long] => classOf[Long]
+
+      case t if t == classOf[Short] => t
+      case t if t == classOf[java.lang.Short] => classOf[Short]
+
+      case t if t == classOf[String] => t
+      case t if t == classOf[java.lang.String] => classOf[String]
+
+      case t => t
+    }
+  }
 }

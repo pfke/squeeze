@@ -15,7 +15,7 @@ class asBitfield_mock_aligned_multiSpec
     val tto = createTTO[asBitfield_mock_aligned_multi]()
     val value = asBitfield_mock_aligned_multi(
       field01 = 0x81.toByte,
-      field02 = 0x6e7e.toShort,
+      field02 = 0x7e7e.toShort,
       field03 = 0x32.toByte,
       field04 = 0x12345678
     )

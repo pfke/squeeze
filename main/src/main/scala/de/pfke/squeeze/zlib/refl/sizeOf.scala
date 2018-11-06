@@ -75,12 +75,12 @@ object sizeOf {
       case t if t <:< ru.typeOf[Long] => sizeOf.Long
       case t if t <:< ru.typeOf[Short] => sizeOf.Short
 
-      case t if t <:< ru.typeOf[String] => 0
+      case t if t <:< ru.typeOf[String] => thisFieldAnnots.getWithFixedLengthOr(default = 0) // evtl. gibts ne fixed length annot
 
-      case t if t <:< ru.typeOf[List[_]] => 0
+      case t if t <:< ru.typeOf[List[_]] => thisFieldAnnots.getWithFixedCountOr(default = 0) * t.typeArgs.headOption.matchTo(guess(_), default = 0)
 
       case t if t.typeSymbol.isAbstract => 0
-      case t => guess(FieldHelper.getFields(tpe), upperClassAnnots = tpe.typeSymbol.annotations)
+      case _ => guess(FieldHelper.getFields(tpe), upperClassAnnots = tpe.typeSymbol.annotations)
     }
   }
 
@@ -109,7 +109,7 @@ object sizeOf {
 
         res
       } else {
-        in.foldLeft(0)((sum,i) => sum + guess(i.tpe))
+        in.foldLeft(0)((sum,i) => sum + guess(i.tpe, upperClassAnnots = upperClassAnnots, thisFieldAnnots = i.annos))
       }
     }
 

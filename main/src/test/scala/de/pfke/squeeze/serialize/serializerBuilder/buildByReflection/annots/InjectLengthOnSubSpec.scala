@@ -8,15 +8,7 @@ class InjectLengthOnSubSpec
     "testing serializer for InjectLengthOnSubMock type" when {
       checkThis[InjectLengthOnSubMock](
         code = s"""
-                  |import de.pfke.squeeze.zlib.version.PatchLevelVersion
-                  |import de.pfke.squeeze.zlib.data.collection.anythingString.AnythingIterator
-                  |import de.pfke.squeeze.zlib.data.collection.bitString.{BitStringAlignment, BitStringBuilder}
-                  |import de.pfke.squeeze.zlib.data.length.digital.{BitLength, ByteLength}
-                  |import de.pfke.squeeze.zlib.refl.GeneralRefl
-                  |import de.pfke.squeeze.serialize.{Serializer, SerializerContainer}
-                  |import de.pfke.squeeze.serialize.serializerHints._
-                  |import de.pfke.squeeze.zlib._
-                  |import java.nio.ByteOrder
+                  |$baseImports
                   |
                   |class InjectLengthOnSubMockSerializer
                   |  extends Serializer[de.pfke.squeeze.serialize.mocks.annots.InjectLengthOnSubMock] {

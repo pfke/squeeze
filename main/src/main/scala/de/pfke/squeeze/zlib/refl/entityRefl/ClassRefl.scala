@@ -143,8 +143,8 @@ class ClassRefl (
     val enrichedArgs = args.map { i => (GeneralRefl.getType(i), i.getClass) }
 
     def mapParamToSimple(in: MethodParameter) = (PrimitiveRefl.toScalaType(in.typeSignature), in.clazz)
-    def isAssignableFrom(_1: Class[_], _2: Class[_]) = _1.isAssignableFrom(_2)
-    def isTypeFrom(_1: ru.Type, _2: ru.Type) = _1 <:< _2
+    def isAssignableFrom(_1: Class[_], _2: Class[_]) = PrimitiveRefl.toScalaType(_1).isAssignableFrom(PrimitiveRefl.toScalaType(_2))
+    def isTypeFrom(_1: ru.Type, _2: ru.Type) = PrimitiveRefl.toScalaType(_1) <:< PrimitiveRefl.toScalaType(_2)
 
     def hasAllParamTypes (in: RichMethodRefl): Boolean = {
       if (args.size > in.parameter.size)
@@ -156,11 +156,11 @@ class ClassRefl (
       val classCheck = paramsAsTuple.zipWithIndex.map { i => isAssignableFrom(i._1._2, paddedArgs(i._2)._2) }
       val typeCheck = paramsAsTuple.zipWithIndex.map { i => isTypeFrom(i._1._1, paddedArgs(i._2)._1) }
 
-      val res = !typeCheck
+      val res = typeCheck
         .zip(classCheck)
         .forall { i => i._1 || i._2 }
 
-      !res
+      res
     }
 
     ctorRichMethodRefls

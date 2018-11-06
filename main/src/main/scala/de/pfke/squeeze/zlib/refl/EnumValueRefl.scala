@@ -52,7 +52,6 @@ object EnumValueRefl {
     val r4 = tpe.baseClasses.map(_.fullName)
     val r5 = EnumRefl.isEnum(tpe)
 
-    println("22414")
     t1
   }
 
