@@ -12,7 +12,7 @@ class asBitfield_mock_unaligned_blocks_multiSpec
            |$baseImports
            |
            |class asBitfield_mock_unaligned_blocks_multiSerializer
-             extends CompiledSerializer[de.pfke.squeeze.serialize.mocks.asBitfieldSpecs.asBitfield_mock_unaligned_blocks_multi] {
+           |  extends CompiledSerializer[de.pfke.squeeze.serialize.mocks.asBitfieldSpecs.asBitfield_mock_unaligned_blocks_multi] {
            |  override def objectTypeInfo = GeneralRefl.generateTypeInfo[de.pfke.squeeze.serialize.mocks.asBitfieldSpecs.asBitfield_mock_unaligned_blocks_multi]
            |
            |  override def read(

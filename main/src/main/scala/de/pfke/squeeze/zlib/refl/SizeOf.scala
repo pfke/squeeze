@@ -2,6 +2,7 @@ package de.pfke.squeeze.zlib.refl
 
 import de.pfke.squeeze.annots._
 import de.pfke.squeeze.zlib.data._
+import de.pfke.squeeze.zlib.data.length.digital.DigitalLength
 
 import scala.reflect.ClassTag
 import scala.reflect.runtime.{universe => ru}
@@ -24,18 +25,43 @@ import scala.reflect.runtime.{universe => ru}
   * Char          16-bit unsigned Unicode character (0 to 2 pot 16-1, inclusive)
   * String        a sequence of Chars
   **/
-object sizeOf {
-  val Boolean = 1
+object SizeOf {
+  private val _typeToSize = Map[ru.Type, DigitalLength](
+    ru.typeOf[Boolean] -> 1.byte,
+    ru.typeOf[Byte] -> 1.byte,
+    ru.typeOf[Short] -> 2.byte,
+    ru.typeOf[Int] -> 4.byte,
+    ru.typeOf[Long] -> 8.byte,
+    ru.typeOf[Float] -> 4.byte,
+    ru.typeOf[Double] -> 8.byte,
+    ru.typeOf[Char] -> 2.byte,
+  )
 
-  val Byte = 1
-  val Short = 2
-  val Int = 4
-  val Long = 8
+  def guesso[A] (
+    annots: List[ru.Annotation] = List.empty
+  ) (
+    implicit
+    classTag: ClassTag[A],
+    typeTag: ru.TypeTag[A]
+  ): DigitalLength = {
+    typeTag.tpe match {
+      case t if GeneralRefl.isPrimitive(t) => guessoPrimitive[A](annots = annots)
 
-  val Float = 4
-  val Double = 8
+      case _ => 0 byte
+    }
+  }
 
-  val Char = 2
+  def guessoPrimitive[A] (
+    annots: List[ru.Annotation] = List.empty
+  ) (
+    implicit
+    classTag: ClassTag[A],
+    typeTag: ru.TypeTag[A]
+  ): DigitalLength = {
+    require(GeneralRefl.isPrimitive(typeTag.tpe), s"pass type is no primitive. Got $typeTag / $classTag")
+
+    _typeToSize.getOrElse(PrimitiveRefl.toScalaType(typeTag.tpe), 0 byte)
+  }
 
   /**
     * Method to guess object size.
@@ -66,15 +92,15 @@ object sizeOf {
 //    val stringAnnotSizeOpt = thisFieldAnnots.getWithFixedLength.matchToOption(_.bytes)
 
     PrimitiveRefl.toScalaType(tpe) match {
-      case t if t <:< ru.typeOf[Boolean] => sizeOf.Boolean
-      case t if t <:< ru.typeOf[Byte] => sizeOf.Byte
-      case t if t <:< ru.typeOf[Char] => sizeOf.Char
-      case t if t <:< ru.typeOf[Double] => sizeOf.Double
-      case t if t <:< ru.typeOf[Float] => sizeOf.Float
-      case t if t <:< ru.typeOf[Int] => sizeOf.Int
-      case t if t <:< ru.typeOf[Long] => sizeOf.Long
-      case t if t <:< ru.typeOf[Short] => sizeOf.Short
-
+//      case t if t <:< ru.typeOf[Boolean] => SizeOf.Boolean
+//      case t if t <:< ru.typeOf[Byte] => SizeOf.Byte
+//      case t if t <:< ru.typeOf[Char] => SizeOf.Char
+//      case t if t <:< ru.typeOf[Double] => SizeOf.Double
+//      case t if t <:< ru.typeOf[Float] => SizeOf.Float
+//      case t if t <:< ru.typeOf[Int] => SizeOf.Int
+//      case t if t <:< ru.typeOf[Long] => SizeOf.Long
+//      case t if t <:< ru.typeOf[Short] => SizeOf.Short
+//
       case t if t <:< ru.typeOf[String] => thisFieldAnnots.getWithFixedLengthOr(default = 0) // evtl. gibts ne fixed length annot
 
       case t if t <:< ru.typeOf[List[_]] => thisFieldAnnots.getWithFixedCountOr(default = 0) * t.typeArgs.headOption.matchTo(guess(_), default = 0)

@@ -8,7 +8,7 @@ import de.pfke.squeeze.zlib.data.collection.bitString.{BitIterator, BitStringAli
 import de.pfke.squeeze.zlib.data.collection.bitString.BitStringAlignment.BitStringAlignment
 import de.pfke.squeeze.zlib.data.length.digital.{BitLength, ByteLength, DigitalLength}
 import de.pfke.squeeze.zlib.refl.{GeneralRefl, PrimitiveRefl}
-import de.pfke.squeeze.zlib.refl.sizeOf
+import de.pfke.squeeze.zlib.refl.SizeOf
 
 import scala.reflect.ClassTag
 import scala.reflect.runtime.{universe => ru}
@@ -128,7 +128,7 @@ class AnythingIterator(
     implicit
     classTag: ClassTag[A],
     typeTag: ru.TypeTag[A]
-  ): A = readAsBytes[A](lenToRead = ByteLength(sizeOf.guess()))
+  ): A = readAsBytes[A](lenToRead = ByteLength(SizeOf.guess()))
 
   /**
     * Anzahl der Bytes lesen
@@ -140,7 +140,7 @@ class AnythingIterator(
     classTag: ClassTag[A],
     typeTag: ru.TypeTag[A]
   ): A = {
-    def defaultLen = sizeOf.guess()
+    def defaultLen = SizeOf.guess()
     def len = lenToRead.toByte.toInt
 
     def isEqualLen = len == defaultLen

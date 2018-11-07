@@ -12,7 +12,7 @@ class asBitfield_mock_aligned_single_8bitSpec
            |$baseImports
            |
            |class asBitfield_mock_aligned_single_8bitSerializer
-             extends CompiledSerializer[de.pfke.squeeze.serialize.mocks.asBitfieldSpecs.asBitfield_mock_aligned_single_8bit] {
+           |  extends CompiledSerializer[de.pfke.squeeze.serialize.mocks.asBitfieldSpecs.asBitfield_mock_aligned_single_8bit] {
            |  override def objectTypeInfo = GeneralRefl.generateTypeInfo[de.pfke.squeeze.serialize.mocks.asBitfieldSpecs.asBitfield_mock_aligned_single_8bit]
            |
            |  override def read(
