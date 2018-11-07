@@ -21,7 +21,8 @@ abstract class BaseSpec
       |import de.pfke.squeeze.zlib.data.collection.bitString.{BitStringAlignment, BitStringBuilder}
       |import de.pfke.squeeze.zlib.data.length.digital.{BitLength, ByteLength}
       |import de.pfke.squeeze.zlib.refl.GeneralRefl
-      |import de.pfke.squeeze.serialize.{Serializer, SerializerContainer}
+      |import de.pfke.squeeze.serialize.SerializerContainer
+      |import de.pfke.squeeze.serialize.serializerCompiler.CompiledSerializer
       |import de.pfke.squeeze.serialize.serializerHints._
       |import de.pfke.squeeze.zlib._
       |import java.nio.ByteOrder""".stripMargin

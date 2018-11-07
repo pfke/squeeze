@@ -11,7 +11,7 @@ class WithFixedCountOnSubSpec
                 |$baseImports
                 |
                 |class WithFixedCountOnSubMockSerializer
-                |  extends Serializer[de.pfke.squeeze.serialize.mocks.annots.WithFixedCountOnSubMock] {
+                |  extends CompiledSerializer[de.pfke.squeeze.serialize.mocks.annots.WithFixedCountOnSubMock] {
                 |  override def objectTypeInfo = GeneralRefl.generateTypeInfo[de.pfke.squeeze.serialize.mocks.annots.WithFixedCountOnSubMock]
                 |
                 |  override def read(

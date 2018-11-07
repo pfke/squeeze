@@ -11,7 +11,7 @@ class DoubleSerializerSpec
                 |$baseImports
                 |
                 |class DoubleSerializer
-                |  extends Serializer[Double] {
+                |  extends CompiledSerializer[Double] {
                 |  override def objectTypeInfo = GeneralRefl.generateTypeInfo[Double]
                 |
                 |  override protected def byteStringWriteOp(implicit byteOrder: ByteOrder) = Some({ (bsb,value) => bsb.putDouble(value) })
@@ -27,7 +27,7 @@ class DoubleSerializerSpec
                 |$baseImports
                 |
                 |class DoubleSerializer
-                |  extends Serializer[Double] {
+                |  extends CompiledSerializer[Double] {
                 |  override def objectTypeInfo = GeneralRefl.generateTypeInfo[Double]
                 |
                 |  override protected def byteStringWriteOp(implicit byteOrder: ByteOrder) = Some({ (bsb,value) => bsb.putDouble(value) })
@@ -42,7 +42,7 @@ class DoubleSerializerSpec
                 |$baseImports
                 |
                 |class DoubleSerializer
-                |  extends Serializer[Double] {
+                |  extends CompiledSerializer[Double] {
                 |  override def objectTypeInfo = GeneralRefl.generateTypeInfo[Double]
                 |
                 |  override protected def byteStringWriteOp(implicit byteOrder: ByteOrder) = Some({ (bsb,value) => bsb.putDouble(value) })

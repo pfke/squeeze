@@ -11,7 +11,7 @@ class WithFixedLengthSpec
                 |$baseImports
                 |
                 |class WithFixedLengthMockSerializer
-                |  extends Serializer[de.pfke.squeeze.serialize.mocks.annots.WithFixedLengthMock] {
+                |  extends CompiledSerializer[de.pfke.squeeze.serialize.mocks.annots.WithFixedLengthMock] {
                 |  override def objectTypeInfo = GeneralRefl.generateTypeInfo[de.pfke.squeeze.serialize.mocks.annots.WithFixedLengthMock]
                 |
                 |  override def read(

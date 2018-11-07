@@ -11,7 +11,7 @@ class InjectTotalLengthSpec
                 |$baseImports
                 |
                 |class InjectTotalLength_staticSize_MockSerializer
-                |  extends Serializer[de.pfke.squeeze.serialize.mocks.annots.InjectTotalLength_staticSize_Mock] {
+                |  extends CompiledSerializer[de.pfke.squeeze.serialize.mocks.annots.InjectTotalLength_staticSize_Mock] {
                 |  override def objectTypeInfo = GeneralRefl.generateTypeInfo[de.pfke.squeeze.serialize.mocks.annots.InjectTotalLength_staticSize_Mock]
                 |
                 |  override def read(
@@ -62,7 +62,7 @@ class InjectTotalLengthSpec
                 |$baseImports
                 |
                 |class InjectTotalLength_dynamicSize_String_MockSerializer
-                |  extends Serializer[de.pfke.squeeze.serialize.mocks.annots.InjectTotalLength_dynamicSize_String_Mock] {
+                |  extends CompiledSerializer[de.pfke.squeeze.serialize.mocks.annots.InjectTotalLength_dynamicSize_String_Mock] {
                 |  override def objectTypeInfo = GeneralRefl.generateTypeInfo[de.pfke.squeeze.serialize.mocks.annots.InjectTotalLength_dynamicSize_String_Mock]
                 |
                 |  override def read(

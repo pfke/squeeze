@@ -15,9 +15,10 @@ trait SerializerContainer {
     * Return the iface type of the given data (if its class is described with an annotation)
     */
   @throws[SerializerBuildException]("if the class type has no ifaceType annotation")
-  def getIfaceType[A](
+  def getIfaceType[A] (
     in: A
-  )(implicit
+  ) (
+    implicit
     classTag: ClassTag[A],
     typeTag: ru.TypeTag[A]
   ): Long
@@ -30,10 +31,11 @@ trait SerializerContainer {
     * @param version only imported for ifaces
     * @return deserialzed object
     */
-  def read[A](
+  def read[A] (
     iter: AnythingIterator,
     hints: SerializerHint*
-  )(implicit
+  ) (
+    implicit
     byteOrder: ByteOrder,
     version: Option[PatchLevelVersion],
     classTag: ClassTag[A],
@@ -48,10 +50,11 @@ trait SerializerContainer {
     * @param byteOrder BigEndian or LittleEndian
     * @param version only imported for ifaces
     */
-  def write[A](
+  def write[A] (
     data: A,
     hints: SerializerHint*
-  )(implicit
+  ) (
+    implicit
     byteOrder: ByteOrder,
     version: Option[PatchLevelVersion],
     classTag: ClassTag[A],

@@ -11,7 +11,7 @@ class WithComplexSubTypesBuilderSpec
                 |$baseImports
                 |
                 |class WithComplexSubTypesMockSerializer
-                |  extends Serializer[de.pfke.squeeze.serialize.mocks.WithComplexSubTypesMock] {
+                |  extends CompiledSerializer[de.pfke.squeeze.serialize.mocks.WithComplexSubTypesMock] {
                 |  override def objectTypeInfo = GeneralRefl.generateTypeInfo[de.pfke.squeeze.serialize.mocks.WithComplexSubTypesMock]
                 |
                 |  override def read(

@@ -11,7 +11,7 @@ class IntSerializerSpec
                 |$baseImports
                 |
                 |class IntegerSerializer
-                |  extends Serializer[Integer] {
+                |  extends CompiledSerializer[Integer] {
                 |  override def objectTypeInfo = GeneralRefl.generateTypeInfo[Integer]
                 |
                 |  override protected def byteStringWriteOp(implicit byteOrder: ByteOrder) = Some({ (bsb,value) => bsb.putInt(value) })
@@ -27,7 +27,7 @@ class IntSerializerSpec
                 |$baseImports
                 |
                 |class IntSerializer
-                |  extends Serializer[Int] {
+                |  extends CompiledSerializer[Int] {
                 |  override def objectTypeInfo = GeneralRefl.generateTypeInfo[Int]
                 |
                 |  override protected def byteStringWriteOp(implicit byteOrder: ByteOrder) = Some({ (bsb,value) => bsb.putInt(value) })
@@ -42,7 +42,7 @@ class IntSerializerSpec
                 |$baseImports
                 |
                 |class IntSerializer
-                |  extends Serializer[Int] {
+                |  extends CompiledSerializer[Int] {
                 |  override def objectTypeInfo = GeneralRefl.generateTypeInfo[Int]
                 |
                 |  override protected def byteStringWriteOp(implicit byteOrder: ByteOrder) = Some({ (bsb,value) => bsb.putInt(value) })

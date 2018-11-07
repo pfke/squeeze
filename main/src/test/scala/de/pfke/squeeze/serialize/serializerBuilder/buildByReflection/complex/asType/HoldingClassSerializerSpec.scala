@@ -11,7 +11,7 @@ class HoldingClassSerializerSpec
                 |$baseImports
                 |
                 |class HoldingClassSerializer
-                |  extends Serializer[de.pfke.squeeze.serialize.mocks.asType.HoldingClass] {
+                |  extends CompiledSerializer[de.pfke.squeeze.serialize.mocks.asType.HoldingClass] {
                 |  override def objectTypeInfo = GeneralRefl.generateTypeInfo[de.pfke.squeeze.serialize.mocks.asType.HoldingClass]
                 |
                 |  override def read(

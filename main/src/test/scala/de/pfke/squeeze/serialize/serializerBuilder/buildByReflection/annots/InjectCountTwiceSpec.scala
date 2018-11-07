@@ -11,7 +11,7 @@ class InjectCountTwiceSpec
                 |$baseImports
                 |
                 |class InjectCountTwiceMockSerializer
-                |  extends Serializer[de.pfke.squeeze.serialize.mocks.annots.InjectCountTwiceMock] {
+                |  extends CompiledSerializer[de.pfke.squeeze.serialize.mocks.annots.InjectCountTwiceMock] {
                 |  override def objectTypeInfo = GeneralRefl.generateTypeInfo[de.pfke.squeeze.serialize.mocks.annots.InjectCountTwiceMock]
                 |
                 |  override def read(

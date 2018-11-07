@@ -1,24 +1,23 @@
 package de.pfke.squeeze.serialize.serializerCompiler
 
+import de.pfke.squeeze.serialize.WrappedSerializer
 import javax.script.{Compilable, ScriptEngineManager}
-
-import de.pfke.squeeze.serialize.Serializer
 import de.pfke.squeeze.serialize.serializerBuilder.BuiltSerializer
 
 object SerializerCompiler {
   // fields
-  private val _engine = initEngine()
+  private val _engine = this.synchronized { initEngine() }
 
   /**
     * Compile the given script and return the result: the object itself
     */
   def compile[A](
-    reflectedSerializer: BuiltSerializer[A]
-  ): CompiledSerializer[A] = {
-    val script = _engine.compile(reflectedSerializer.code)
-    val compiled = script.eval().asInstanceOf[Serializer[A]]
+    builtSerializer: BuiltSerializer[A]
+  ): WrappedSerializer[A] = {
+    val script = _engine.compile(builtSerializer.code)
+    val compiled = script.eval().asInstanceOf[CompiledSerializer[A]]
 
-    CompiledSerializer(reflectedSerializer, compiled)
+    WrappedSerializer(builtSerializer, compiled)
   }
 
   /**

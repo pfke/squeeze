@@ -11,7 +11,7 @@ class FloatSerializerSpec
                 |$baseImports
                 |
                 |class FloatSerializer
-                |  extends Serializer[Float] {
+                |  extends CompiledSerializer[Float] {
                 |  override def objectTypeInfo = GeneralRefl.generateTypeInfo[Float]
                 |
                 |  override protected def byteStringWriteOp(implicit byteOrder: ByteOrder) = Some({ (bsb,value) => bsb.putFloat(value) })
@@ -27,7 +27,7 @@ class FloatSerializerSpec
                 |$baseImports
                 |
                 |class FloatSerializer
-                |  extends Serializer[Float] {
+                |  extends CompiledSerializer[Float] {
                 |  override def objectTypeInfo = GeneralRefl.generateTypeInfo[Float]
                 |
                 |  override protected def byteStringWriteOp(implicit byteOrder: ByteOrder) = Some({ (bsb,value) => bsb.putFloat(value) })
@@ -42,7 +42,7 @@ class FloatSerializerSpec
                 |$baseImports
                 |
                 |class FloatSerializer
-                |  extends Serializer[Float] {
+                |  extends CompiledSerializer[Float] {
                 |  override def objectTypeInfo = GeneralRefl.generateTypeInfo[Float]
                 |
                 |  override protected def byteStringWriteOp(implicit byteOrder: ByteOrder) = Some({ (bsb,value) => bsb.putFloat(value) })

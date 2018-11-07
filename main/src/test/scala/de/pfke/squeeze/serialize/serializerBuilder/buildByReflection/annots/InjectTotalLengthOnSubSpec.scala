@@ -11,7 +11,7 @@ class InjectTotalLengthOnSubSpec
                 |$baseImports
                 |
                 |class InjectTotalLengthOnSubMockSerializer
-                |  extends Serializer[de.pfke.squeeze.serialize.mocks.annots.InjectTotalLengthOnSubMock] {
+                |  extends CompiledSerializer[de.pfke.squeeze.serialize.mocks.annots.InjectTotalLengthOnSubMock] {
                 |  override def objectTypeInfo = GeneralRefl.generateTypeInfo[de.pfke.squeeze.serialize.mocks.annots.InjectTotalLengthOnSubMock]
                 |
                 |  override def read(

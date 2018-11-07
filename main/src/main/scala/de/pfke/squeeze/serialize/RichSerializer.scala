@@ -14,20 +14,20 @@ import scala.reflect.runtime.{universe => ru}
 /**
   * This class is used to wrap a (e.g. reflected) and compiled serializer and ist read and write calls
   */
-class SerializerWrapper[A]()(
+class RichSerializer[A]()(
   implicit
   classTag: ClassTag[A],
   typeTag: ru.TypeTag[A]
-) extends Serializer[A] {
+) extends CompiledSerializer[A] {
   // fields
-  private val _serizalizer: CompiledSerializer[A] = SerializerFactory.compile()
+  private val _compiledSerizalizer = SerializerFactory.compile[A]()
 
   /**
     * Return type info for the serialized/deserialized object
     *
     * @return classtag and type tag
     */
-  override def objectTypeInfo: TypeInfo[A] = _serizalizer.serializerObject.objectTypeInfo
+  override def objectTypeInfo: TypeInfo[A] = _compiledSerizalizer.compiledSerializer.objectTypeInfo
 
   /**
     * Read from given input and deserialize to an object A
@@ -45,7 +45,7 @@ class SerializerWrapper[A]()(
     implicit byteOrder: ByteOrder,
     serializerContainer: SerializerContainer,
     version: Option[PatchLevelVersion]
-  ): A = _serizalizer.serializerObject.read(iter = iter, hints = hints:_*)
+  ): A = _compiledSerizalizer.compiledSerializer.read(iter = iter, hints = hints:_*)
 
   /**
     * Serialize the input
@@ -63,5 +63,5 @@ class SerializerWrapper[A]()(
     implicit byteOrder: ByteOrder,
     serializerContainer: SerializerContainer,
     version: Option[PatchLevelVersion]
-  ): Unit = _serizalizer.serializerObject.write(data = data, hints = hints:_*)
+  ): Unit = _compiledSerizalizer.compiledSerializer.write(data = data, hints = hints:_*)
 }

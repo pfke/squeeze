@@ -11,7 +11,7 @@ class IfaceSerializerSpec
                 |$baseImports
                 |
                 |class IfaceSerializer
-                |  extends Serializer[de.pfke.squeeze.serialize.mocks.asType.Iface] {
+                |  extends CompiledSerializer[de.pfke.squeeze.serialize.mocks.asType.Iface] {
                 |  override def objectTypeInfo = GeneralRefl.generateTypeInfo[de.pfke.squeeze.serialize.mocks.asType.Iface]
                 |
                 |  override def read(

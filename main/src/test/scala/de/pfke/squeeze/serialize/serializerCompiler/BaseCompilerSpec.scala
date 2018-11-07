@@ -9,7 +9,7 @@ import de.pfke.squeeze.zlib.data.collection.bitString.{BitStringAlignment, BitSt
 import de.pfke.squeeze.zlib.data.collection.bitString.BitStringAlignment.BitStringAlignment
 import de.pfke.squeeze.zlib.data.length.digital.BitLength
 import de.pfke.squeeze.Squeezer
-import de.pfke.squeeze.serialize.SerializerContainer
+import de.pfke.squeeze.serialize.{SerializerContainer, WrappedSerializer}
 import de.pfke.squeeze.serialize.serializerBuilder.BuildByReflection
 import de.pfke.squeeze.serialize.serializerHints.{BitStringBuilderHint, ByteStringBuilderHint, SizeInBitHint}
 import org.scalatest.{Matchers, WordSpec}
@@ -25,13 +25,13 @@ trait BaseCompilerSpec
     implicit
     classTag: ClassTag[A],
     typeTag: ru.TypeTag[A]
-  ): CompiledSerializer[A] = SerializerCompiler.compile[A](BuildByReflection().build())
+  ): WrappedSerializer[A] = SerializerCompiler.compile[A](BuildByReflection().build())
 
   /**
     * Read bits
     */
   protected def readBitString[A](
-    serializer: CompiledSerializer[A],
+    serializer: WrappedSerializer[A],
     bits: Int,
     value: Long
   )(
@@ -51,14 +51,14 @@ trait BaseCompilerSpec
     val iter = AnythingIterator(bsb.result(), bitAlignment = alignment)
     iter.read[Long](Some(BitLength(alignment.id - bits))) //
 
-    serializer.serializerObject.read(iter, SizeInBitHint(bits))
+    serializer.compiledSerializer.read(iter, SizeInBitHint(bits))
   }
 
   /**
     * Read Bytes
     */
   protected def readByteString[A](
-    serializer: CompiledSerializer[A],
+    serializer: WrappedSerializer[A],
     data: Int*
   )(
     implicit
@@ -70,14 +70,14 @@ trait BaseCompilerSpec
   ): A = {
     implicit val realSerializerContainer: SerializerContainer = serializerContainer.getOrElse(Squeezer())
 
-    serializer.serializerObject.read(AnythingIterator(ByteString(data:_*), bitAlignment = BitStringAlignment._32Bit))
+    serializer.compiledSerializer.read(AnythingIterator(ByteString(data:_*), bitAlignment = BitStringAlignment._32Bit))
   }
 
   /**
     * Write bites
     */
   protected def writeBitString[A](
-    serializer: CompiledSerializer[A],
+    serializer: WrappedSerializer[A],
     bits: Int,
     value: A
   )(
@@ -93,7 +93,7 @@ trait BaseCompilerSpec
 
     val bsb = BitStringBuilder.newBuilder(alignment = alignment)
 
-    serializer.serializerObject.write(value, BitStringBuilderHint(bsb), SizeInBitHint(bits))
+    serializer.compiledSerializer.write(value, BitStringBuilderHint(bsb), SizeInBitHint(bits))
 
     bsb.result()
   }
@@ -102,7 +102,7 @@ trait BaseCompilerSpec
     * Write bytes
     */
   protected def writeByteString[A](
-    serializer: CompiledSerializer[A],
+    serializer: WrappedSerializer[A],
     data: A
   )(
     implicit
@@ -116,7 +116,7 @@ trait BaseCompilerSpec
 
     val bsb = ByteString.newBuilder
 
-    serializer.serializerObject.write(data, ByteStringBuilderHint(bsb))
+    serializer.compiledSerializer.write(data, ByteStringBuilderHint(bsb))
 
     bsb.result()
   }

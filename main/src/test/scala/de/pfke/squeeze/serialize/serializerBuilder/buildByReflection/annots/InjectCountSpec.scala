@@ -11,7 +11,7 @@ class InjectCountSpec
                 |$baseImports
                 |
                 |class InjectCountMockSerializer
-                |  extends Serializer[de.pfke.squeeze.serialize.mocks.annots.InjectCountMock] {
+                |  extends CompiledSerializer[de.pfke.squeeze.serialize.mocks.annots.InjectCountMock] {
                 |  override def objectTypeInfo = GeneralRefl.generateTypeInfo[de.pfke.squeeze.serialize.mocks.annots.InjectCountMock]
                 |
                 |  override def read(

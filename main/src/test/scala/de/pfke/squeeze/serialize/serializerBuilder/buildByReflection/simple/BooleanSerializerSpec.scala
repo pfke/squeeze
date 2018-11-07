@@ -11,7 +11,7 @@ class BooleanSerializerSpec
                 |$baseImports
                 |
                 |class BooleanSerializer
-                |  extends Serializer[Boolean] {
+                |  extends CompiledSerializer[Boolean] {
                 |  override def objectTypeInfo = GeneralRefl.generateTypeInfo[Boolean]
                 |
                 |  override protected def byteStringWriteOp(implicit byteOrder: ByteOrder) = Some({ (bsb,value) => bsb.putByte(if (value) 1 else 0) })
@@ -27,7 +27,7 @@ class BooleanSerializerSpec
                 |$baseImports
                 |
                 |class BooleanSerializer
-                |  extends Serializer[Boolean] {
+                |  extends CompiledSerializer[Boolean] {
                 |  override def objectTypeInfo = GeneralRefl.generateTypeInfo[Boolean]
                 |
                 |  override protected def byteStringWriteOp(implicit byteOrder: ByteOrder) = Some({ (bsb,value) => bsb.putByte(if (value) 1 else 0) })
@@ -42,7 +42,7 @@ class BooleanSerializerSpec
                 |$baseImports
                 |
                 |class BooleanSerializer
-                |  extends Serializer[Boolean] {
+                |  extends CompiledSerializer[Boolean] {
                 |  override def objectTypeInfo = GeneralRefl.generateTypeInfo[Boolean]
                 |
                 |  override protected def byteStringWriteOp(implicit byteOrder: ByteOrder) = Some({ (bsb,value) => bsb.putByte(if (value) 1 else 0) })

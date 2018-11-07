@@ -11,7 +11,7 @@ class ShortSerializerSpec
                 |$baseImports
                 |
                 |class ShortSerializer
-                |  extends Serializer[Short] {
+                |  extends CompiledSerializer[Short] {
                 |  override def objectTypeInfo = GeneralRefl.generateTypeInfo[Short]
                 |
                 |  override protected def byteStringWriteOp(implicit byteOrder: ByteOrder) = Some({ (bsb,value) => bsb.putShort(value) })
@@ -27,7 +27,7 @@ class ShortSerializerSpec
                 |$baseImports
                 |
                 |class ShortSerializer
-                |  extends Serializer[Short] {
+                |  extends CompiledSerializer[Short] {
                 |  override def objectTypeInfo = GeneralRefl.generateTypeInfo[Short]
                 |
                 |  override protected def byteStringWriteOp(implicit byteOrder: ByteOrder) = Some({ (bsb,value) => bsb.putShort(value) })
@@ -42,7 +42,7 @@ class ShortSerializerSpec
                 |$baseImports
                 |
                 |class ShortSerializer
-                |  extends Serializer[Short] {
+                |  extends CompiledSerializer[Short] {
                 |  override def objectTypeInfo = GeneralRefl.generateTypeInfo[Short]
                 |
                 |  override protected def byteStringWriteOp(implicit byteOrder: ByteOrder) = Some({ (bsb,value) => bsb.putShort(value) })

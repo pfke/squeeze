@@ -11,7 +11,7 @@ class FullOfSimpleTypesBuilderSpec
                 |$baseImports
                 |
                 |class FullOfSimpleTypesMockSerializer
-                |  extends Serializer[de.pfke.squeeze.serialize.mocks.FullOfSimpleTypesMock] {
+                |  extends CompiledSerializer[de.pfke.squeeze.serialize.mocks.FullOfSimpleTypesMock] {
                 |  override def objectTypeInfo = GeneralRefl.generateTypeInfo[de.pfke.squeeze.serialize.mocks.FullOfSimpleTypesMock]
                 |
                 |  override def read(

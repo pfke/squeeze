@@ -1,7 +1,7 @@
 package de.pfke.squeeze.serialize
 
 import de.pfke.squeeze.serialize.serializerBuilder.{BuildByReflection, BuiltSerializer}
-import de.pfke.squeeze.serialize.serializerCompiler.{CompiledSerializer, SerializerCompiler}
+import de.pfke.squeeze.serialize.serializerCompiler.SerializerCompiler
 
 import scala.reflect.ClassTag
 import scala.reflect.runtime.{universe => ru}
@@ -27,5 +27,5 @@ object SerializerFactory {
     implicit
     classTag: ClassTag[A],
     typeTag: ru.TypeTag[A]
-  ): CompiledSerializer[A] = _compiler.compile(build())
+  ): WrappedSerializer[A] = _compiler.compile(build())
 }

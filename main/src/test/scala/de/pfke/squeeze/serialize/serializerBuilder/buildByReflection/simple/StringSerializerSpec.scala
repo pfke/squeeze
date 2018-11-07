@@ -11,7 +11,7 @@ class StringSerializerSpec
                 |$baseImports
                 |
                 |class StringSerializer
-                |  extends Serializer[String] {
+                |  extends CompiledSerializer[String] {
                 |  override def objectTypeInfo = GeneralRefl.generateTypeInfo[String]
                 |
                 |  override protected def byteStringWriteOp(implicit byteOrder: ByteOrder) = None
@@ -26,7 +26,7 @@ class StringSerializerSpec
                 |$baseImports
                 |
                 |class StringSerializer
-                |  extends Serializer[String] {
+                |  extends CompiledSerializer[String] {
                 |  override def objectTypeInfo = GeneralRefl.generateTypeInfo[String]
                 |
                 |  override protected def byteStringWriteOp(implicit byteOrder: ByteOrder) = None

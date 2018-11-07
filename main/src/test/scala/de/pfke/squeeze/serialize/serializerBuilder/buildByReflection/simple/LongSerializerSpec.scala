@@ -11,7 +11,7 @@ class LongSerializerSpec
                 |$baseImports
                 |
                 |class LongSerializer
-                |  extends Serializer[Long] {
+                |  extends CompiledSerializer[Long] {
                 |  override def objectTypeInfo = GeneralRefl.generateTypeInfo[Long]
                 |
                 |  override protected def byteStringWriteOp(implicit byteOrder: ByteOrder) = Some({ (bsb,value) => bsb.putLong(value) })
@@ -27,7 +27,7 @@ class LongSerializerSpec
                 |$baseImports
                 |
                 |class LongSerializer
-                |  extends Serializer[Long] {
+                |  extends CompiledSerializer[Long] {
                 |  override def objectTypeInfo = GeneralRefl.generateTypeInfo[Long]
                 |
                 |  override protected def byteStringWriteOp(implicit byteOrder: ByteOrder) = Some({ (bsb,value) => bsb.putLong(value) })
@@ -42,7 +42,7 @@ class LongSerializerSpec
                 |$baseImports
                 |
                 |class LongSerializer
-                |  extends Serializer[Long] {
+                |  extends CompiledSerializer[Long] {
                 |  override def objectTypeInfo = GeneralRefl.generateTypeInfo[Long]
                 |
                 |  override protected def byteStringWriteOp(implicit byteOrder: ByteOrder) = Some({ (bsb,value) => bsb.putLong(value) })

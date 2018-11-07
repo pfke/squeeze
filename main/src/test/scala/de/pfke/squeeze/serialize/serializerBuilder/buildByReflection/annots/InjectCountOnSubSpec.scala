@@ -11,7 +11,7 @@ class InjectCountOnSubSpec
                 |$baseImports
                 |
                 |class InjectCountOnSubMockSerializer
-                |  extends Serializer[de.pfke.squeeze.serialize.mocks.annots.InjectCountOnSubMock] {
+                 |  extends CompiledSerializer[de.pfke.squeeze.serialize.mocks.annots.InjectCountOnSubMock] {
                 |  override def objectTypeInfo = GeneralRefl.generateTypeInfo[de.pfke.squeeze.serialize.mocks.annots.InjectCountOnSubMock]
                 |
                 |  override def read(

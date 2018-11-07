@@ -11,7 +11,7 @@ class NotAllHaveIfaceSerializerSpec
                 |$baseImports
                 |
                 |class NotAllHaveIfaceSerializer
-                |  extends Serializer[de.pfke.squeeze.serialize.mocks.asType.NotAllHaveIface] {
+                |  extends CompiledSerializer[de.pfke.squeeze.serialize.mocks.asType.NotAllHaveIface] {
                 |  override def objectTypeInfo = GeneralRefl.generateTypeInfo[de.pfke.squeeze.serialize.mocks.asType.NotAllHaveIface]
                 |
                 |  override def read(

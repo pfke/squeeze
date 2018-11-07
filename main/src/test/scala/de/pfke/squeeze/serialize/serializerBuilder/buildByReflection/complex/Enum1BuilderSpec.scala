@@ -11,7 +11,7 @@ class Enum1BuilderSpec
                 |$baseImports
                 |
                 |class Enum1MockSerializer
-                |  extends Serializer[de.pfke.squeeze.serialize.mocks.Enum1Mock.Enum1Mock] {
+                |  extends CompiledSerializer[de.pfke.squeeze.serialize.mocks.Enum1Mock.Enum1Mock] {
                 |  override def objectTypeInfo = GeneralRefl.generateTypeInfo[de.pfke.squeeze.serialize.mocks.Enum1Mock.Enum1Mock]
                 |
                 |  override def read(

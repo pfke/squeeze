@@ -9,7 +9,7 @@ import de.pfke.squeeze.zlib.data.collection.bitString.BitStringAlignment
 import de.pfke.squeeze.zlib.refl.GeneralRefl
 import de.pfke.squeeze.annots._
 import de.pfke.squeeze.serialize.serializerHints.{ByteStringBuilderHint, SerializerHint}
-import de.pfke.squeeze.serialize.{SerializerContainer, SerializerWrapper}
+import de.pfke.squeeze.serialize.{SerializerContainer, RichSerializer}
 import de.pfke.squeeze.zlib.SerializerRunException
 
 import scala.collection.mutable
@@ -20,7 +20,7 @@ object Squeezer {
   /**
     * Create w/o PatchLevelVersion
     */
-  def apply()(
+  def apply () (
     implicit
     byteOrder: ByteOrder
   ): Squeezer = new Squeezer(initialFromVersion = None)
@@ -28,7 +28,7 @@ object Squeezer {
   /**
     * Create with parsed PatchLevelVersion
     */
-  def apply(
+  def apply (
     version: String
   ) (
     implicit
@@ -38,7 +38,7 @@ object Squeezer {
   /**
     * Create with PatchLevelVersion
     */
-  def apply(
+  def apply (
     version: PatchLevelVersion
   ) (
     implicit
@@ -46,15 +46,16 @@ object Squeezer {
   ): Squeezer = new Squeezer(initialFromVersion = Some(version))
 }
 
-class Squeezer(
+class Squeezer (
   initialFromVersion: Option[PatchLevelVersion]
-)(implicit
+) (
+  implicit
   byteOrder: ByteOrder
 ) extends SerializerContainer {
-  implicit val serialzierContainer: Squeezer = this
+  private implicit val _serialzierContainerToUse: Squeezer = this
 
   // fields
-  private val _serializers = new mutable.HashMap[GeneralRefl.TypeInfo[_], SerializerWrapper[_]]()
+  private val _cachedSerializers = new mutable.HashMap[GeneralRefl.TypeInfo[_], RichSerializer[_]]()
 
   /**
     * Return the iface type of the given data (if its class is described with an annotation)
@@ -72,7 +73,7 @@ class Squeezer(
       .getTypeForIface match {
       case Some(x) if x.value.isInstanceOf[Int] => x.value.asInstanceOf[Int]
       case Some(x) if x.value.isInstanceOf[Long] => x.value.asInstanceOf[Long]
-      case Some(_) => throw new SerializerRunException(s"iface type for $typeTag is not in a valid format. Int or Long expected" + s"")
+      case Some(_) => throw new SerializerRunException(s"iface type for $typeTag is not in a valid format. Int or Long expected")
       case None => throw new SerializerRunException(s"could not find iface type for $typeTag")
     }
   }
@@ -158,11 +159,11 @@ class Squeezer(
     implicit
     classTag: ClassTag[A],
     typeTag: ru.TypeTag[A]
-  ): SerializerWrapper[A] = {
-    _serializers
+  ): RichSerializer[A] = {
+    _cachedSerializers
       .getOrElseUpdate(
         GeneralRefl.TypeInfo(classTag = classTag, typeTag = typeTag),
-        new SerializerWrapper[A]()
-      ).asInstanceOf[SerializerWrapper[A]]
+        new RichSerializer[A]()
+      ).asInstanceOf[RichSerializer[A]]
   }
 }

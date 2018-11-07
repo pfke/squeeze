@@ -11,7 +11,7 @@ class ByteSerializerSpec
                 |$baseImports
                 |
                 |class ByteSerializer
-                |  extends Serializer[Byte] {
+                |  extends CompiledSerializer[Byte] {
                 |  override def objectTypeInfo = GeneralRefl.generateTypeInfo[Byte]
                 |
                 |  override protected def byteStringWriteOp(implicit byteOrder: ByteOrder) = Some({ (bsb,value) => bsb.putByte(value) })
@@ -27,7 +27,7 @@ class ByteSerializerSpec
                 |$baseImports
                 |
                 |class ByteSerializer
-                |  extends Serializer[Byte] {
+                |  extends CompiledSerializer[Byte] {
                 |  override def objectTypeInfo = GeneralRefl.generateTypeInfo[Byte]
                 |
                 |  override protected def byteStringWriteOp(implicit byteOrder: ByteOrder) = Some({ (bsb,value) => bsb.putByte(value) })
@@ -42,7 +42,7 @@ class ByteSerializerSpec
                 |$baseImports
                 |
                 |class ByteSerializer
-                |  extends Serializer[Byte] {
+                |  extends CompiledSerializer[Byte] {
                 |  override def objectTypeInfo = GeneralRefl.generateTypeInfo[Byte]
                 |
                 |  override protected def byteStringWriteOp(implicit byteOrder: ByteOrder) = Some({ (bsb,value) => bsb.putByte(value) })

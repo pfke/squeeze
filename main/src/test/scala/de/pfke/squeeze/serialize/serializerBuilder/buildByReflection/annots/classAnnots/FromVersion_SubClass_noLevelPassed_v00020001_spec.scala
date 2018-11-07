@@ -8,18 +8,10 @@ class FromVersion_SubClass_noLevelPassed_v00020001_spec
   "testing serializer for FromVersion_SubClass_noLevelPassed_v00020001 type" when {
     checkThis[FromVersion_SubClass_noLevelPassed_v00020001](
       code = s"""
-                |import de.pfke.squeeze.zlib.version.PatchLevelVersion
-                |import de.pfke.squeeze.zlib.data.collection.anythingString.AnythingIterator
-                |import de.pfke.squeeze.zlib.data.collection.bitString.{BitStringAlignment, BitStringBuilder}
-                |import de.pfke.squeeze.zlib.data.length.digital.{BitLength, ByteLength}
-                |import de.pfke.squeeze.zlib.refl.GeneralRefl
-                |import de.pfke.squeeze.serialize.{Serializer, SerializerContainer}
-                |import de.pfke.squeeze.serialize.serializerHints._
-                |import de.pfke.squeeze.zlib._
-                |import java.nio.ByteOrder
+                |$baseImports
                 |
                 |class FromVersion_SubClass_noLevelPassed_v00020001Serializer
-                |  extends Serializer[de.pfke.squeeze.serialize.mocks.annots.classAnnots.FromVersion_SubClass_noLevelPassed_v00020001] {
+                |  extends CompiledSerializer[de.pfke.squeeze.serialize.mocks.annots.classAnnots.FromVersion_SubClass_noLevelPassed_v00020001] {
                 |  override def objectTypeInfo = GeneralRefl.generateTypeInfo[de.pfke.squeeze.serialize.mocks.annots.classAnnots.FromVersion_SubClass_noLevelPassed_v00020001]
                 |
                 |  override def read(
