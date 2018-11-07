@@ -72,8 +72,8 @@ class BuildByReflection
 
       case t if GeneralRefl.isEnum(t) => genCodeForEnum()
 
-      case t if GeneralRefl.isPrimitiveType(t) => genCodeForPrimitives()
-      case t if GeneralRefl.isString(t) => genCodeForString()
+      case t if GeneralRefl.isPrimitive(t) => genCodeForPrimitives()
+      case t if GeneralRefl.isString(t)    => genCodeForString()
 
       case _ => "empty"
     }
@@ -117,7 +117,7 @@ class BuildByReflection
     def makeIterCode(): String = {
       typeTag.tpe match {
         case t if GeneralRefl.isAbstract(t) => read_buildIterCode_forTraits(tpe = t)
-        case _                 => makeIterCodeForComplex()
+        case _                              => makeIterCodeForComplex()
       }
     }
 
@@ -309,17 +309,15 @@ class BuildByReflection
       thisTpe: ru.Type,
       fieldName: String = ""
     ): String = {
-      val subFields = FieldHelper.getFields(upperType)
-
-      val typeHint = subFields.getInjectTypeAnnot(fieldName) match {
+      val typeHint = allSubFields.getInjectTypeAnnot(fieldName) match {
         case Some(x) if x._2.isEnum => Some(s"IfaceTypeHint(value = ${x._2.name}.id)")
         case Some(x)                => Some(s"IfaceTypeHint(value = ${x._2.name})")
         case None                   => None
       }
 
       // Laengen-info
-      val foundInjectLengthAnnot = fields.getInjectLengthAnnot(fieldName)
-      val foundWithFixedLengthAnnot = fields.getWithFixedLengthAnnot
+      val foundInjectLengthAnnot = allSubFields.getInjectLengthAnnot(fieldName)
+      val foundWithFixedLengthAnnot = allSubFields.getWithFixedLengthAnnot
 
       val lengthHint = foundInjectLengthAnnot orElse foundWithFixedLengthAnnot match {
         case Some((_: injectLength, field: FieldDescr)) => Some(s"SizeInByteHint(value = ${field.name.replaceAll(field.name, field.name)})")
@@ -454,8 +452,9 @@ class BuildByReflection
     ) = {
       f.annos
         .getInjectType match {
-        case Some(x) => s"serializerContainer.getIfaceType(${paramName.replaceAll(f.name, x.fromField)}).to$tpe"
-        case None => paramName
+        case Some(x) if GeneralRefl.isPrimitive(tpe) => s"serializerContainer.getIfaceType(${paramName.replaceAll(f.name, x.fromField)}).to$tpe"
+        case Some(x) if GeneralRefl.isEnum(tpe)      => s"serializerContainer.getIfaceType(${paramName.replaceAll(f.name, x.fromField)})"
+        case None                                    => paramName
       }
     }
 

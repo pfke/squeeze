@@ -72,8 +72,7 @@ class Squeezer(
       .getTypeForIface match {
       case Some(x) if x.value.isInstanceOf[Int] => x.value.asInstanceOf[Int]
       case Some(x) if x.value.isInstanceOf[Long] => x.value.asInstanceOf[Long]
-      case Some(_) => throw new SerializerRunException(s"iface type for $typeTag is not in a valid format. Int or Long expected" +
-        s"")
+      case Some(_) => throw new SerializerRunException(s"iface type for $typeTag is not in a valid format. Int or Long expected" + s"")
       case None => throw new SerializerRunException(s"could not find iface type for $typeTag")
     }
   }
@@ -102,7 +101,7 @@ class Squeezer(
     * @param data is the input data
     * @param hints how to deserialize (e.g. read bits or bytes, pass an iface type)
     * @param byteOrder BigEndian or LittleEndian
-    * @param version only imported for ifaces
+    * @param version only important for ifaces
     */
   def write[A](
     data: A,
@@ -133,12 +132,12 @@ class Squeezer(
   /**
     * Serialize the input
     *
-    * @param data is the input data
+    * @param in is the input data
     * @param byteOrder BigEndian or LittleEndian
     * @param version only imported for ifaces
     */
   def serialize[A](
-    data: A
+    in: A
   )(implicit
     byteOrder: ByteOrder,
     version: Option[PatchLevelVersion] = initialFromVersion,
@@ -147,7 +146,7 @@ class Squeezer(
   ): ByteString = {
     val result = ByteString.newBuilder
 
-    write[A](data = data, hints = ByteStringBuilderHint(result))
+    write[A](data = in, hints = ByteStringBuilderHint(result))
 
     result.result()
   }

@@ -43,7 +43,7 @@ trait GeneralReflIncludes {
     /**
       * Return true if the passed type is a string
       */
-    def isPrimitiveType: Boolean = GeneralRefl.isPrimitiveType(in)
+    def isPrimitiveType: Boolean = GeneralRefl.isPrimitive(in)
 
     /**
       * Return true if the passed type is a string

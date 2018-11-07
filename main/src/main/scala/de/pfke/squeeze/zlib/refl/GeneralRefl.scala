@@ -137,7 +137,7 @@ object GeneralRefl {
   /**
     * Return true if the passed type is complex
     */
-  def isComplexType (in: ru.Type): Boolean = !(isPrimitiveType(in) || isString(in) || isEnum(in) || isListType(in))
+  def isComplexType (in: ru.Type): Boolean = !(isPrimitive(in) || isString(in) || isEnum(in) || isListType(in))
 
   /**
     * Returns true if the given squeezle is an enum.
@@ -158,7 +158,7 @@ object GeneralRefl {
   /**
     * Return true if the passed type is a string
     */
-  def isPrimitiveType (in: ru.Type): Boolean = PrimitiveRefl.isPrimitive(in)
+  def isPrimitive (in: ru.Type): Boolean = PrimitiveRefl.isPrimitive(in)
 
   /**
     * Return true if the passed type is a string
