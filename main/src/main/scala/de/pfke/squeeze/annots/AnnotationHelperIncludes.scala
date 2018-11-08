@@ -30,6 +30,10 @@ trait AnnotationHelperIncludes {
     def getTypeForIface: Option[typeForIface] = AnnotationHelper.getTypeForIface(in)
     def hasTypeForIface: Boolean = AnnotationHelper.hasTypeForIface(in)
 
+    def getWidth: Option[withFixedWidth] = AnnotationHelper.getWidth(in)
+    def getWidthOr (default: Int): Int = AnnotationHelper.getWidthOr(in, default)
+    def hasWidth: Boolean = AnnotationHelper.hasWidth(in)
+
     def getWithFixedCount: Option[withFixedCount] = AnnotationHelper.getWithFixedCount(in)
     def getWithFixedCountOr (default: Int): Int = AnnotationHelper.getWithFixedCountOr(in, default)
     def hasWithFixedCount: Boolean = AnnotationHelper.hasWithFixedCount(in)

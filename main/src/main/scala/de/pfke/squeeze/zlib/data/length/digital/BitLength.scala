@@ -53,4 +53,6 @@ class BitLength(
     * Return the value as byte.
     */
   def asByte: ByteLength = ByteLength(data / 8, Prefix.No)
+
+  override def toString: String = s"${toBits.toLong} bit"
 }

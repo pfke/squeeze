@@ -53,7 +53,7 @@ trait GeneralReflIncludes {
     /**
       * Return all sub types for this complex class
       */
-    def subFields: Boolean = GeneralRefl.subFields(in)
+    def subFields: List[FieldDescr] = GeneralRefl.subFields(in)
 
     /**
       * Get a type and unify to common type.

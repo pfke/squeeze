@@ -1,12 +1,12 @@
 package de.pfke.squeeze.squeezer.squeezerOnComplex.mocks
 
 import de.pfke.squeeze.annots.classAnnots.typeForIface
-import de.pfke.squeeze.annots.{injectLength, width}
+import de.pfke.squeeze.annots.{injectLength, withFixedWidth}
 
 @typeForIface(value = MessageType.MessageTypeB.id)
 case class MessageB (
   @injectLength(fromField = "content")
-  @width(size = 2)
+  @withFixedWidth(size = 2)
   stringLen: Int,
   content: String
 )

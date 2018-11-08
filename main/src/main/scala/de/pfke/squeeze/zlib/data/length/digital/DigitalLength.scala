@@ -14,6 +14,11 @@ abstract class DigitalLength
   def *(that: DigitalLength): DigitalLength = DigitalLength.fromBits(this.toBits * that.toBits)
   def /(that: DigitalLength): DigitalLength = DigitalLength.fromBits(this.toBits / that.toBits)
 
+  def +(that: Int): DigitalLength = DigitalLength.fromBits(this.toBits + that)
+  def -(that: Int): DigitalLength = DigitalLength.fromBits(this.toBits - that)
+  def *(that: Int): DigitalLength = DigitalLength.fromBits(this.toBits * that)
+  def /(that: Int): DigitalLength = DigitalLength.fromBits(this.toBits / that)
+
   /**
     * Return the value as bits.
     */

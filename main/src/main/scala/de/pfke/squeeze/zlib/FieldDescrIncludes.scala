@@ -32,7 +32,7 @@ trait FieldDescrIncludes {
     def hasWithFixedCount: Boolean = hasAnnot[withFixedCount]
 
     def getWithFixedLength: Option[withFixedLength] = getAnnot[withFixedLength]
-    def getWithFixedLengthOr(default: Int): Int = getAnnot[withFixedLength].matchTo(_.bytes, default)
+    def getWithFixedLengthOr(default: Int): Int = getAnnot[withFixedLength].matchTo(_.size, default)
     def hasWithFixedLength: Boolean = hasAnnot[withFixedLength]
 
     /**

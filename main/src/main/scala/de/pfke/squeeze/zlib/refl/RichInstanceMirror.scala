@@ -1,5 +1,8 @@
 package de.pfke.squeeze.zlib.refl
 
+import de.pfke.squeeze.zlib.data._
+
+import scala.reflect.ClassTag
 import scala.reflect.runtime.{universe => ru}
 import scala.util.Try
 
@@ -99,9 +102,32 @@ class RichInstanceMirror (
     methodName: String,
     args: Any*
   ): Option[Any] = {
-    getMethodMirror(methodName = "apply") match {
+    getMethodMirror(methodName = methodName) match {
       case Some(t) => Try(t.apply(args:_*)).toOption
       case None => throw new IllegalArgumentException("no apply method found")
+    }
+  }
+
+  /**
+    * Return value of that field
+    */
+  def getFieldValue[A] (
+    fieldName: String
+  ) (
+    implicit
+    classTag: ClassTag[A],
+    typeTag: ru.TypeTag[A]
+  ): A = {
+    val methodSymbolOpt = getMethodSymbol(methodName = fieldName)
+    val methodSymbol = methodSymbolOpt.getOrException(new IllegalArgumentException(s"no field found w/ name $fieldName"))
+
+    val fieldMirror = instanceMirror.reflectField(methodSymbol)
+
+    methodSymbol.returnType match {
+      case t if t =:= typeTag.tpe => fieldMirror.get.asInstanceOf[A]
+      case t if t <:< ru.typeOf[List[_]] => fieldMirror.get.asInstanceOf[A]
+
+      case t => throw new IllegalArgumentException(s"could not reflect field value, because expected ${typeTag.tpe}, but is $t")
     }
   }
 

@@ -168,7 +168,7 @@ object GeneralRefl {
   /**
     * Return all sub types for this complex class
     */
-  def subFields (in: ru.Type) = ???
+  def subFields (in: ru.Type): List[FieldDescr] = FieldHelper.getFields(in)
 
   /**
     * Return type signature of the given value

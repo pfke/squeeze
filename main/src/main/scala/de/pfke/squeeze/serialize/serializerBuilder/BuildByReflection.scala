@@ -322,7 +322,7 @@ class BuildByReflection
 
       val lengthHint = foundInjectLengthAnnot orElse foundWithFixedLengthAnnot match {
         case Some((_: injectLength, field: FieldDescr)) => Some(s"SizeInByteHint(value = ${field.name.replaceAll(field.name, field.name)})")
-        case Some((x: withFixedLength, _: FieldDescr))  => Some(s"SizeInByteHint(value = ${x.bytes})")
+        case Some((x: withFixedLength, _: FieldDescr))  => Some(s"SizeInByteHint(value = ${x.size})")
         case _ => None
       }
 
@@ -524,7 +524,7 @@ class BuildByReflection
           )
           s"$paramName.${t.name}.foreach { i => $code }"
 
-        case t if t.isString && t.hasAnnot[withFixedLength] => s"serializerContainer.write[String]($paramName.${t.name}, hints = hints ++ Seq(SizeInByteHint(value = ${readWithFixedLength(t).bytes})):_*)"
+        case t if t.isString && t.hasAnnot[withFixedLength] => s"serializerContainer.write[String]($paramName.${t.name}, hints = hints ++ Seq(SizeInByteHint(value = ${readWithFixedLength(t).size})):_*)"
 
         case t if t.hasAnnot[injectCount] => write_buildCode_callSerializer(tpe = t.tpe, paramName = s"$paramName.${readInjectCount(t).fromField}.size.to${t.tpe}").trim
         case t if t.hasAnnot[injectLength] => write_buildCode_callSerializer(tpe = t.tpe, paramName = s"$paramName.${readInjectLength(t).fromField}.length.to${t.tpe}").trim

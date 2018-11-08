@@ -38,29 +38,109 @@ object SizeOf {
   )
 
   def guesso[A] (
-    annots: List[ru.Annotation] = List.empty
+    obj: A
   ) (
     implicit
     classTag: ClassTag[A],
     typeTag: ru.TypeTag[A]
   ): DigitalLength = {
-    typeTag.tpe match {
-      case t if GeneralRefl.isPrimitive(t) => guessoPrimitive[A](annots = annots)
+    val staticSize = guesso(tpe = GeneralRefl.getType(obj), annots = List.empty)
 
-      case _ => 0 byte
-    }
+    // is there any dynamic size component (e.g a string w/o withFixedLength-annot, dyn. list, ...)
+    val dynamicSize = guessoDynamicSize(obj)
+
+    staticSize + dynamicSize
   }
 
-  def guessoPrimitive[A] (
-    annots: List[ru.Annotation] = List.empty
+  def guessoDynamicSize[A](
+    obj: A
   ) (
     implicit
     classTag: ClassTag[A],
     typeTag: ru.TypeTag[A]
   ): DigitalLength = {
-    require(GeneralRefl.isPrimitive(typeTag.tpe), s"pass type is no primitive. Got $typeTag / $classTag")
+    val richInstanceMirror = RichInstanceMirror(obj)
 
-    _typeToSize.getOrElse(PrimitiveRefl.toScalaType(typeTag.tpe), 0 byte)
+    val fields = FieldHelper.getFields[A]()
+
+    // filter for strings w/o withFixedLength annot
+    val summedStringLen = fields
+      .filter(_.tpe =:= ru.typeOf[String])
+      .filterNot(_.annos.hasWithFixedLength)
+      .map(i => richInstanceMirror.getFieldValue[String](fieldName = i.name))
+      .foldLeft(0)((sum,i) => sum + i.length)
+
+    // filter for lists w/o withFixedCount annot
+    def calcListSize(in: FieldDescr): DigitalLength = {
+      require(in.tpe.typeArgs.nonEmpty, s"want me to calc a list size, but given type does not have type args: $in")
+
+      val sizeOfOneListElement = in
+        .tpe
+        .typeArgs
+        .foldLeft(DigitalLength.zero)((sum,i) => sum + guesso(tpe = i, List.empty))
+
+      val listSize = richInstanceMirror
+        .getFieldValue[List[_]](fieldName = in.name)
+        .size
+
+      sizeOfOneListElement * listSize
+    }
+
+    val summedListSize = fields
+      .filter(_.tpe <:< ru.typeOf[List[_]])
+      .filterNot(_.annos.hasWithFixedCount)
+      .foldLeft(DigitalLength.zero)((sum,i) => sum + calcListSize(i))
+
+    summedStringLen.byte + summedListSize
+  }
+
+  def guesso[A] (
+    annots: List[ru.Annotation] = List.empty
+  ) (
+    implicit
+    classTag: ClassTag[A],
+    typeTag: ru.TypeTag[A]
+  ): DigitalLength = guesso(tpe = typeTag.tpe, annots = annots)
+
+  def guesso (
+    tpe: ru.Type,
+    annots: List[ru.Annotation]
+  ): DigitalLength = {
+    val isComplex = tpe match {
+      case t if GeneralRefl.isComplexType(t) => Some(guessoComplex(tpe = t, annots = annots))
+
+      case _ => None
+    }
+    val isBitfield = annots.getAsBitfield.matchToOption(_.bits bit)
+    val isWidth = annots.getWidth.matchToOption(_.size byte)
+    val isWithFixedLength = annots.getWithFixedLength.matchToOption(_.size byte)
+
+    isComplex
+      .orElse(isBitfield)
+      .orElse(isWidth)
+      .orElse(isWithFixedLength)
+      .orElse(_typeToSize.get(PrimitiveRefl.toScalaType(tpe)))
+      .orElse(Some(0 byte))
+      .get
+  }
+
+  def guessoComplex[A] (
+    annots: List[ru.Annotation] = List.empty
+  ) (
+    implicit
+    classTag: ClassTag[A],
+    typeTag: ru.TypeTag[A]
+  ): DigitalLength = guessoComplex(tpe = typeTag.tpe, annots = annots)
+
+  def guessoComplex (
+    tpe: ru.Type,
+    annots: List[ru.Annotation]
+  ): DigitalLength = {
+    require(GeneralRefl.isComplexType(tpe), s"pass type is no complex. Got $tpe")
+
+    FieldHelper
+      .getFields(tpe)
+      .foldLeft(DigitalLength.zero)((sum,i) => sum + guesso(tpe = i.tpe, annots = i.annos))
   }
 
   /**
