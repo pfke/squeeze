@@ -1,6 +1,6 @@
 package de.pfke.squeeze.zlib.refl.sizeOf
 
-import de.pfke.squeeze.annots.{withFixedWidth, withFixedLength}
+import de.pfke.squeeze.annots.{withFixedCount, withFixedLength, withFixedWidth}
 import de.pfke.squeeze.zlib.data._
 import de.pfke.squeeze.zlib.refl.SizeOf
 import org.scalatest.{Matchers, WordSpec}
@@ -47,13 +47,11 @@ case class SizeOf_obj_guessoA_1ListAnnots_wSimpleComplex_spec_listMock (
   _3rdField: List[Short],
 )
 
-//case class SizeOf_obj_guessoA_1ListAnnots_wSimpleComplex_spec_withFixedCountAnnotMock (
-//  @withFixedWidth(size = 4) _1stField: Boolean,
-//  _2ndField                          : Int,
-//  _3rdField                          : Int,
-//  @withFixedWidth(size = 1) _4thField: Double,
-//  _5thField                          : Float,
-//)
+case class SizeOf_obj_guessoA_1ListAnnots_wSimpleComplex_spec_withFixedCountMock (
+  _1stField: Boolean,
+  _2ndField: Int,
+  @withFixedCount(count = 10) _3rdField: List[Short],
+)
 
 class SizeOf_obj_guessoA_1ListAnnots_wSimpleComplex_spec
   extends WordSpec
@@ -124,6 +122,34 @@ class SizeOf_obj_guessoA_1ListAnnots_wSimpleComplex_spec
             _3rdField = List(1, 2, 3, 4),
           )
         ) should be (13 byte)
+      }
+    }
+
+    "plain types and a list withFixedCount annot" should {
+      "return correct size on clazz" in {
+        SizeOf.guesso[SizeOf_obj_guessoA_1ListAnnots_wSimpleComplex_spec_withFixedCountMock]() should be (25 byte)
+      }
+
+      "return correct size on object (if list matches annot)" in {
+        SizeOf.guesso(
+          obj = SizeOf_obj_guessoA_1ListAnnots_wSimpleComplex_spec_withFixedCountMock(
+            _1stField = false,
+            _2ndField = 0x123,
+            _3rdField = List(1, 2, 3, 4, 5, 6, 7, 8, 9, 10),
+          )
+        ) should be (25 byte)
+      }
+
+      "return correct size on object (if list does not matches annot)" in {
+        an [IllegalArgumentException] shouldBe thrownBy(
+          SizeOf.guesso(
+            obj = SizeOf_obj_guessoA_1ListAnnots_wSimpleComplex_spec_withFixedCountMock(
+              _1stField = false,
+              _2ndField = 0x123,
+              _3rdField = List(1, 2, 3, 4, 5, 6, 7),
+            )
+          ) should be (19 byte)
+        )
       }
     }
   }

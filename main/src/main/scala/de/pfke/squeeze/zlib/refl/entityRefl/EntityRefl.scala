@@ -147,7 +147,7 @@ abstract class EntityRefl (
   ): Option[RichMethodRefl] = {
     case class EnrichedArg(tpe: ru.Type, clazz: Class[_])
 
-    val enrichedArgs = args.map { i => EnrichedArg(PrimitiveRefl.toScalaType(GeneralRefl.getType(i)), i.getClass) }
+    val enrichedArgs = args.map { i => EnrichedArg(PrimitiveRefl.toScalaType(GeneralRefl.typeOf(i)), i.getClass) }
 
     def mapParamToSimple(in: MethodParameter) = EnrichedArg(PrimitiveRefl.toScalaType(in.typeSignature), in.clazz)
     def isAssignableFrom(_1: Class[_], _2: Class[_]) = _1.isAssignableFrom(_2)

@@ -140,7 +140,7 @@ class ClassRefl (
   def findCtorMatchingTheseValueTypes (
     args: Any*
   ): Option[RichMethodRefl] = {
-    val enrichedArgs = args.map { i => (GeneralRefl.getType(i), i.getClass) }
+    val enrichedArgs = args.map { i => (GeneralRefl.typeOf(i), i.getClass) }
 
     def mapParamToSimple(in: MethodParameter) = (PrimitiveRefl.toScalaType(in.typeSignature), in.clazz)
     def isAssignableFrom(_1: Class[_], _2: Class[_]) = PrimitiveRefl.toScalaType(_1).isAssignableFrom(PrimitiveRefl.toScalaType(_2))

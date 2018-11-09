@@ -128,7 +128,7 @@ class AnythingIterator(
     implicit
     classTag: ClassTag[A],
     typeTag: ru.TypeTag[A]
-  ): A = readAsBytes[A](lenToRead = ByteLength(SizeOf.guess()))
+  ): A = readAsBytes[A](lenToRead = SizeOf.guesso[A]())
 
   /**
     * Anzahl der Bytes lesen
@@ -140,7 +140,7 @@ class AnythingIterator(
     classTag: ClassTag[A],
     typeTag: ru.TypeTag[A]
   ): A = {
-    def defaultLen = SizeOf.guess()
+    def defaultLen = SizeOf.guesso[A]().toByte
     def len = lenToRead.toByte.toInt
 
     def isEqualLen = len == defaultLen
@@ -159,7 +159,7 @@ class AnythingIterator(
       val value = op(iterToUse)
       val lenDanach = iterToUse.len
 
-      iterToUse.getBytes(len - (lenDavor - lenDanach)) // read padding
+      iterToUse.getBytes(len.toInt - (lenDavor - lenDanach)) // read padding
       value
     }
 

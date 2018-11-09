@@ -10,8 +10,7 @@ object BitLength {
 class BitLength(
   private[BitLength] val data: Double
 )
-  extends DigitalLength
-    with Ordered[BitLength] {
+  extends DigitalLength {
   def +(that: BitLength): BitLength = BitLength(data + that.data)
   def -(that: BitLength): BitLength = BitLength(data - that.data)
   def *(that: BitLength): BitLength = BitLength(data * that.data)
@@ -21,18 +20,6 @@ class BitLength(
   def -(op: Double): BitLength = BitLength(data - op)
   def *(op: Double): BitLength = BitLength(data * op)
   def /(op: Double): BitLength = BitLength(data / op)
-
-  /**
-    * Result of comparing `this` with operand `that`.
-    *
-    * Implement this method to determine how instances of A will be sorted.
-    *
-    * Returns `x` where:
-    *   - `x < 0` when `this < that`
-    *   - `x == 0` when `this == that`
-    *   - `x > 0` when  `this > that`
-    */
-  override def compare(that: BitLength): Int = data.compareTo(that.data)
 
   /**
     * Equals implementation.

@@ -12,7 +12,7 @@ trait GeneralReflIncludes {
     /**
       * return the type of the input
       */
-    def getType: ru.Type = GeneralRefl.getType(in)
+    def getType: ru.Type = GeneralRefl.typeOf(in)
   }
 
   implicit class OpsFromRUType (

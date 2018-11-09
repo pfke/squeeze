@@ -115,21 +115,6 @@ object GeneralRefl {
   def generateTypeInfo[A](implicit classTag: ClassTag[A], typeTag: ru.TypeTag[A]): TypeInfo[A] = TypeInfo(classTag, typeTag)
 
   /**
-    * Return the type from the input
-    */
-  def getType(
-    in: Any
-  ): ru.Type = {
-    val clazz = in.getClass
-    val classLoader = in.getClass.getClassLoader
-    val rm = ru.runtimeMirror(classLoader)
-    val classSymbol = rm.classSymbol(clazz)
-
-    classSymbol
-      .selfType
-  }
-
-  /**
     * Returns true, if the type is a trait or abstract
     */
   def isAbstract (in: ru.Type): Boolean = in.typeSymbol.isAbstract
@@ -180,25 +165,18 @@ object GeneralRefl {
   ): ru.Type = typeTag.tpe
 
   /**
-    * Return type signature of the given value
+    * Return the type from the input
     */
-  def typeOf (
-    value: Any
+  def typeOf(
+    in: Any
   ): ru.Type = {
-    value.getClass
+    val clazz = in.getClass
+    val classLoader = in.getClass.getClassLoader
+    val rm = ru.runtimeMirror(classLoader)
+    val classSymbol = rm.classSymbol(clazz)
 
-
-    val r1 = RichInstanceMirror(value)
-    val r2 = r1.typeSignature
-    val r3 = r1.asTpe
-    val r4 = r1.asType
-    val r5 = r2.companion
-
-    r3
-
-//    EnumValueRefl.typeOf(value)                                      // enum value?
-//      .orElse (PrimitiveRefl.getType(value))                          // primitive?
-//      .orElse (Try(RichInstanceMirror(value).typeSignature).toOption) // last try: complex?
+    classSymbol
+      .selfType
   }
 
   /**

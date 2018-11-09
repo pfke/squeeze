@@ -64,14 +64,14 @@ object AnnotationHelper {
     in: List[ru.Annotation]
   ): Boolean = hasAnnot[typeForIface](in)
 
-  def getWidth (
+  def getWithFixedWidth (
     in: List[ru.Annotation]
   ) (
     implicit
     classLoader: ClassLoader = getClass.getClassLoader
   ): Option[withFixedWidth] = getAnnot[withFixedWidth](in)
 
-  def getWidthOr (
+  def getWithFixedWidthOr (
     in: List[ru.Annotation],
     default: Int
   ) (
@@ -79,7 +79,7 @@ object AnnotationHelper {
     classLoader: ClassLoader = getClass.getClassLoader
   ): Int = getAnnot[withFixedWidth](in).matchTo(_.size, default)
 
-  def hasWidth (
+  def hasWithFixedWidth (
     in: List[ru.Annotation]
   ): Boolean = hasAnnot[withFixedWidth](in)
 

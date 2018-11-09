@@ -133,7 +133,7 @@ class BuildByReflection
        |  serializerContainer: SerializerContainer,
        |  version: Option[PatchLevelVersion]
        |): ${typeTag.tpe} = {
-       |  require(iter.len.toByte >= ${SizeOf.guess[A]()}, s"[${typeTag.tpe.toString}] given input has only $${iter.len} bytes left, but we need ${SizeOf.guess[A]()} byte")
+       |  require(iter.len.toByte >= ${SizeOf.guesso[A]().toByte.toInt}, s"[${typeTag.tpe.toString}] given input has only $${iter.len} bytes left, but we need ${SizeOf.guesso[A]().toByte.toInt} byte")
        |  // read iter
        |  ${makeIterCode().indent}
        |  // create object
@@ -227,7 +227,7 @@ class BuildByReflection
     val writerOpCode = writerOpCodeMap.get(GeneralRefl.unifyType(typeTag.tpe)).matchToException(_.toString, new SerializerBuildException(s"method called with complex type: '${typeTag.tpe}'"))
 
     s"""override protected def byteStringWriteOp(implicit byteOrder: ByteOrder) = Some({ (bsb,value) => bsb.put$writerOpCode })
-       |override protected def defaultSize = Some(ByteLength(${SizeOf.guess[A]}))""".stripMargin
+       |override protected def defaultSize = Some(ByteLength(${SizeOf.guesso[A]().toByte.toInt}))""".stripMargin
   }
 
   /**
@@ -431,7 +431,7 @@ class BuildByReflection
     val upperClassAnnots = upperClassType.typeSymbol.annotations
     val alignBitfieldsBy = upperClassAnnots.getAlignBitfieldsBy.matchTo(_.bits, 1)
     // wir brauchen hier die reine bit size
-    val bitFieldSize = SizeOf.guessBitsize(fields = fields, upperClassAnnots = List.empty)
+    val bitFieldSize = SizeOf.guesso(fields = fields).toBits.toInt
 
     val prefix = s"val $bitfieldIterName = iter.iterator(bitAlignment = BitStringAlignment.${BitStringAlignment.enumFromWidth(alignBitfieldsBy)})\n"
     val padding = if ((bitFieldSize % bitAlignment) == 0) "" else s"$bitfieldIterName.read[Long](BitLength(${bitAlignment - (bitFieldSize % bitAlignment)})) // read padding bits\n"
@@ -528,7 +528,7 @@ class BuildByReflection
 
         case t if t.hasAnnot[injectCount] => write_buildCode_callSerializer(tpe = t.tpe, paramName = s"$paramName.${readInjectCount(t).fromField}.size.to${t.tpe}").trim
         case t if t.hasAnnot[injectLength] => write_buildCode_callSerializer(tpe = t.tpe, paramName = s"$paramName.${readInjectLength(t).fromField}.length.to${t.tpe}").trim
-        case t if t.hasAnnot[injectTotalLength] => write_buildCode_callSerializer(tpe = t.tpe, paramName = s"${SizeOf.guess(upperClassType)}").trim // TODO: statisch oder dynamisc?
+        case t if t.hasAnnot[injectTotalLength] => write_buildCode_callSerializer(tpe = t.tpe, paramName = s"${SizeOf.guesso(upperClassType, annots = List.empty)}").trim // TODO: statisch oder dynamisc?
 
         case t => write_buildCode_callSerializer(tpe = t.tpe, paramName = s"$paramName.${t.name}", field = Some(t)).trim
       }
@@ -576,7 +576,7 @@ class BuildByReflection
 
     val upperClassAnnots = upperClassType.typeSymbol.annotations
     val alignBitfieldsBy = upperClassAnnots.getAlignBitfieldsBy.matchTo(_.bits, default = 1)
-    val bitFieldSize = SizeOf.guess(fields = fields, upperClassAnnots = List.empty) * 8
+    val bitFieldSize = SizeOf.guesso(fields = fields).toBits
 
     val prefix = s"val $bitfieldIterName = BitStringBuilder.newBuilder(alignment = BitStringAlignment.${BitStringAlignment.enumFromWidth(alignBitfieldsBy)})\n"
     val suffix = s"findOneHint[ByteStringBuilderHint](hints = hints).get.builder.append($bitfieldIterName.result())"

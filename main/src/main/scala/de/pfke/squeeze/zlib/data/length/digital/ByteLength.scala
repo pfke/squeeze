@@ -74,8 +74,7 @@ class ByteLength(
   private[ByteLength] val data: Double,
   private[ByteLength] val prefix: Prefix
 )
-  extends DigitalLength
-    with Ordered[ByteLength] {
+  extends DigitalLength {
 
   def +(that: ByteLength): ByteLength = ByteLength(data.toByte + that.toByte)
   def -(that: ByteLength): ByteLength = ByteLength(data.toByte - that.toByte)
@@ -86,18 +85,6 @@ class ByteLength(
   def -(op: Double): ByteLength = ByteLength(data.toByte - op)
   def *(op: Double): ByteLength = ByteLength(data.toByte * op)
   def /(op: Double): ByteLength = ByteLength(data.toByte / op)
-
-  /**
-    * Result of comparing `this` with operand `that`.
-    *
-    * Implement this method to determine how instances of A will be sorted.
-    *
-    * Returns `x` where:
-    *   - `x < 0` when `this < that`
-    *   - `x == 0` when `this == that`
-    *   - `x > 0` when  `this > that`
-    */
-  override def compare(that: ByteLength): Int = data.compareTo(that.data)
 
   /**
     * Equals implementation.

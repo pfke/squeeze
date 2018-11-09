@@ -12,7 +12,7 @@ class WithComplexSubTypesCompilerSpec
     implicit val byteOrder: ByteOrder = ByteOrder.BIG_ENDIAN
     implicit val version: None.type = None
 
-    val tto = createTTO[WithComplexSubTypesMock]()
+    def tto = createTTO[WithComplexSubTypesMock]()
     val value = WithComplexSubTypesMock(
       _1stParam = 0x14,
       _2ndParam = SubWithComplexSubTypesMock(

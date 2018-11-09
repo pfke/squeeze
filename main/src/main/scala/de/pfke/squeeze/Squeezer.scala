@@ -67,7 +67,7 @@ class Squeezer (
     typeTag: ru.TypeTag[A]
   ): Long = {
     GeneralRefl
-      .getType(in)
+      .typeOf(in)
       .typeSymbol
       .annotations
       .getTypeForIface match {
