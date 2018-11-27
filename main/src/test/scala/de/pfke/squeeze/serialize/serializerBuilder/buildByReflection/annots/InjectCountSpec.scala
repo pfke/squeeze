@@ -23,7 +23,7 @@ class InjectCountSpec
                 |    serializerContainer: SerializerContainer,
                 |    version: Option[PatchLevelVersion]
                 |  ): de.pfke.squeeze.serialize.mocks.annots.InjectCountMock = {
-                |    require(iter.len.toByte >= 6, s"[de.pfke.squeeze.serialize.mocks.annots.InjectCountMock] given input has only $${iter.len} bytes left, but we need 6 byte")
+                |    require(iter.len.toByte >= 6, s"[de.pfke.squeeze.serialize.mocks.annots.InjectCountMock] given input has only $${iter.len} left, but we need 6 byte")
                 |    // read iter
                 |    val _1stParam = serializerContainer.read[Short](iter)
                 |    val _2ndParam = (0 until _1stParam).map { _ => serializerContainer.read[Byte](iter) }.toList

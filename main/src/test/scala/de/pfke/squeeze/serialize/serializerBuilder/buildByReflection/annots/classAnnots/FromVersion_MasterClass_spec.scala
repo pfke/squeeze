@@ -23,7 +23,7 @@ class FromVersion_MasterClass_spec
                 |    serializerContainer: SerializerContainer,
                 |    version: Option[PatchLevelVersion]
                 |  ): de.pfke.squeeze.serialize.mocks.annots.classAnnots.FromVersion_MasterClass = {
-                |    require(iter.len.toByte >= 0, s"[de.pfke.squeeze.serialize.mocks.annots.classAnnots.FromVersion_MasterClass] given input has only $${iter.len} bytes left, but we need 0 byte")
+                |    require(iter.len.toByte >= 0, s"[de.pfke.squeeze.serialize.mocks.annots.classAnnots.FromVersion_MasterClass] given input has only $${iter.len} left, but we need 0 byte")
                 |    // read iter
                 |    val _1stArg = serializerContainer.read[de.pfke.squeeze.serialize.mocks.annots.classAnnots.FromVersion_SubClass_noLevelPassed](iter)
                 |    val _2ndArg = serializerContainer.read[de.pfke.squeeze.serialize.mocks.annots.classAnnots.FromVersion_SubClass_levelPassed](iter)

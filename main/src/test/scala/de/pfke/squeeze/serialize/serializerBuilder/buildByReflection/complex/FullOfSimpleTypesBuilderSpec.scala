@@ -23,7 +23,7 @@ class FullOfSimpleTypesBuilderSpec
                 |    serializerContainer: SerializerContainer,
                 |    version: Option[PatchLevelVersion]
                 |  ): de.pfke.squeeze.serialize.mocks.FullOfSimpleTypesMock = {
-                |    require(iter.len.toByte >= 30, s"[de.pfke.squeeze.serialize.mocks.FullOfSimpleTypesMock] given input has only $${iter.len} bytes left, but we need 30 byte")
+                |    require(iter.len.toByte >= 30, s"[de.pfke.squeeze.serialize.mocks.FullOfSimpleTypesMock] given input has only $${iter.len} left, but we need 30 byte")
                 |    // read iter
                 |    val _1stParam = serializerContainer.read[Boolean](iter)
                 |    val _2ndParam = serializerContainer.read[Byte](iter)

@@ -23,7 +23,7 @@ class WithFixedLengthSpec
                 |    serializerContainer: SerializerContainer,
                 |    version: Option[PatchLevelVersion]
                 |  ): de.pfke.squeeze.serialize.mocks.annots.WithFixedLengthMock = {
-                |    require(iter.len.toByte >= 5, s"[de.pfke.squeeze.serialize.mocks.annots.WithFixedLengthMock] given input has only $${iter.len} bytes left, but we need 5 byte")
+                |    require(iter.len.toByte >= 5, s"[de.pfke.squeeze.serialize.mocks.annots.WithFixedLengthMock] given input has only $${iter.len} left, but we need 5 byte")
                 |    // read iter
                 |    val _1stParam = serializerContainer.read[String](iter, hints = SizeInByteHint(value = 5))
                 |    // create object

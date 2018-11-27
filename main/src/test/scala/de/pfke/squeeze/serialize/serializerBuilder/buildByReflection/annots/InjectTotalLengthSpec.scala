@@ -23,7 +23,7 @@ class InjectTotalLengthSpec
                 |    serializerContainer: SerializerContainer,
                 |    version: Option[PatchLevelVersion]
                 |  ): de.pfke.squeeze.serialize.mocks.annots.InjectTotalLength_staticSize_Mock = {
-                |    require(iter.len.toByte >= 8, s"[de.pfke.squeeze.serialize.mocks.annots.InjectTotalLength_staticSize_Mock] given input has only $${iter.len} bytes left, but we need 8 byte")
+                |    require(iter.len.toByte >= 8, s"[de.pfke.squeeze.serialize.mocks.annots.InjectTotalLength_staticSize_Mock] given input has only $${iter.len} left, but we need 8 byte")
                 |    // read iter
                 |    val _1stParam = serializerContainer.read[Short](iter)
                 |    val _2ndParam = serializerContainer.read[Short](iter)
@@ -74,7 +74,7 @@ class InjectTotalLengthSpec
                 |    serializerContainer: SerializerContainer,
                 |    version: Option[PatchLevelVersion]
                 |  ): de.pfke.squeeze.serialize.mocks.annots.InjectTotalLength_dynamicSize_String_Mock = {
-                |    require(iter.len.toByte >= 6, s"[de.pfke.squeeze.serialize.mocks.annots.InjectTotalLength_dynamicSize_String_Mock] given input has only $${iter.len} bytes left, but we need 6 byte")
+                |    require(iter.len.toByte >= 6, s"[de.pfke.squeeze.serialize.mocks.annots.InjectTotalLength_dynamicSize_String_Mock] given input has only $${iter.len} left, but we need 6 byte")
                 |    // read iter
                 |    val _1stParam = serializerContainer.read[Short](iter)
                 |    val _2ndParam = serializerContainer.read[Short](iter)

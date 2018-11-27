@@ -23,7 +23,7 @@ class InjectLengthSpec
                 |    serializerContainer: SerializerContainer,
                 |    version: Option[PatchLevelVersion]
                 |  ): de.pfke.squeeze.serialize.mocks.annots.InjectLengthMock = {
-                |    require(iter.len.toByte >= 2, s"[de.pfke.squeeze.serialize.mocks.annots.InjectLengthMock] given input has only $${iter.len} bytes left, but we need 2 byte")
+                |    require(iter.len.toByte >= 2, s"[de.pfke.squeeze.serialize.mocks.annots.InjectLengthMock] given input has only $${iter.len} left, but we need 2 byte")
                 |    // read iter
                 |    val _1stParam = serializerContainer.read[Short](iter)
                 |    val _2ndParam = serializerContainer.read[String](iter, hints = SizeInByteHint(value = _1stParam))

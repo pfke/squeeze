@@ -5,8 +5,8 @@ import de.pfke.squeeze.zlib.data.byTypes.simple.DoubleIncludes._
 import de.pfke.squeeze.zlib.data.units.prefix.{IECPrefix, Prefix, SIPrefix}
 
 object ByteLength {
-  def apply(in: Double): ByteLength = new ByteLength(data = in, Prefix.No).promoteTo
-  def apply(in: Double, prefix: Prefix): ByteLength = new ByteLength(data = in, prefix)
+  def apply(in: Int): ByteLength = new ByteLength(data = in, Prefix.No).promoteTo
+  def apply(in: Int, prefix: Prefix): ByteLength = new ByteLength(data = in, prefix)
   def zero: ByteLength = apply(0)
 
   /**
@@ -20,7 +20,7 @@ object ByteLength {
     * Return the best matching IEC unit for the given bit length
     */
   def getBestMatchingIECUnit(
-    in: Double
+    in: Int
   ): Prefix = {
     val r1 = in
     val r2 = (r1 % math.pow(2, 64)).toLong // lower long
@@ -71,7 +71,7 @@ object ByteLength {
 }
 
 class ByteLength(
-  private[ByteLength] val data: Double,
+  private[ByteLength] val data: Int,
   private[ByteLength] val prefix: Prefix
 )
   extends DigitalLength {
@@ -81,10 +81,10 @@ class ByteLength(
   def *(that: ByteLength): ByteLength = ByteLength(data.toByte * that.toByte)
   def /(that: ByteLength): ByteLength = ByteLength(data.toByte / that.toByte)
 
-  def +(op: Double): ByteLength = ByteLength(data.toByte + op)
-  def -(op: Double): ByteLength = ByteLength(data.toByte - op)
-  def *(op: Double): ByteLength = ByteLength(data.toByte * op)
-  def /(op: Double): ByteLength = ByteLength(data.toByte / op)
+  override def +(that: Int): ByteLength = ByteLength(data.toByte + that)
+  override def -(that: Int): ByteLength = ByteLength(data.toByte - that)
+  override def *(that: Int): ByteLength = ByteLength(data.toByte * that)
+  override def /(that: Int): ByteLength = ByteLength(data.toByte / that)
 
   /**
     * Equals implementation.
@@ -111,17 +111,17 @@ class ByteLength(
   /**
     * Return the value as bits.
     */
-  override def toBits: Double = toByte * 8
+  override def toBits: Int = toByte * 8
 
   /**
     * Return the value as byte.
     */
-  override def toByte: Double = data * prefix.toValue
+  override def toByte: Int = data * prefix.toValue
 
   /**
     * Return the value as byte.
     */
-  def asBits: Double = data * prefix.toValue
+  def asBits: Int = data * prefix.toValue
 
   def asKiB: ByteLength = promoteTo(IECPrefix.Kibi)
   def asMiB: ByteLength = promoteTo(IECPrefix.Mebi)

@@ -24,7 +24,7 @@ class asBitfield_mock_aligned_single_8bitSpec
            |    serializerContainer: SerializerContainer,
            |    version: Option[PatchLevelVersion]
            |  ): de.pfke.squeeze.serialize.mocks.asBitfieldSpecs.asBitfield_mock_aligned_single_8bit = {
-           |    require(iter.len.toByte >= 1, s"[de.pfke.squeeze.serialize.mocks.asBitfieldSpecs.asBitfield_mock_aligned_single_8bit] given input has only $${iter.len} bytes left, but we need 1 byte")
+           |    require(iter.len.toByte >= 1, s"[de.pfke.squeeze.serialize.mocks.asBitfieldSpecs.asBitfield_mock_aligned_single_8bit] given input has only $${iter.len} left, but we need 1 byte")
            |    // read iter
            |    val _1stBitIter = iter.iterator(bitAlignment = BitStringAlignment._8Bit)
            |    val field01 = serializerContainer.read[Int](_1stBitIter, hints = SizeInBitHint(value = 8))

@@ -14,7 +14,7 @@ trait ByteLengthIncludes {
   }
 
   implicit class toByteLength (
-    in: Double
+    in: Int
   ) {
     def byte = ByteLength(in, Prefix.No)
     def bytes: ByteLength = byte
@@ -24,7 +24,7 @@ trait ByteLengthIncludes {
   }
 
   implicit class toByteLengthFromIEC (
-    in: Double
+    in: Int
   ) {
     def Kibibyte: ByteLength = create(IECPrefix.Kibi)
     def KiB: ByteLength = Kibibyte
@@ -54,7 +54,7 @@ trait ByteLengthIncludes {
   }
 
   implicit class toByteLengthFromSI (
-    in: Double
+    in: Int
   ) {
     def Kilobyte: ByteLength = create(SIPrefix.Kilo)
     def KB: ByteLength = Kilobyte

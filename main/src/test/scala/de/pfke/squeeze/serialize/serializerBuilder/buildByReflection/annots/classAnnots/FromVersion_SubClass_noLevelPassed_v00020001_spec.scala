@@ -23,7 +23,7 @@ class FromVersion_SubClass_noLevelPassed_v00020001_spec
                 |    serializerContainer: SerializerContainer,
                 |    version: Option[PatchLevelVersion]
                 |  ): de.pfke.squeeze.serialize.mocks.annots.classAnnots.FromVersion_SubClass_noLevelPassed_v00020001 = {
-                |    require(iter.len.toByte >= 2, s"[de.pfke.squeeze.serialize.mocks.annots.classAnnots.FromVersion_SubClass_noLevelPassed_v00020001] given input has only $${iter.len} bytes left, but we need 2 byte")
+                |    require(iter.len.toByte >= 2, s"[de.pfke.squeeze.serialize.mocks.annots.classAnnots.FromVersion_SubClass_noLevelPassed_v00020001] given input has only $${iter.len} left, but we need 2 byte")
                 |    // read iter
                 |    val _1stArg = serializerContainer.read[Short](iter)
                 |    // create object

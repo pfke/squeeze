@@ -3,12 +3,12 @@ package de.pfke.squeeze.zlib.data.length.digital
 import de.pfke.squeeze.zlib.data.units.prefix.Prefix
 
 object BitLength {
-  def apply(in: Double): BitLength = new BitLength(data = in)
+  def apply(in: Int): BitLength = new BitLength(data = in)
   def zero: BitLength = apply(0)
 }
 
 class BitLength(
-  private[BitLength] val data: Double
+  private[BitLength] val data: Int
 )
   extends DigitalLength {
   def +(that: BitLength): BitLength = BitLength(data + that.data)
@@ -16,10 +16,10 @@ class BitLength(
   def *(that: BitLength): BitLength = BitLength(data * that.data)
   def /(that: BitLength): BitLength = BitLength(data / that.data)
 
-  def +(op: Double): BitLength = BitLength(data + op)
-  def -(op: Double): BitLength = BitLength(data - op)
-  def *(op: Double): BitLength = BitLength(data * op)
-  def /(op: Double): BitLength = BitLength(data / op)
+  override def +(that: Int): BitLength = BitLength(data + that)
+  override def -(that: Int): BitLength = BitLength(data - that)
+  override def *(that: Int): BitLength = BitLength(data * that)
+  override def /(that: Int): BitLength = BitLength(data / that)
 
   /**
     * Equals implementation.
@@ -29,12 +29,12 @@ class BitLength(
   /**
     * Return the value as byte.
     */
-  def toBits: Double = data
+  def toBits: Int = data
 
   /**
     * Return the value as byte.
     */
-  def toByte: Double = asByte.toByte
+  def toByte: Int = asByte.toByte
 
   /**
     * Return the value as byte.

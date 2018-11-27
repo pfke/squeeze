@@ -23,7 +23,7 @@ class FromVersion_SubClass_noLevelPassed_spec
                 |    serializerContainer: SerializerContainer,
                 |    version: Option[PatchLevelVersion]
                 |  ): de.pfke.squeeze.serialize.mocks.annots.classAnnots.FromVersion_SubClass_noLevelPassed = {
-                |    require(iter.len.toByte >= 0, s"[de.pfke.squeeze.serialize.mocks.annots.classAnnots.FromVersion_SubClass_noLevelPassed] given input has only $${iter.len} bytes left, but we need 0 byte")
+                |    require(iter.len.toByte >= 0, s"[de.pfke.squeeze.serialize.mocks.annots.classAnnots.FromVersion_SubClass_noLevelPassed] given input has only $${iter.len} left, but we need 0 byte")
                 |    // read iter
                 |    (findIfaceTypeHint(hints = hints), version) match {
                 |      case (None, None) => serializerContainer.read[de.pfke.squeeze.serialize.mocks.annots.classAnnots.FromVersion_SubClass_noLevelPassed_v00000000](iter, hints = hints:_*)

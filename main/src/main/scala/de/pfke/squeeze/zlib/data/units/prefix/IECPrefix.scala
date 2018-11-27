@@ -17,7 +17,7 @@ sealed abstract class IECPrefix(
   name: String
 )
   extends Prefix(
-    base = math.pow(2, 10),
+    base = math.pow(2, 10).toInt,
     exp = exp,
     symbol = symbol,
     name = name

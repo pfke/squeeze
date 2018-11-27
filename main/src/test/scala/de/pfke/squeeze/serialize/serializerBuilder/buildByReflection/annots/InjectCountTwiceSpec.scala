@@ -23,7 +23,7 @@ class InjectCountTwiceSpec
                 |    serializerContainer: SerializerContainer,
                 |    version: Option[PatchLevelVersion]
                 |  ): de.pfke.squeeze.serialize.mocks.annots.InjectCountTwiceMock = {
-                |    require(iter.len.toByte >= 4, s"[de.pfke.squeeze.serialize.mocks.annots.InjectCountTwiceMock] given input has only $${iter.len} bytes left, but we need 4 byte")
+                |    require(iter.len.toByte >= 4, s"[de.pfke.squeeze.serialize.mocks.annots.InjectCountTwiceMock] given input has only $${iter.len} left, but we need 4 byte")
                 |    // read iter
                 |    val _1stParam = serializerContainer.read[Short](iter)
                 |    val _2ndParam = serializerContainer.read[Short](iter)

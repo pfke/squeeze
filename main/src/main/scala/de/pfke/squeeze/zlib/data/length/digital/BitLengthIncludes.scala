@@ -11,7 +11,7 @@ trait BitLengthIncludes {
   }
 
   implicit class toBitLength(
-    in: Double
+    in: Int
     ) {
     def bit = BitLength(in)
     def bits: BitLength = bit

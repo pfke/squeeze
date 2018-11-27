@@ -3,7 +3,7 @@ package de.pfke.squeeze.zlib.data.length.digital
 import de.pfke.squeeze.zlib.data.length.Length
 
 object DigitalLength {
-  def fromBits(in: Double): DigitalLength = if (in % 8 == 0) ByteLength(in / 8) else BitLength(in)
+  def fromBits(in: Int): DigitalLength = if (in % 8 == 0) ByteLength(in / 8) else BitLength(in)
   def zero: DigitalLength = ByteLength.zero
 }
 
@@ -15,20 +15,20 @@ abstract class DigitalLength
   def *(that: DigitalLength): DigitalLength = DigitalLength.fromBits(this.toBits * that.toBits)
   def /(that: DigitalLength): DigitalLength = DigitalLength.fromBits(this.toBits / that.toBits)
 
-  def +(that: Int): DigitalLength = DigitalLength.fromBits(this.toBits + that)
-  def -(that: Int): DigitalLength = DigitalLength.fromBits(this.toBits - that)
-  def *(that: Int): DigitalLength = DigitalLength.fromBits(this.toBits * that)
-  def /(that: Int): DigitalLength = DigitalLength.fromBits(this.toBits / that)
+  def +(that: Int): DigitalLength
+  def -(that: Int): DigitalLength
+  def *(that: Int): DigitalLength
+  def /(that: Int): DigitalLength
 
   /**
     * Return the value as bits.
     */
-  def toBits: Double
+  def toBits: Int
 
   /**
     * Return the value as byte.
     */
-  def toByte: Double
+  def toByte: Int
 
   /**
     * Result of comparing `this` with operand `that`.

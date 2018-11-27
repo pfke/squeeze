@@ -5,11 +5,11 @@ object Prefix {
 }
 
 abstract class Prefix(
-  base: Double,
-  exp: Double,
+  base: Int,
+  exp: Int,
   symbol: String,
   name: String
   ) {
   override def toString: String = symbol
-  def toValue: Double = math.pow(base, exp)
+  def toValue: Int = math.pow(base.toDouble, exp.toDouble).toInt
 }

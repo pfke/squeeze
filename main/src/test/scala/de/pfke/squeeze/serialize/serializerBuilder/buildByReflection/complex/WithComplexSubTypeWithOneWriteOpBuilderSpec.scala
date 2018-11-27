@@ -23,7 +23,7 @@ class WithComplexSubTypeWithOneWriteOpBuilderSpec
                 |    serializerContainer: SerializerContainer,
                 |    version: Option[PatchLevelVersion]
                 |  ): de.pfke.squeeze.serialize.mocks.WithComplexSubTypeMockWithOneWriteOp = {
-                |    require(iter.len.toByte >= 1, s"[de.pfke.squeeze.serialize.mocks.WithComplexSubTypeMockWithOneWriteOp] given input has only $${iter.len} bytes left, but we need 1 byte")
+                |    require(iter.len.toByte >= 1, s"[de.pfke.squeeze.serialize.mocks.WithComplexSubTypeMockWithOneWriteOp] given input has only $${iter.len} left, but we need 1 byte")
                 |    // read iter
                 |    val _1stParam = serializerContainer.read[de.pfke.squeeze.serialize.mocks.SubWithComplexSubTypeMockWithOneWriteOp](iter)
                 |    // create object

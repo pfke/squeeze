@@ -23,7 +23,7 @@ class WithFixedCountOnSubSpec
                 |    serializerContainer: SerializerContainer,
                 |    version: Option[PatchLevelVersion]
                 |  ): de.pfke.squeeze.serialize.mocks.annots.WithFixedCountOnSubMock = {
-                |    require(iter.len.toByte >= 6, s"[de.pfke.squeeze.serialize.mocks.annots.WithFixedCountOnSubMock] given input has only $${iter.len} bytes left, but we need 6 byte")
+                |    require(iter.len.toByte >= 6, s"[de.pfke.squeeze.serialize.mocks.annots.WithFixedCountOnSubMock] given input has only $${iter.len} left, but we need 6 byte")
                 |    // read iter
                 |    val _1stParam = serializerContainer.read[de.pfke.squeeze.serialize.mocks.annots.SubWithFixedCountOnSubMock](iter)
                 |    val _2ndParam = serializerContainer.read[Short](iter)

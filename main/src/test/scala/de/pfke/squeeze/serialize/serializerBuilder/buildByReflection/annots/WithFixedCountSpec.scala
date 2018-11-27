@@ -23,7 +23,7 @@ class WithFixedCountSpec
                 |    serializerContainer: SerializerContainer,
                 |    version: Option[PatchLevelVersion]
                 |  ): de.pfke.squeeze.serialize.mocks.annots.WithFixedCountMock = {
-                |    require(iter.len.toByte >= 12, s"[de.pfke.squeeze.serialize.mocks.annots.WithFixedCountMock] given input has only $${iter.len} bytes left, but we need 12 byte")
+                |    require(iter.len.toByte >= 12, s"[de.pfke.squeeze.serialize.mocks.annots.WithFixedCountMock] given input has only $${iter.len} left, but we need 12 byte")
                 |    // read iter
                 |    val _1stParam = (0 until 3).map { _ => serializerContainer.read[Int](iter) }.toList
                 |    // create object

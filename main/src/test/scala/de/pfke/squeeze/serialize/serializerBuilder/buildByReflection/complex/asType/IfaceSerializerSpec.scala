@@ -23,7 +23,7 @@ class IfaceSerializerSpec
                 |    serializerContainer: SerializerContainer,
                 |    version: Option[PatchLevelVersion]
                 |  ): de.pfke.squeeze.serialize.mocks.asType.Iface = {
-                |    require(iter.len.toByte >= 0, s"[de.pfke.squeeze.serialize.mocks.asType.Iface] given input has only $${iter.len} bytes left, but we need 0 byte")
+                |    require(iter.len.toByte >= 0, s"[de.pfke.squeeze.serialize.mocks.asType.Iface] given input has only $${iter.len} left, but we need 0 byte")
                 |    // read iter
                 |    (findIfaceTypeHint(hints = hints), version) match {
                 |      case (Some(10), None) => serializerContainer.read[de.pfke.squeeze.serialize.mocks.asType.SubClassA](iter, hints = hints:_*)
