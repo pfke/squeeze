@@ -102,6 +102,10 @@ object SizeOf {
   ): DigitalLength = {
     require(GeneralRefl.isComplexType(tpe), s"pass type is no complex. Got $tpe")
 
+    val r1 = FieldHelper.getFields(tpe)
+    val r2 = r1.map(i => guesso(tpe = i.tpe, annots = i.annos))
+
+
     FieldHelper
       .getFields(tpe)
       .foldLeft(DigitalLength.zero)((sum,i) => sum + guesso(tpe = i.tpe, annots = i.annos))

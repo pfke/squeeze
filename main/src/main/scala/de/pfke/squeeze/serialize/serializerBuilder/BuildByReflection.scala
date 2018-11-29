@@ -43,7 +43,7 @@ class BuildByReflection
                       |import de.pfke.squeeze.zlib.data.collection.anythingString.AnythingIterator
                       |import de.pfke.squeeze.zlib.data.collection.bitString.{BitStringAlignment, BitStringBuilder}
                       |import de.pfke.squeeze.zlib.data.length.digital.{BitLength, ByteLength}
-                      |import de.pfke.squeeze.zlib.refl.GeneralRefl
+                      |import de.pfke.squeeze.zlib.refl._
                       |import de.pfke.squeeze.serialize.SerializerContainer
                       |import de.pfke.squeeze.serialize.serializerCompiler.CompiledSerializer
                       |import de.pfke.squeeze.serialize.serializerHints._
@@ -134,7 +134,7 @@ class BuildByReflection
        |  serializerContainer: SerializerContainer,
        |  version: Option[PatchLevelVersion]
        |): ${typeTag.tpe} = {
-       |  require(iter.len.toByte >= ${SizeOf.guesso[A]().toByte.toInt}, s"[${typeTag.tpe.toString}] given input has only $${iter.len} left, but we need ${SizeOf.guesso[A]().toByte.toInt} byte")
+       |  require(iter.len.toByte >= ${SizeOf.guesso[A]().toByte}, s"[${typeTag.tpe.toString}] given input has only $${iter.len} left, but we need ${SizeOf.guesso[A]().toByte.toInt} byte")
        |  // read iter
        |  ${makeIterCode().indent}
        |  // create object
@@ -529,20 +529,11 @@ class BuildByReflection
 
         case t if t.hasAnnot[injectCount] => write_buildCode_callSerializer(tpe = t.tpe, paramName = s"$paramName.${readInjectCount(t).fromField}.size.to${t.tpe}").trim
         case t if t.hasAnnot[injectLength] => write_buildCode_callSerializer(tpe = t.tpe, paramName = s"$paramName.${readInjectLength(t).fromField}.length.to${t.tpe}").trim
-        case t if t.hasAnnot[injectTotalLength] => write_buildCode_callSerializer(tpe = t.tpe, paramName = s"SizeOf.guesso[$upperClassType](data).toByte").trim // statisch+dynamisch
+        case t if t.hasAnnot[injectTotalLength] => write_buildCode_callSerializer(tpe = t.tpe, paramName = s"SizeOf.guesso[$upperClassType](data).toByte.to${t.tpe}").trim // statisch+dynamisch
 
         case t => write_buildCode_callSerializer(tpe = t.tpe, paramName = s"$paramName.${t.name}", field = Some(t)).trim
       }
       .mkString("\n")
-  }
-
-  private def isStaticSize (
-    tpe: ru.Type
-  ): Boolean = {
-
-
-
-    ???
   }
 
   /**
