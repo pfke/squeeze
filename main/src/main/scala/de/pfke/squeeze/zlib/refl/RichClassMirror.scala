@@ -1,8 +1,17 @@
 package de.pfke.squeeze.zlib.refl
 
+import scala.reflect.ClassTag
 import scala.reflect.runtime.{universe => ru}
 
 object RichClassMirror {
+  /**
+    * Create instance.
+    */
+  def apply[A] () (
+    implicit
+    classTag: ClassTag[A]
+  ): RichClassMirror = apply(clazz = classTag.runtimeClass)
+
   /**
     * Create instance.
     */
@@ -60,4 +69,6 @@ class RichClassMirror (
 
   // getter
   def ctorMethodRefls: List[RichMethodRefl] = _ctorMethodRefls
+
+  def annotations: List[ru.Annotation] = classMirror.symbol.annotations
 }

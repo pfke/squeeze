@@ -45,7 +45,7 @@ class InjectTotalLengthOnSubSpec
                 |  ): Unit = {
                 |    require(findOneHint[ByteStringBuilderHint](hints = hints).nonEmpty, s"[de.pfke.squeeze.serialize.mocks.annots.InjectTotalLengthOnSubMock] given input has no ByteStringBuilderHint")
                 |    serializerContainer.write[de.pfke.squeeze.serialize.mocks.annots.SubInjectTotalLengthOnSubMock](data._1stParam, hints = hints:_*)
-                |    serializerContainer.write[Short](10, hints = hints:_*)
+                |    serializerContainer.write[Short](SizeOf.guesso[de.pfke.squeeze.serialize.mocks.annots.InjectTotalLengthOnSubMock](data).toByte.toShort, hints = hints:_*)
                 |  }
                 |}
                 |new InjectTotalLengthOnSubMockSerializer()

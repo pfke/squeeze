@@ -435,9 +435,9 @@ class BuildByReflection
     val bitFieldSize = SizeOf.guesso(fields = fields).toBits.toInt
 
     val prefix = s"val $bitfieldIterName = iter.iterator(bitAlignment = BitStringAlignment.${BitStringAlignment.enumFromWidth(alignBitfieldsBy)})\n"
-    val padding = if ((bitFieldSize % bitAlignment) == 0) "" else s"$bitfieldIterName.read[Long](BitLength(${bitAlignment - (bitFieldSize % bitAlignment)})) // read padding bits\n"
+    val padding = if ((bitFieldSize % bitAlignment) == 0) "" else s"\n$bitfieldIterName.read[Long](BitLength(${bitAlignment - (bitFieldSize % bitAlignment)})) // read padding bits"
 
-    s"$prefix$padding$iterCode"
+    s"$prefix$iterCode$padding"
   }
 
   /**

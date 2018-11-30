@@ -47,7 +47,7 @@ class InjectTotalLengthSpec
                 |  ): Unit = {
                 |    require(findOneHint[ByteStringBuilderHint](hints = hints).nonEmpty, s"[de.pfke.squeeze.serialize.mocks.annots.InjectTotalLength_staticSize_Mock] given input has no ByteStringBuilderHint")
                 |    serializerContainer.write[Short](data._1stParam, hints = hints:_*)
-                |    serializerContainer.write[Short](8, hints = hints:_*)
+                |    serializerContainer.write[Short](SizeOf.guesso[de.pfke.squeeze.serialize.mocks.annots.InjectTotalLength_staticSize_Mock](data).toByte.toShort, hints = hints:_*)
                 |    serializerContainer.write[Int](data._3rdParam, hints = hints:_*)
                 |  }
                 |}
@@ -100,7 +100,7 @@ class InjectTotalLengthSpec
                 |  ): Unit = {
                 |    require(findOneHint[ByteStringBuilderHint](hints = hints).nonEmpty, s"[de.pfke.squeeze.serialize.mocks.annots.InjectTotalLength_dynamicSize_String_Mock] given input has no ByteStringBuilderHint")
                 |    serializerContainer.write[Short](data._1stParam, hints = hints:_*)
-                |    serializerContainer.write[Short](data._2ndParam.length.toShort, hints = hints:_*)
+                |    serializerContainer.write[Short](SizeOf.guesso[de.pfke.squeeze.serialize.mocks.annots.InjectTotalLength_dynamicSize_String_Mock](data).toByte.toShort, hints = hints:_*)
                 |    serializerContainer.write[Short](data._4thParam.length.toShort, hints = hints:_*)
                 |    serializerContainer.write[String](data._4thParam, hints = hints:_*)
                 |  }

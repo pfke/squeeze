@@ -52,6 +52,12 @@ object SizeOf {
     staticSize + dynamicSize
   }
 
+  def guesso[A] () (
+    implicit
+    classTag: ClassTag[A],
+    typeTag: ru.TypeTag[A]
+  ): DigitalLength = guesso[A](annots = if (GeneralRefl.isComplexType(typeTag.tpe)) RichClassMirror[A]().annotations else List.empty)
+
   def guesso[A] (
     annots: List[ru.Annotation] = List.empty
   ) (
@@ -102,15 +108,17 @@ object SizeOf {
   ): DigitalLength = {
     require(GeneralRefl.isComplexType(tpe), s"pass type is no complex. Got $tpe")
 
+    val bitAlignment = annots.getAlignBitfieldsBy.matchTo(_.bits, 32).bits
+
     case class DigiLenSum(bytes: DigitalLength = DigitalLength.zero, bits: BitLength = BitLength.zero)
     def sumThis(sum: DigiLenSum, i: DigitalLength): DigiLenSum = {
       i match {
-        case t: BitLength if sum.bits == BitLength.zero => DigiLenSum(sum.bytes + 4.Byte, t)
-        case t: BitLength if sum.bits + t > 32.bits     => DigiLenSum(sum.bytes + 4.Byte, t)
-        case t: BitLength                               => DigiLenSum(sum.bytes, sum.bits + t)
+        case t: BitLength if sum.bits == BitLength.zero  => DigiLenSum(sum.bytes + bitAlignment, t)
+        case t: BitLength if sum.bits + t > bitAlignment => DigiLenSum(sum.bytes + bitAlignment, t)
+        case t: BitLength                                => DigiLenSum(sum.bytes, sum.bits + t)
 
-        case t: ByteLength if sum.bits > 32.bits        => DigiLenSum(sum.bytes + 4.Byte + t)
-        case t => DigiLenSum(sum.bytes + t)
+        case t: ByteLength if sum.bits > bitAlignment    => DigiLenSum(sum.bytes + bitAlignment + t)
+        case t                                           => DigiLenSum(sum.bytes + t)
       }
     }
 
@@ -118,7 +126,7 @@ object SizeOf {
       .getFields(tpe)
       .map(i => guesso(tpe = i.tpe, annots = i.annos))
       .foldLeft(DigiLenSum()) (sumThis)
-      .map(i => i.bytes + (if (i.bits > 32.bits) 4.bytes else 0.bytes))
+      .map(i => i.bytes + (if (i.bits > bitAlignment) bitAlignment else DigitalLength.zero))
       .get
   }
 
