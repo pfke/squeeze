@@ -33,6 +33,7 @@ class asBitfield_mock_unaligned_blocks_multiSpec
            |    val _2ndBitIter = iter.iterator(bitAlignment = BitStringAlignment._32Bit)
            |    val field04 = serializerContainer.read[Int](_2ndBitIter, hints = SizeInBitHint(value = 32))
            |    val _3rdBitIter = iter.iterator(bitAlignment = BitStringAlignment._32Bit)
+           |    _3rdBitIter.read[Long](BitLength(16)) // read padding bits
            |    val field05 = serializerContainer.read[Int](_3rdBitIter, hints = SizeInBitHint(value = 8))
            |    val field06 = serializerContainer.read[Int](_3rdBitIter, hints = SizeInBitHint(value = 8))
            |    val field07 = serializerContainer.read[Short](iter)

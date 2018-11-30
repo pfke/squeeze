@@ -2,7 +2,7 @@ package de.pfke.squeeze.zlib.refl
 
 import de.pfke.squeeze.annots._
 import de.pfke.squeeze.zlib.data._
-import de.pfke.squeeze.zlib.data.length.digital.DigitalLength
+import de.pfke.squeeze.zlib.data.length.digital.{BitLength, ByteLength, DigitalLength}
 
 import scala.reflect.ClassTag
 import scala.reflect.runtime.{universe => ru}
@@ -102,13 +102,24 @@ object SizeOf {
   ): DigitalLength = {
     require(GeneralRefl.isComplexType(tpe), s"pass type is no complex. Got $tpe")
 
-    val r1 = FieldHelper.getFields(tpe)
-    val r2 = r1.map(i => guesso(tpe = i.tpe, annots = i.annos))
+    case class DigiLenSum(bytes: DigitalLength = DigitalLength.zero, bits: BitLength = BitLength.zero)
+    def sumThis(sum: DigiLenSum, i: DigitalLength): DigiLenSum = {
+      i match {
+        case t: BitLength if sum.bits == BitLength.zero => DigiLenSum(sum.bytes + 4.Byte, t)
+        case t: BitLength if sum.bits + t > 32.bits     => DigiLenSum(sum.bytes + 4.Byte, t)
+        case t: BitLength                               => DigiLenSum(sum.bytes, sum.bits + t)
 
+        case t: ByteLength if sum.bits > 32.bits        => DigiLenSum(sum.bytes + 4.Byte + t)
+        case t => DigiLenSum(sum.bytes + t)
+      }
+    }
 
     FieldHelper
       .getFields(tpe)
-      .foldLeft(DigitalLength.zero)((sum,i) => sum + guesso(tpe = i.tpe, annots = i.annos))
+      .map(i => guesso(tpe = i.tpe, annots = i.annos))
+      .foldLeft(DigiLenSum()) (sumThis)
+      .map(i => i.bytes + (if (i.bits > 32.bits) 4.bytes else 0.bytes))
+      .get
   }
 
   def guessoDynamicSize[A](
