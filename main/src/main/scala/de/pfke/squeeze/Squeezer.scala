@@ -137,7 +137,7 @@ class Squeezer (
     * @param byteOrder BigEndian or LittleEndian
     * @param version only imported for ifaces
     */
-  def serialize[A](
+  def toBinary[A](
     in: A
   )(implicit
     byteOrder: ByteOrder,

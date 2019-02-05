@@ -120,9 +120,14 @@ object GeneralRefl {
   def isAbstract (in: ru.Type): Boolean = in.typeSymbol.isAbstract
 
   /**
+    * Return true if the passed type is a list
+    */
+  def isArray (in: ru.Type): Boolean = in <:< ru.typeOf[Array[_]]
+
+  /**
     * Return true if the passed type is complex
     */
-  def isComplexType (in: ru.Type): Boolean = !(isPrimitive(in) || isString(in) || isEnum(in) || isListType(in))
+  def isComplexType (in: ru.Type): Boolean = !(isPrimitive(in) || isString(in) || isEnum(in) || isListType(in) || isArray(in))
 
   /**
     * Returns true if the given squeezle is an enum.

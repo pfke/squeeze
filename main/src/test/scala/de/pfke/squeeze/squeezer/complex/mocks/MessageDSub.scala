@@ -1,7 +1,7 @@
-package de.pfke.squeeze.squeezer.squeezerOnComplex.mocks
+package de.pfke.squeeze.squeezer.complex.mocks
 
-import de.pfke.squeeze.squeezer.squeezerOnComplex.mocks
-import de.pfke.squeeze.squeezer.squeezerOnComplex.mocks.MessageDSubType.MessageDSubType
+import de.pfke.squeeze.squeezer.complex.mocks
+import de.pfke.squeeze.squeezer.complex.mocks.MessageDSubType.MessageDSubType
 
 trait MessageDSub {
   def subType: MessageDSubType

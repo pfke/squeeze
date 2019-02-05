@@ -347,14 +347,17 @@ class BuildByReflection
       val foundInjectCountAnnot = allSubFields.getInjectCountAnnot(field.name).matchToOption(_._2.name)
       val foundWithFixedCountAnnot = field.getWithFixedCount.matchToOption(_.count.toString)
 
-      val count = foundInjectCountAnnot orElse foundWithFixedCountAnnot orDefault "'unknown count'"
+      val sizeOfOneListElement = SizeOf.guesso(field).toByte
+      require(sizeOfOneListElement > 0, s"could not determine size of $field")
+      val count = foundInjectCountAnnot orElse foundWithFixedCountAnnot orDefault s"iter.len.toByte / $sizeOfOneListElement" // at least use rest of the iterator
 
-      s"(0 until $count).map { _ => $code }.toList"
+      s"(0 until $count).map { _ => $code }.to${if (field.isListType) "List" else "Array" }"
     }
 
     // code for iter
     fields
       .map {
+        case t if t.isArray => s"val ${t.name} = ${makeList(t)}"
         case t if t.isListType => s"val ${t.name} = ${makeList(t)}"
         case t => s"val ${t.name} = ${makeLine(thisTpe = t.tpe, fieldName = t.name)}"
       }
@@ -518,6 +521,12 @@ class BuildByReflection
     // get all fields
     fields
       .map {
+        case t if t.isArray =>
+          val code = t.tpe.typeArgs.headOption.matchToException(
+            i => write_buildCode_callSerializer(tpe = i, paramName = "i"),
+            new SerializerBuildException(s"unknown sub type of this list: $upperClassType")
+          )
+          s"$paramName.${t.name}.foreach { i => $code }"
         case t if t.isListType =>
           val code = t.tpe.typeArgs.headOption.matchToException(
             i => write_buildCode_callSerializer(tpe = i, paramName = "i"),

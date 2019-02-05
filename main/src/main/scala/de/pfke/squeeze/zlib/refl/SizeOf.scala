@@ -79,12 +79,16 @@ object SizeOf {
     val isWithFixedWidth = annots.getWithFixedWidth.matchToOption(_.size byte)
     val isWithFixedLength = annots.getWithFixedLength.matchToOption(_.size byte)
     val isWithFixedCount = annots.getWithFixedCount.matchToOption(i => tpe.typeArgs.foldLeft(DigitalLength.zero)((sum,i) => sum + guesso(tpe = i, List.empty)) * i.count)
+    val isArray = if (GeneralRefl.isArray(tpe)) Some(tpe.typeArgs.foldLeft(DigitalLength.zero)((sum,i) => sum + SizeOf.guesso(i, annots = List.empty))) else None
+    val isList = if (GeneralRefl.isListType(tpe)) Some(tpe.typeArgs.foldLeft(DigitalLength.zero)((sum,i) => sum + SizeOf.guesso(i, annots = List.empty))) else None
 
     isComplex
       .orElse(isBitfield)
       .orElse(isWithFixedWidth)
       .orElse(isWithFixedLength)
       .orElse(isWithFixedCount)
+      .orElse(isArray)
+      .orElse(isList)
       .orElse(_typeToSize.get(PrimitiveRefl.toScalaType(tpe)))
       .orElse(Some(0 byte))
       .get
@@ -93,6 +97,10 @@ object SizeOf {
   def guesso (
     fields: List[FieldDescr]
   ): DigitalLength = fields.foldLeft(DigitalLength.zero)((sum,i) => sum + guesso(tpe = i.tpe, annots = i.annos))
+
+  def guesso (
+    field: FieldDescr
+  ): DigitalLength = guesso(tpe = field.tpe, annots = field.annos)
 
   def guessoComplex[A] (
     annots: List[ru.Annotation] = List.empty

@@ -1,6 +1,6 @@
-package de.pfke.squeeze.squeezer.squeezerOnComplex.mocks
+package de.pfke.squeeze.squeezer.complex.mocks
 
-import de.pfke.squeeze.squeezer.squeezerOnComplex.mocks
+import de.pfke.squeeze.squeezer.complex.mocks
 
 object MessageType
   extends Enumeration {

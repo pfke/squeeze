@@ -24,6 +24,11 @@ trait GeneralReflIncludes {
     def isAbstract: Boolean = GeneralRefl.isAbstract(in)
 
     /**
+      * Return true if the passed type is a list
+      */
+    def isArray: Boolean = GeneralRefl.isArray(in)
+
+    /**
       * Return true if the passed type is complex
       */
     def isComplexType: Boolean = GeneralRefl.isComplexType(in)

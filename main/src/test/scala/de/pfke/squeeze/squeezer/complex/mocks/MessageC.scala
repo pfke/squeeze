@@ -1,4 +1,4 @@
-package de.pfke.squeeze.squeezer.squeezerOnComplex.mocks
+package de.pfke.squeeze.squeezer.complex.mocks
 
 import de.pfke.squeeze.annots.classAnnots.typeForIface
 import de.pfke.squeeze.annots.{injectCount, withFixedWidth}
