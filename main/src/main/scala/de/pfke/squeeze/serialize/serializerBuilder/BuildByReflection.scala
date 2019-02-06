@@ -516,23 +516,21 @@ class BuildByReflection
     ): A = field.getAnnot[A] matchToException ( i => i, new SerializerBuildException(s"$typeTag annot expected"))
     def readInjectCount (field: FieldDescr): injectCount = readAnnot[injectCount](field)
     def readInjectLength (field: FieldDescr): injectLength = readAnnot[injectLength](field)
+    def readWithFixedCount (field: FieldDescr): withFixedCount = readAnnot[withFixedCount](field)
     def readWithFixedLength (field: FieldDescr): withFixedLength = readAnnot[withFixedLength](field)
 
     // get all fields
     fields
       .map {
-        case t if t.isArray =>
+        case t if t.isArray || t.isListType =>
           val code = t.tpe.typeArgs.headOption.matchToException(
             i => write_buildCode_callSerializer(tpe = i, paramName = "i"),
             new SerializerBuildException(s"unknown sub type of this list: $upperClassType")
           )
-          s"$paramName.${t.name}.foreach { i => $code }"
-        case t if t.isListType =>
-          val code = t.tpe.typeArgs.headOption.matchToException(
-            i => write_buildCode_callSerializer(tpe = i, paramName = "i"),
-            new SerializerBuildException(s"unknown sub type of this list: $upperClassType")
-          )
-          s"$paramName.${t.name}.foreach { i => $code }"
+          val trimList = if (t.hasAnnot[withFixedCount]) s".take(${readWithFixedCount(t).count})" else ""
+          val padList = if (t.hasAnnot[withFixedCount]) s"""require($paramName.${t.name}.size >= ${readWithFixedCount(t).count}, s"$paramName.${t.name} is annotated ${readWithFixedCount(t)}, but passed list size is less")\n""" else ""
+
+          s"$padList$paramName.${t.name}$trimList.foreach { i => $code }"
 
         case t if t.isString && t.hasAnnot[withFixedLength] => s"serializerContainer.write[String]($paramName.${t.name}, hints = hints ++ Seq(SizeInByteHint(value = ${readWithFixedLength(t).size})):_*)"
 
