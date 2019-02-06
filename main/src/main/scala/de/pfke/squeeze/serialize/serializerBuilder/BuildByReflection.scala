@@ -538,6 +538,8 @@ class BuildByReflection
           s"$padList$paramName.${t.name}$trimList.foreach { i => $code }"
 
         case t if t.isString && t.hasAnnot[withFixedLength] => s"serializerContainer.write[String]($paramName.${t.name}, hints = hints ++ Seq(SizeInByteHint(value = ${readWithFixedLength(t).size})):_*)"
+        case t if t.hasAnnot[withFixedLength] => throw new SerializerBuildException(s"field '${t.name}' is annotated w/ ${t.getAnnot[withFixedLength]}, but this is only allowed to string fields")
+
 
         case t if t.hasAnnot[injectCount] => write_buildCode_callSerializer(tpe = t.tpe, paramName = s"$paramName.${readInjectCount(t).fromField}.size.to${t.tpe}").trim
         case t if t.hasAnnot[injectLength] => write_buildCode_callSerializer(tpe = t.tpe, paramName = s"$paramName.${readInjectLength(t).fromField}.length.to${t.tpe}").trim
