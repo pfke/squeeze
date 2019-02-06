@@ -238,7 +238,7 @@ class AnythingIterator(
     val stringArray = new Array[Byte](getLength)
     iter.getBytes(stringArray)
 
-    new String(stringArray, charset)
+    new String(stringArray, charset).trim
   }
 
   /**

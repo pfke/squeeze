@@ -309,8 +309,10 @@ class BuildByReflection
   ): String = {
     def makeLine(
       thisTpe: ru.Type,
-      fieldName: String = ""
+      field: Option[FieldDescr] = None
+//      fieldName: String = ""
     ): String = {
+      val fieldName = field.matchTo(_.name, default = "")
       val typeHint = allSubFields.getInjectTypeAnnot(fieldName) match {
         case Some(x) if x._2.isEnum => Some(s"IfaceTypeHint(value = ${x._2.name}.id)")
         case Some(x)                => Some(s"IfaceTypeHint(value = ${x._2.name})")
@@ -319,7 +321,10 @@ class BuildByReflection
 
       // Laengen-info
       val foundInjectLengthAnnot = allSubFields.getInjectLengthAnnot(fieldName)
-      val foundWithFixedLengthAnnot = allSubFields.getWithFixedLengthAnnot
+      val foundWithFixedLengthAnnot = field match {
+        case Some(x) => x.getWithFixedLength.matchTo(Some(_, x), None)
+        case None => None
+      }
 
       val lengthHint = foundInjectLengthAnnot orElse foundWithFixedLengthAnnot match {
         case Some((_: injectLength, field: FieldDescr)) => Some(s"SizeInByteHint(value = ${field.name.replaceAll(field.name, field.name)})")
@@ -359,7 +364,7 @@ class BuildByReflection
       .map {
         case t if t.isArray => s"val ${t.name} = ${makeList(t)}"
         case t if t.isListType => s"val ${t.name} = ${makeList(t)}"
-        case t => s"val ${t.name} = ${makeLine(thisTpe = t.tpe, fieldName = t.name)}"
+        case t => s"val ${t.name} = ${makeLine(thisTpe = t.tpe, field = t)}"
       }
       .mkString("\n")
   }
