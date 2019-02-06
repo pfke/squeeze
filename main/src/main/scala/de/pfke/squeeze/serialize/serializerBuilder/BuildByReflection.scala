@@ -310,7 +310,6 @@ class BuildByReflection
     def makeLine(
       thisTpe: ru.Type,
       field: Option[FieldDescr] = None
-//      fieldName: String = ""
     ): String = {
       val fieldName = field.matchTo(_.name, default = "")
       val typeHint = allSubFields.getInjectTypeAnnot(fieldName) match {
@@ -523,6 +522,7 @@ class BuildByReflection
     def readInjectLength (field: FieldDescr): injectLength = readAnnot[injectLength](field)
     def readWithFixedCount (field: FieldDescr): withFixedCount = readAnnot[withFixedCount](field)
     def readWithFixedLength (field: FieldDescr): withFixedLength = readAnnot[withFixedLength](field)
+    def readWithFixedWidth (field: FieldDescr): withFixedWidth = readAnnot[withFixedWidth](field)
 
     // get all fields
     fields
@@ -538,8 +538,9 @@ class BuildByReflection
           s"$padList$paramName.${t.name}$trimList.foreach { i => $code }"
 
         case t if t.isString && t.hasAnnot[withFixedLength] => s"serializerContainer.write[String]($paramName.${t.name}, hints = hints ++ Seq(SizeInByteHint(value = ${readWithFixedLength(t).size})):_*)"
-        case t if t.hasAnnot[withFixedLength] => throw new SerializerBuildException(s"field '${t.name}' is annotated w/ ${t.getAnnot[withFixedLength]}, but this is only allowed to string fields")
-
+        case t if               t.hasAnnot[withFixedLength] => throw new SerializerBuildException(s"field '${t.name}' is annotated w/ ${t.getAnnot[withFixedLength]}, but this is only allowed to string fields")
+        case t if t.isString && t.hasAnnot[withFixedWidth] => throw new SerializerBuildException(s"field '${t.name}' is annotated w/ ${t.getAnnot[withFixedWidth]}, but this is only allowed to non string fields")
+        case t if t.isPrimitiveType && t.hasAnnot[withFixedWidth] => s"serializerContainer.write[String]($paramName.${t.name}, hints = hints ++ Seq(SizeInByteHint(value = ${readWithFixedWidth(t).size})):_*)"
 
         case t if t.hasAnnot[injectCount] => write_buildCode_callSerializer(tpe = t.tpe, paramName = s"$paramName.${readInjectCount(t).fromField}.size.to${t.tpe}").trim
         case t if t.hasAnnot[injectLength] => write_buildCode_callSerializer(tpe = t.tpe, paramName = s"$paramName.${readInjectLength(t).fromField}.length.to${t.tpe}").trim
