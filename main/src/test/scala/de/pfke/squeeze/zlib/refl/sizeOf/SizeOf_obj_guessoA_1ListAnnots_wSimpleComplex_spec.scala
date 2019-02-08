@@ -1,6 +1,6 @@
 package de.pfke.squeeze.zlib.refl.sizeOf
 
-import de.pfke.squeeze.annots.{withFixedCount, withFixedLength, withFixedWidth}
+import de.pfke.squeeze.annots.{withFixedCount, withFixedLength}
 import de.pfke.squeeze.zlib.data._
 import de.pfke.squeeze.zlib.refl.SizeOf
 import org.scalatest.{Matchers, WordSpec}
@@ -23,19 +23,11 @@ case class SizeOf_obj_guessoA_1ListAnnots_wSimpleComplex_spec_stringMock (
   _7thField: String,
 )
 
-case class SizeOf_obj_guessoA_1ListAnnots_wSimpleComplex_spec_withFixedWidthAnnotMock (
-  @withFixedWidth(size = 4) _1stField: Boolean,
-  _2ndField                          : Int,
-  _3rdField                          : Int,
-  @withFixedWidth(size = 1) _4thField: Double,
-  _5thField                          : Float,
-)
-
 case class SizeOf_obj_guessoA_1ListAnnots_wSimpleComplex_spec_withFixedLengthAnnotMock (
-  @withFixedWidth(size = 4) _1stField  : Boolean,
+  _1stField                            : Boolean,
   _2ndField                            : Int,
   _3rdField                            : Int,
-  @withFixedWidth(size = 1) _4thField  : Double,
+  _4thField                            : Double,
   @withFixedLength(size = 50) _5thField: String,
   _6thField                            : Int,
   @withFixedLength(size = 23) _7thField: String,
@@ -80,12 +72,6 @@ class SizeOf_obj_guessoA_1ListAnnots_wSimpleComplex_spec
             _7thField = "hsdsdi",
           )
         ) should be (37 byte)
-      }
-    }
-
-    "plain types w/ width annots" should {
-      "return correct size" in {
-        SizeOf.guesso[SizeOf_obj_guessoA_1ListAnnots_wSimpleComplex_spec_withFixedWidthAnnotMock]() should be (17 byte)
       }
     }
 

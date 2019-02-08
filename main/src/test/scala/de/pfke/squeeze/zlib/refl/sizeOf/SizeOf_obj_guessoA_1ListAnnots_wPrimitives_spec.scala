@@ -1,6 +1,6 @@
 package de.pfke.squeeze.zlib.refl.sizeOf
 
-import de.pfke.squeeze.annots.{asBitfield, withFixedWidth}
+import de.pfke.squeeze.annots.asBitfield
 import de.pfke.squeeze.zlib.data._
 import de.pfke.squeeze.zlib.refl.{FieldHelper, SizeOf}
 import org.scalatest.{Matchers, WordSpec}
@@ -12,142 +12,88 @@ case class SizeOf_obj_guessoA_spec_BooleanMock (
   @asBitfield(bits = 4) _4Bits    : Boolean,
   @asBitfield(bits = 8) _8Bits    : Boolean,
   @asBitfield(bits = 9) _9Bits    : Boolean,
-  @withFixedWidth(size = 1) _1Byte: Boolean,
-  @withFixedWidth(size = 4) _4Byte: Boolean,
-  @withFixedWidth(size = 5) _5Byte: Boolean,
 )
 case class SizeOf_obj_guessoA_spec_javalangBooleanMock (
   @asBitfield(bits = 4) _4Bits    : java.lang.Boolean,
   @asBitfield(bits = 8) _8Bits    : java.lang.Boolean,
   @asBitfield(bits = 9) _9Bits    : java.lang.Boolean,
-  @withFixedWidth(size = 1) _1Byte: java.lang.Boolean,
-  @withFixedWidth(size = 4) _4Byte: java.lang.Boolean,
-  @withFixedWidth(size = 5) _5Byte: java.lang.Boolean,
 )
 
 case class SizeOf_obj_guessoA_spec_ByteMock (
   @asBitfield(bits = 4) _4Bits    : Byte,
   @asBitfield(bits = 8) _8Bits    : Byte,
   @asBitfield(bits = 9) _9Bits    : Byte,
-  @withFixedWidth(size = 1) _1Byte: Byte,
-  @withFixedWidth(size = 4) _4Byte: Byte,
-  @withFixedWidth(size = 5) _5Byte: Byte,
 )
 case class SizeOf_obj_guessoA_spec_javalangByteMock (
   @asBitfield(bits = 4) _4Bits    : java.lang.Byte,
   @asBitfield(bits = 8) _8Bits    : java.lang.Byte,
   @asBitfield(bits = 9) _9Bits    : java.lang.Byte,
-  @withFixedWidth(size = 1) _1Byte: java.lang.Byte,
-  @withFixedWidth(size = 4) _4Byte: java.lang.Byte,
-  @withFixedWidth(size = 5) _5Byte: java.lang.Byte,
 )
 
 case class SizeOf_obj_guessoA_spec_ShortMock (
   @asBitfield(bits = 4) _4Bits    : Short,
   @asBitfield(bits = 8) _8Bits    : Short,
   @asBitfield(bits = 9) _9Bits    : Short,
-  @withFixedWidth(size = 1) _1Byte: Short,
-  @withFixedWidth(size = 4) _4Byte: Short,
-  @withFixedWidth(size = 5) _5Byte: Short,
 )
 case class SizeOf_obj_guessoA_spec_javalangShortMock (
   @asBitfield(bits = 4) _4Bits    : java.lang.Short,
   @asBitfield(bits = 8) _8Bits    : java.lang.Short,
   @asBitfield(bits = 9) _9Bits    : java.lang.Short,
-  @withFixedWidth(size = 1) _1Byte: java.lang.Short,
-  @withFixedWidth(size = 4) _4Byte: java.lang.Short,
-  @withFixedWidth(size = 5) _5Byte: java.lang.Short,
 )
 
 case class SizeOf_obj_guessoA_spec_IntMock (
   @asBitfield(bits = 4) _4Bits    : Int,
   @asBitfield(bits = 8) _8Bits    : Int,
   @asBitfield(bits = 9) _9Bits    : Int,
-  @withFixedWidth(size = 1) _1Byte: Int,
-  @withFixedWidth(size = 4) _4Byte: Int,
-  @withFixedWidth(size = 5) _5Byte: Int,
 )
 case class SizeOf_obj_guessoA_spec_IntegerMock (
   @asBitfield(bits = 4) _4Bits    : Integer,
   @asBitfield(bits = 8) _8Bits    : Integer,
   @asBitfield(bits = 9) _9Bits    : Integer,
-  @withFixedWidth(size = 1) _1Byte: Integer,
-  @withFixedWidth(size = 4) _4Byte: Integer,
-  @withFixedWidth(size = 5) _5Byte: Integer,
 )
 
 case class SizeOf_obj_guessoA_spec_LongMock (
   @asBitfield(bits = 4) _4Bits      : Long,
   @asBitfield(bits = 8) _8Bits      : Long,
   @asBitfield(bits = 9) _9Bits      : Long,
-  @withFixedWidth(size = 1) _1Byte  : Long,
-  @withFixedWidth(size = 4) _4Byte  : Long,
-  @withFixedWidth(size = 5) _5Byte  : Long,
-  @withFixedWidth(size = 17) _17Byte: Long,
 )
 case class SizeOf_obj_guessoA_spec_javalangLongMock (
   @asBitfield(bits = 4) _4Bits      : java.lang.Long,
   @asBitfield(bits = 8) _8Bits      : java.lang.Long,
   @asBitfield(bits = 9) _9Bits      : java.lang.Long,
-  @withFixedWidth(size = 1) _1Byte  : java.lang.Long,
-  @withFixedWidth(size = 4) _4Byte  : java.lang.Long,
-  @withFixedWidth(size = 5) _5Byte  : java.lang.Long,
-  @withFixedWidth(size = 17) _17Byte: java.lang.Long,
 )
 
 case class SizeOf_obj_guessoA_spec_FloatMock (
   @asBitfield(bits = 4) _4Bits      : Float,
   @asBitfield(bits = 8) _8Bits      : Float,
   @asBitfield(bits = 9) _9Bits      : Float,
-  @withFixedWidth(size = 1) _1Byte  : Float,
-  @withFixedWidth(size = 4) _4Byte  : Float,
-  @withFixedWidth(size = 5) _5Byte  : Float,
-  @withFixedWidth(size = 17) _17Byte: Float,
 )
 case class SizeOf_obj_guessoA_spec_javalangFloatMock (
   @asBitfield(bits = 4) _4Bits      : java.lang.Float,
   @asBitfield(bits = 8) _8Bits      : java.lang.Float,
   @asBitfield(bits = 9) _9Bits      : java.lang.Float,
-  @withFixedWidth(size = 1) _1Byte  : java.lang.Float,
-  @withFixedWidth(size = 4) _4Byte  : java.lang.Float,
-  @withFixedWidth(size = 5) _5Byte  : java.lang.Float,
-  @withFixedWidth(size = 17) _17Byte: java.lang.Float,
 )
 
 case class SizeOf_obj_guessoA_spec_DoubleMock (
   @asBitfield(bits = 4) _4Bits      : Double,
   @asBitfield(bits = 8) _8Bits      : Double,
   @asBitfield(bits = 9) _9Bits      : Double,
-  @withFixedWidth(size = 1) _1Byte  : Double,
-  @withFixedWidth(size = 4) _4Byte  : Double,
-  @withFixedWidth(size = 5) _5Byte  : Double,
-  @withFixedWidth(size = 17) _17Byte: Double,
 )
 case class SizeOf_obj_guessoA_spec_javalangDoubleMock (
   @asBitfield(bits = 4) _4Bits      : java.lang.Double,
   @asBitfield(bits = 8) _8Bits      : java.lang.Double,
   @asBitfield(bits = 9) _9Bits      : java.lang.Double,
-  @withFixedWidth(size = 1) _1Byte  : java.lang.Double,
-  @withFixedWidth(size = 4) _4Byte  : java.lang.Double,
-  @withFixedWidth(size = 5) _5Byte  : java.lang.Double,
-  @withFixedWidth(size = 17) _17Byte: java.lang.Double,
 )
 
 case class SizeOf_obj_guessoA_spec_CharMock (
   @asBitfield(bits = 4) _4Bits    : Char,
   @asBitfield(bits = 8) _8Bits    : Char,
   @asBitfield(bits = 9) _9Bits    : Char,
-  @withFixedWidth(size = 1) _1Byte: Char,
-  @withFixedWidth(size = 4) _4Byte: Char,
-  @withFixedWidth(size = 5) _5Byte: Char,
 )
 case class SizeOf_obj_guessoA_spec_javalangCharMock (
   @asBitfield(bits = 4) _4Bits    : java.lang.Character,
   @asBitfield(bits = 8) _8Bits    : java.lang.Character,
   @asBitfield(bits = 9) _9Bits    : java.lang.Character,
-  @withFixedWidth(size = 1) _1Byte: java.lang.Character,
-  @withFixedWidth(size = 4) _4Byte: java.lang.Character,
-  @withFixedWidth(size = 5) _5Byte: java.lang.Character,
 )
 
 class SizeOf_obj_guessoA_1ListAnnots_wPrimitives_spec

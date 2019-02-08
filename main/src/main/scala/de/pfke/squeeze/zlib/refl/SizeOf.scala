@@ -76,7 +76,6 @@ object SizeOf {
       case _ => None
     }
     val isBitfield = annots.getAsBitfield.matchToOption(_.bits bit)
-    val isWithFixedWidth = annots.getWithFixedWidth.matchToOption(_.size byte)
     val isWithFixedLength = annots.getWithFixedLength.matchToOption(_.size byte)
     val isWithFixedCount = annots.getWithFixedCount.matchToOption(i => tpe.typeArgs.foldLeft(DigitalLength.zero)((sum,i) => sum + guesso(tpe = i, List.empty)) * i.count)
     val isArray = if (GeneralRefl.isArray(tpe)) Some(tpe.typeArgs.foldLeft(DigitalLength.zero)((sum,i) => sum + SizeOf.guesso(i, annots = List.empty))) else None
@@ -84,7 +83,6 @@ object SizeOf {
 
     isComplex
       .orElse(isBitfield)
-      .orElse(isWithFixedWidth)
       .orElse(isWithFixedLength)
       .orElse(isWithFixedCount)
       .orElse(isArray)

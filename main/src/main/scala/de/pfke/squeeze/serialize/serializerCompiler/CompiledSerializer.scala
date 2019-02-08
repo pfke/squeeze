@@ -162,9 +162,9 @@ trait CompiledSerializer[A] {
     typeTag: ru.TypeTag[A] = objectTypeInfo.typeTag
   ): Unit = {
     (findOneHint[StringBuilderHint](hints = hints), byteStringWriteOp, value) match {
-      case (Some(x: BitStringBuilderHint), _, _) => x.builder.appendBits(lenToWrite(hints = hints).getOrElse(ByteLength(0)).toBits.toInt, value)(objectTypeInfo.classTag, objectTypeInfo.typeTag)
+      case (Some(x: BitStringBuilderHint), _, _) => x.builder.appendBits(lenToWrite(hints = hints).getOrElse(ByteLength(0)).toBits, value)(objectTypeInfo.classTag, objectTypeInfo.typeTag)
       case (Some(x: ByteStringBuilderHint), Some(writeOp), _) => writeOp(x.builder, value)
-      case (Some(x: ByteStringBuilderHint), None, t: String) => x.builder.putBytes(encodeString(t, lenToWrite(hints = hints).matchToOption(_.toByte.toInt)))
+      case (Some(x: ByteStringBuilderHint), None, t: String) => x.builder.putBytes(encodeString(t, lenToWrite(hints = hints).matchToOption(_.toByte)))
       case (Some(_: ByteStringBuilderHint), None, _) => throw new SerializerRunException("want to write into a ByteStringBuilder, but no write op defined")
 
       case _ => throw new SerializerRunException("no ...StringBuilderHint given, don't know how to write data")

@@ -331,7 +331,6 @@ class BuildByReflection
         case _ => None
       }
 
-
       val reallyHints = List(typeHint, lengthHint)
         .filter(_.nonEmpty)
         .map(_.get)
@@ -453,7 +452,8 @@ class BuildByReflection
   private def write_buildCode_callSerializer(
     tpe: ru.Type,
     paramName: String = "data",
-    field: Option[FieldDescr] = None
+    field: Option[FieldDescr] = None,
+    hints: Seq[String] = Seq.empty
   ): String = {
     // injectType annot?
     def buildValueFromField(
@@ -468,7 +468,7 @@ class BuildByReflection
     }
 
     GeneralRefl.unifyType(tpe) match {
-      case _ => s"serializerContainer.write[$tpe](${field.matchTo(buildValueFromField, paramName)}, hints = hints:_*)"
+      case _ => s"serializerContainer.write[$tpe](${field.matchTo(buildValueFromField, paramName)}, hints = ${ if (hints.isEmpty) "hints" else s"(hints ++ Seq(${hints.mkString(", ")}))"}:_*)"
     }
   }
 
@@ -522,7 +522,6 @@ class BuildByReflection
     def readInjectLength (field: FieldDescr): injectLength = readAnnot[injectLength](field)
     def readWithFixedCount (field: FieldDescr): withFixedCount = readAnnot[withFixedCount](field)
     def readWithFixedLength (field: FieldDescr): withFixedLength = readAnnot[withFixedLength](field)
-    def readWithFixedWidth (field: FieldDescr): withFixedWidth = readAnnot[withFixedWidth](field)
 
     // get all fields
     fields
@@ -539,8 +538,6 @@ class BuildByReflection
 
         case t if t.isString && t.hasAnnot[withFixedLength] => s"serializerContainer.write[String]($paramName.${t.name}, hints = hints ++ Seq(SizeInByteHint(value = ${readWithFixedLength(t).size})):_*)"
         case t if               t.hasAnnot[withFixedLength] => throw new SerializerBuildException(s"field '${t.name}' is annotated w/ ${t.getAnnot[withFixedLength]}, but this is only allowed to string fields")
-        case t if t.isString && t.hasAnnot[withFixedWidth] => throw new SerializerBuildException(s"field '${t.name}' is annotated w/ ${t.getAnnot[withFixedWidth]}, but this is only allowed to non string fields")
-        case t if t.isPrimitiveType && t.hasAnnot[withFixedWidth] => s"serializerContainer.write[String]($paramName.${t.name}, hints = hints ++ Seq(SizeInByteHint(value = ${readWithFixedWidth(t).size})):_*)"
 
         case t if t.hasAnnot[injectCount] => write_buildCode_callSerializer(tpe = t.tpe, paramName = s"$paramName.${readInjectCount(t).fromField}.size.to${t.tpe}").trim
         case t if t.hasAnnot[injectLength] => write_buildCode_callSerializer(tpe = t.tpe, paramName = s"$paramName.${readInjectLength(t).fromField}.length.to${t.tpe}").trim

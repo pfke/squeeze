@@ -149,7 +149,7 @@ class AnythingIterator(
 
     val iterToUse = getByteIterator
 
-    require(iterToUse.len >= lenToRead.toByte, s"iterator contains to few bytes. Needed: ${lenToRead.toByte.toInt}, given: ${iterToUse.len}")
+    require(iterToUse.len >= lenToRead.toByte, s"iterator contains to few bytes. Needed: ${lenToRead.toByte}, given: ${iterToUse.len}")
 
     /**
       * Lesen bei zuviel angeforderten Bytes (z.B. Datentyp hat 4 Bytes, es sollen aber 6 gelesen werden -> 4 lesen und den Rest weghauen)
