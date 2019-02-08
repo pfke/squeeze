@@ -1,6 +1,6 @@
 package de.pfke.squeeze.zlib.refl.sizeOf
 
-import de.pfke.squeeze.annots.{withFixedCount, withFixedLength}
+import de.pfke.squeeze.annots.withFixedSize
 import de.pfke.squeeze.zlib.data._
 import de.pfke.squeeze.zlib.refl.SizeOf
 import org.scalatest.{Matchers, WordSpec}
@@ -24,13 +24,13 @@ case class SizeOf_obj_guessoA_1ListAnnots_wSimpleComplex_spec_stringMock (
 )
 
 case class SizeOf_obj_guessoA_1ListAnnots_wSimpleComplex_spec_withFixedLengthAnnotMock (
-  _1stField                            : Boolean,
-  _2ndField                            : Int,
-  _3rdField                            : Int,
-  _4thField                            : Double,
-  @withFixedLength(size = 50) _5thField: String,
-  _6thField                            : Int,
-  @withFixedLength(size = 23) _7thField: String,
+  _1stField                          : Boolean,
+  _2ndField                          : Int,
+  _3rdField                          : Int,
+  _4thField                          : Double,
+  @withFixedSize(size = 50) _5thField: String,
+  _6thField                          : Int,
+  @withFixedSize(size = 23) _7thField: String,
 )
 
 case class SizeOf_obj_guessoA_1ListAnnots_wSimpleComplex_spec_listMock (
@@ -42,7 +42,7 @@ case class SizeOf_obj_guessoA_1ListAnnots_wSimpleComplex_spec_listMock (
 case class SizeOf_obj_guessoA_1ListAnnots_wSimpleComplex_spec_withFixedCountMock (
   _1stField: Boolean,
   _2ndField: Int,
-  @withFixedCount(count = 10) _3rdField: List[Short],
+  @withFixedSize(size = 10) _3rdField: List[Short],
 )
 
 class SizeOf_obj_guessoA_1ListAnnots_wSimpleComplex_spec

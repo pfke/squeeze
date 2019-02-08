@@ -64,40 +64,24 @@ object AnnotationHelper {
     in: List[ru.Annotation]
   ): Boolean = hasAnnot[typeForIface](in)
 
-  def getWithFixedCount (
+  def getWithFixedSize (
     in: List[ru.Annotation]
   ) (
     implicit
     classLoader: ClassLoader = getClass.getClassLoader
-  ): Option[withFixedCount] = getAnnot[withFixedCount](in)
+  ): Option[withFixedSize] = getAnnot[withFixedSize](in)
 
-  def getWithFixedCountOr (
+  def getWithFixedSizeOr (
     in: List[ru.Annotation],
     default: Int
   ) (
     implicit
     classLoader: ClassLoader = getClass.getClassLoader
-  ): Int = getAnnot[withFixedCount](in).matchTo(_.count, default)
+  ): Int = getAnnot[withFixedSize](in).matchTo(_.size, default)
 
-  def hasWithFixedCount (
+  def hasWithFixedSize (
     in: List[ru.Annotation]
-  ): Boolean = hasAnnot[withFixedCount](in)
-
-  def getWithFixedLength (
-    in: List[ru.Annotation]
-  ) (
-    implicit
-    classLoader: ClassLoader = getClass.getClassLoader
-  ): Option[withFixedLength] = getAnnot[withFixedLength](in)
-
-  def getWithFixedLengthOr (
-    in: List[ru.Annotation],
-    default: Int
-  ): Int = getAnnot[withFixedLength](in).matchTo(_.size, default)
-
-  def hasWithFixedLength (
-    in: List[ru.Annotation]
-  ): Boolean = hasAnnot[withFixedLength](in)
+  ): Boolean = hasAnnot[withFixedSize](in)
 
   /**
     * Returns the wanted annotation

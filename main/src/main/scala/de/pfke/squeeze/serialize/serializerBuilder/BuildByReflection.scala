@@ -320,14 +320,14 @@ class BuildByReflection
 
       // Laengen-info
       val foundInjectLengthAnnot = allSubFields.getInjectLengthAnnot(fieldName)
-      val foundWithFixedLengthAnnot = field match {
-        case Some(x) => x.getWithFixedLength.matchTo(Some(_, x), None)
+      val foundWithFixedSizeAnnot = field match {
+        case Some(x) => x.getWithFixedSize.matchTo(Some(_, x), None)
         case None => None
       }
 
-      val lengthHint = foundInjectLengthAnnot orElse foundWithFixedLengthAnnot match {
+      val lengthHint = foundInjectLengthAnnot orElse foundWithFixedSizeAnnot match {
         case Some((_: injectLength, field: FieldDescr)) => Some(s"SizeInByteHint(value = ${field.name.replaceAll(field.name, field.name)})")
-        case Some((x: withFixedLength, _: FieldDescr))  => Some(s"SizeInByteHint(value = ${x.size})")
+        case Some((x: withFixedSize, _: FieldDescr))  => Some(s"SizeInByteHint(value = ${x.size})")
         case _ => None
       }
 
@@ -348,11 +348,11 @@ class BuildByReflection
 
       // annots auswerten
       val foundInjectCountAnnot = allSubFields.getInjectCountAnnot(field.name).matchToOption(_._2.name)
-      val foundWithFixedCountAnnot = field.getWithFixedCount.matchToOption(_.count.toString)
+      val foundWithFixedSizeAnnot = field.getWithFixedSize.matchToOption(_.size.toString)
 
       val sizeOfOneListElement = SizeOf.guesso(field).toByte
       require(sizeOfOneListElement > 0, s"could not determine size of $field")
-      val count = foundInjectCountAnnot orElse foundWithFixedCountAnnot orDefault s"iter.len.toByte / $sizeOfOneListElement" // at least use rest of the iterator
+      val count = foundInjectCountAnnot orElse foundWithFixedSizeAnnot orDefault s"iter.len.toByte / $sizeOfOneListElement" // at least use rest of the iterator
 
       s"(0 until $count).map { _ => $code }.to${if (field.isListType) "List" else "Array" }"
     }
@@ -520,8 +520,7 @@ class BuildByReflection
     ): A = field.getAnnot[A] matchToException ( i => i, new SerializerBuildException(s"$typeTag annot expected"))
     def readInjectCount (field: FieldDescr): injectCount = readAnnot[injectCount](field)
     def readInjectLength (field: FieldDescr): injectLength = readAnnot[injectLength](field)
-    def readWithFixedCount (field: FieldDescr): withFixedCount = readAnnot[withFixedCount](field)
-    def readWithFixedLength (field: FieldDescr): withFixedLength = readAnnot[withFixedLength](field)
+    def readWithFixedSize (field: FieldDescr): withFixedSize = readAnnot[withFixedSize](field)
 
     // get all fields
     fields
@@ -531,13 +530,13 @@ class BuildByReflection
             i => write_buildCode_callSerializer(tpe = i, paramName = "i"),
             new SerializerBuildException(s"unknown sub type of this list: $upperClassType")
           )
-          val trimList = if (t.hasAnnot[withFixedCount]) s".take(${readWithFixedCount(t).count})" else ""
-          val padList = if (t.hasAnnot[withFixedCount]) s"""require($paramName.${t.name}.size >= ${readWithFixedCount(t).count}, s"$paramName.${t.name} is annotated ${readWithFixedCount(t)}, but passed list size is less")\n""" else ""
+          val trimList = if (t.hasAnnot[withFixedSize]) s".take(${readWithFixedSize(t).size})" else ""
+          val padList = if (t.hasAnnot[withFixedSize]) s"""require($paramName.${t.name}.size >= ${readWithFixedSize(t).size}, s"$paramName.${t.name} is annotated ${readWithFixedSize(t)}, but passed list size is less")\n""" else ""
 
           s"$padList$paramName.${t.name}$trimList.foreach { i => $code }"
 
-        case t if t.isString && t.hasAnnot[withFixedLength] => s"serializerContainer.write[String]($paramName.${t.name}, hints = hints ++ Seq(SizeInByteHint(value = ${readWithFixedLength(t).size})):_*)"
-        case t if               t.hasAnnot[withFixedLength] => throw new SerializerBuildException(s"field '${t.name}' is annotated w/ ${t.getAnnot[withFixedLength]}, but this is only allowed to string fields")
+        case t if t.isString && t.hasAnnot[withFixedSize] => s"serializerContainer.write[String]($paramName.${t.name}, hints = hints ++ Seq(SizeInByteHint(value = ${readWithFixedSize(t).size})):_*)"
+        case t if               t.hasAnnot[withFixedSize] => throw new SerializerBuildException(s"field '${t.name}' is annotated w/ ${t.getAnnot[withFixedSize]}, but this is only allowed to string fields")
 
         case t if t.hasAnnot[injectCount] => write_buildCode_callSerializer(tpe = t.tpe, paramName = s"$paramName.${readInjectCount(t).fromField}.size.to${t.tpe}").trim
         case t if t.hasAnnot[injectLength] => write_buildCode_callSerializer(tpe = t.tpe, paramName = s"$paramName.${readInjectLength(t).fromField}.length.to${t.tpe}").trim

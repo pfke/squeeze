@@ -3,7 +3,7 @@ package de.pfke.squeeze.zlib
 import de.pfke.squeeze.zlib.data._
 import de.pfke.squeeze.zlib.refl.{FieldDescr, FieldHelper}
 import de.pfke.squeeze.zlib.refl.GeneralReflIncludes
-import de.pfke.squeeze.annots.{asBitfield, injectCount, injectLength, injectType, withFixedCount, withFixedLength}
+import de.pfke.squeeze.annots.{asBitfield, injectCount, injectLength, injectType, withFixedSize}
 import de.pfke.squeeze.annots.AnnotationHelperIncludes._
 
 import scala.annotation.StaticAnnotation
@@ -27,13 +27,9 @@ trait FieldDescrIncludes {
     def getInjectType: Option[injectType] = getAnnot[injectType]
     def hasInjectType: Boolean = hasAnnot[injectType]
 
-    def getWithFixedCount: Option[withFixedCount] = getAnnot[withFixedCount]
-    def getWithFixedCountOr(default: Int): Int = getAnnot[withFixedCount].matchTo(_.count, default)
-    def hasWithFixedCount: Boolean = hasAnnot[withFixedCount]
-
-    def getWithFixedLength: Option[withFixedLength] = getAnnot[withFixedLength]
-    def getWithFixedLengthOr(default: Int): Int = getAnnot[withFixedLength].matchTo(_.size, default)
-    def hasWithFixedLength: Boolean = hasAnnot[withFixedLength]
+    def getWithFixedSize: Option[withFixedSize] = getAnnot[withFixedSize]
+    def getWithFixedSizeOr(default: Int): Int = getAnnot[withFixedSize].matchTo(_.size, default)
+    def hasWithFixedSize: Boolean = hasAnnot[withFixedSize]
 
     /**
       * Returns the wanted annotation
@@ -128,8 +124,8 @@ trait FieldDescrIncludes {
     }
 
     // get withFixedLength annot for this fields
-    def getWithFixedLengthAnnot: Option[(withFixedLength, FieldDescr)] = {
-      getAnnot[withFixedLength]
+    def getWithFixedSizeAnnot: Option[(withFixedSize, FieldDescr)] = {
+      getAnnot[withFixedSize]
         .headOption
     }
   }

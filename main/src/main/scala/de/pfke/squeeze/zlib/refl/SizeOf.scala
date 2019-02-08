@@ -76,15 +76,14 @@ object SizeOf {
       case _ => None
     }
     val isBitfield = annots.getAsBitfield.matchToOption(_.bits bit)
-    val isWithFixedLength = annots.getWithFixedLength.matchToOption(_.size byte)
-    val isWithFixedCount = annots.getWithFixedCount.matchToOption(i => tpe.typeArgs.foldLeft(DigitalLength.zero)((sum,i) => sum + guesso(tpe = i, List.empty)) * i.count)
+    // entweder STirng oder Liste
+    val isWithFixedSize = if (GeneralRefl.isString(tpe)) annots.getWithFixedSize.matchToOption(_.size byte) else annots.getWithFixedSize.matchToOption(i => tpe.typeArgs.foldLeft(DigitalLength.zero)((sum,i) => sum + guesso(tpe = i, List.empty)) * i.size)
     val isArray = if (GeneralRefl.isArray(tpe)) Some(tpe.typeArgs.foldLeft(DigitalLength.zero)((sum,i) => sum + SizeOf.guesso(i, annots = List.empty))) else None
     val isList = if (GeneralRefl.isListType(tpe)) Some(tpe.typeArgs.foldLeft(DigitalLength.zero)((sum,i) => sum + SizeOf.guesso(i, annots = List.empty))) else None
 
     isComplex
       .orElse(isBitfield)
-      .orElse(isWithFixedLength)
-      .orElse(isWithFixedCount)
+      .orElse(isWithFixedSize)
       .orElse(isArray)
       .orElse(isList)
       .orElse(_typeToSize.get(PrimitiveRefl.toScalaType(tpe)))
@@ -150,7 +149,7 @@ object SizeOf {
     // filter for strings w/o withFixedLength annot
     val summedStringLen = fields
       .filter(_.tpe =:= ru.typeOf[String])
-      .filterNot(_.annos.hasWithFixedLength)
+      .filterNot(_.annos.hasWithFixedSize)
       .map(i => richInstanceMirror.getFieldValue[String](fieldName = i.name))
       .foldLeft(0)((sum,i) => sum + i.length)
 
@@ -177,21 +176,21 @@ object SizeOf {
         .typeArgs
         .foldLeft(DigitalLength.zero)((sum,i) => sum + guesso(tpe = i, List.empty))
 
-      val listSize = in.annos.getWithFixedCount.matchTo(_.count, default = 0)
+      val listSize = in.annos.getWithFixedSize.matchTo(_.size, default = 0)
 
       sizeOfOneListElement * listSize
     }
 
     val summedListSize = fields
       .filter(_.tpe <:< ru.typeOf[List[_]])
-      .filterNot(_.annos.hasWithFixedCount)
+      .filterNot(_.annos.hasWithFixedSize)
       .foldLeft(DigitalLength.zero)((sum,i) => sum + calcListSize(i))
 
     // check that withFixedCount annotated lists have count elements
     case class Dingens(field: FieldDescr, staticSize: DigitalLength, dynamicSize: DigitalLength)
     val summedStaticFixedCountListSize = fields
       .filter(_.tpe <:< ru.typeOf[List[_]])
-      .filter(_.annos.hasWithFixedCount)
+      .filter(_.annos.hasWithFixedSize)
       .map(i => Dingens(i, calcStaticListSize(i), calcListSize(i)))
     require(
       summedStaticFixedCountListSize.foldLeft(DigitalLength.zero)((sum,i) => sum + i.dynamicSize) == summedStaticFixedCountListSize.foldLeft(DigitalLength.zero)((sum,i) => sum + i.staticSize),

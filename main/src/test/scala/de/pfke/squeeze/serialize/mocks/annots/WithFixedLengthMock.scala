@@ -1,7 +1,7 @@
 package de.pfke.squeeze.serialize.mocks.annots
 
-import de.pfke.squeeze.annots.withFixedLength
+import de.pfke.squeeze.annots.withFixedSize
 
 case class WithFixedLengthMock(
-  @withFixedLength(size = 5) _1stParam: String
+  @withFixedSize(size = 5) _1stParam: String
 )
