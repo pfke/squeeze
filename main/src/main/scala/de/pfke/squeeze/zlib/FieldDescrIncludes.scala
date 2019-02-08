@@ -3,7 +3,7 @@ package de.pfke.squeeze.zlib
 import de.pfke.squeeze.zlib.data._
 import de.pfke.squeeze.zlib.refl.{FieldDescr, FieldHelper}
 import de.pfke.squeeze.zlib.refl.GeneralReflIncludes
-import de.pfke.squeeze.annots.{asBitfield, injectCount, injectLength, injectType, withFixedSize}
+import de.pfke.squeeze.annots.{asBitfield, injectLength, injectType, withFixedSize}
 import de.pfke.squeeze.annots.AnnotationHelperIncludes._
 
 import scala.annotation.StaticAnnotation
@@ -99,8 +99,8 @@ trait FieldDescrIncludes {
     // get injectCount annot for this fields matching the passed name
     def getInjectCountAnnot(
       targetFieldName: String
-    ): Option[(injectCount, FieldDescr)] = {
-      getAnnot[injectCount]
+    ): Option[(injectLength, FieldDescr)] = {
+      getAnnot[injectLength]
         .find { _._1.fromField == targetFieldName }
         .matchToOption { i => (i._1, i._2) }
     }

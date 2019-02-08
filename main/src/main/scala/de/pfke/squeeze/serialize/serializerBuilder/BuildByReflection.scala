@@ -8,7 +8,6 @@ import de.pfke.squeeze.annots._
 import de.pfke.squeeze.annots.classAnnots.{fromVersion, typeForIface}
 import de.pfke.squeeze.zlib._
 import de.pfke.squeeze.zlib.FieldDescrIncludes._
-import de.pfke.squeeze.zlib.data.length.digital.DigitalLength
 import de.pfke.squeeze.zlib.refl.{FieldDescr, FieldHelper, SizeOf}
 
 import scala.annotation.StaticAnnotation
@@ -518,7 +517,6 @@ class BuildByReflection
       classTag: ClassTag[A],
       typeTag: ru.TypeTag[A]
     ): A = field.getAnnot[A] matchToException ( i => i, new SerializerBuildException(s"$typeTag annot expected"))
-    def readInjectCount (field: FieldDescr): injectCount = readAnnot[injectCount](field)
     def readInjectLength (field: FieldDescr): injectLength = readAnnot[injectLength](field)
     def readWithFixedSize (field: FieldDescr): withFixedSize = readAnnot[withFixedSize](field)
 
@@ -538,8 +536,7 @@ class BuildByReflection
         case t if t.isString && t.hasAnnot[withFixedSize] => s"serializerContainer.write[String]($paramName.${t.name}, hints = hints ++ Seq(SizeInByteHint(value = ${readWithFixedSize(t).size})):_*)"
         case t if               t.hasAnnot[withFixedSize] => throw new SerializerBuildException(s"field '${t.name}' is annotated w/ ${t.getAnnot[withFixedSize]}, but this is only allowed to string fields")
 
-        case t if t.hasAnnot[injectCount] => write_buildCode_callSerializer(tpe = t.tpe, paramName = s"$paramName.${readInjectCount(t).fromField}.size.to${t.tpe}").trim
-        case t if t.hasAnnot[injectLength] => write_buildCode_callSerializer(tpe = t.tpe, paramName = s"$paramName.${readInjectLength(t).fromField}.length.to${t.tpe}").trim
+        case t if t.hasAnnot[injectLength] => write_buildCode_callSerializer(tpe = t.tpe, paramName = s"$paramName.${readInjectLength(t).fromField}.size.to${t.tpe}").trim
         case t if t.hasAnnot[injectTotalLength] => write_buildCode_callSerializer(tpe = t.tpe, paramName = s"SizeOf.guesso[$upperClassType](data).toByte.to${t.tpe}").trim // statisch+dynamisch
 
         case t => write_buildCode_callSerializer(tpe = t.tpe, paramName = s"$paramName.${t.name}", field = Some(t)).trim

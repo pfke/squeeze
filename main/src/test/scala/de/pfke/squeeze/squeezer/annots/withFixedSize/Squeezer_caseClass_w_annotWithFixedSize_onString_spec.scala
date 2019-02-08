@@ -43,28 +43,28 @@ class Squeezer_caseClass_w_annotWithFixedSize_onString_spec
     param2 = "jkl",
     param3 = 123,
   )
-  private val beBinaryData_simpleSub = ByteString(
+  private val beBinaryData = ByteString(
     0x00, 0x00, 0x00, 0x00, 0x01, 0x0a, 0x02, 0x24,
 
     0x6a, 0x6b, 0x6c, 0x61, 0x73,
 
     0x7b
   )
-  private val leBinaryData_simpleSub = ByteString(
+  private val leBinaryData = ByteString(
     0x24, 0x02, 0x0a, 0x01, 0x00, 0x00, 0x00, 0x00,
 
     0x6a, 0x6b, 0x6c, 0x61, 0x73,
 
     0x7b
   )
-  private val beBinaryData_simpleSub_tooFew = ByteString(
+  private val beBinaryData_tooFew = ByteString(
     0x00, 0x00, 0x00, 0x00, 0x01, 0x0a, 0x02, 0x24,
 
     0x6a, 0x6b, 0x6c, 0x00, 0x00,
 
     0x7b
   )
-  private val leBinaryData_simpleSub_tooFew = ByteString(
+  private val leBinaryData_tooFew = ByteString(
     0x24, 0x02, 0x0a, 0x01, 0x00, 0x00, 0x00, 0x00,
 
     0x6a, 0x6b, 0x6c, 0x00, 0x00,
@@ -72,27 +72,28 @@ class Squeezer_caseClass_w_annotWithFixedSize_onString_spec
     0x7b
   )
 
-  "[simpleSub] using w/ big endian byte order" when {
-    runSqueezerTests[caseClass_w_annotWithFixedLength_onString](ByteOrder.BIG_ENDIAN, inPojo, beBinaryData_simpleSub, outPojo = Some(outPojo))
-  }
 
-  "[simpleSub] using w/ little endian byte order" when {
-    runSqueezerTests[caseClass_w_annotWithFixedLength_onString](ByteOrder.LITTLE_ENDIAN, inPojo, leBinaryData_simpleSub, outPojo = Some(outPojo))
-  }
+  runBE_n_LE[caseClass_w_annotWithFixedLength_onString](
+    descr = "annot size matching list elements",
+    inPojo,
+    beBinaryData,
+    leBinaryData,
+    outPojo = Some(outPojo)
+  )
 
-  "[simpleSub_tooFew] using w/ big endian byte order" when {
-    runSqueezerTests[caseClass_w_annotWithFixedLength_onString](ByteOrder.BIG_ENDIAN, inPojo_tooFew, beBinaryData_simpleSub_tooFew, outPojo = Some(outPojo_tooFew))
-  }
+  runBE_n_LE[caseClass_w_annotWithFixedLength_onString](
+    descr = "too few string chars",
+    inPojo_tooFew,
+    beBinaryData_tooFew,
+    leBinaryData_tooFew,
+    outPojo = Some(outPojo_tooFew)
+  )
 
-  "[simpleSub_tooFew] using w/ little endian byte order" when {
-    runSqueezerTests[caseClass_w_annotWithFixedLength_onString](ByteOrder.LITTLE_ENDIAN, inPojo_tooFew, leBinaryData_simpleSub_tooFew, outPojo = Some(outPojo_tooFew))
-  }
-
-  "[simpleSub_tooMuch] using w/ big endian byte order" when {
-    runSqueezerTests[caseClass_w_annotWithFixedLength_onString](ByteOrder.BIG_ENDIAN, inPojo_tooMuch, beBinaryData_simpleSub, outPojo = Some(outPojo))
-  }
-
-  "[simpleSub_tooMuch] using w/ little endian byte order" when {
-    runSqueezerTests[caseClass_w_annotWithFixedLength_onString](ByteOrder.LITTLE_ENDIAN, inPojo_tooMuch, leBinaryData_simpleSub, outPojo = Some(outPojo))
-  }
+  runBE_n_LE[caseClass_w_annotWithFixedLength_onString](
+    descr = "too much string chars",
+    inPojo_tooMuch,
+    beBinaryData,
+    leBinaryData,
+    outPojo = Some(outPojo)
+  )
 }

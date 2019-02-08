@@ -12,6 +12,7 @@ import scala.reflect.runtime.{universe => ru}
 abstract class BaseSqueezerSpec
   extends WordSpec
     with Matchers {
+
   protected def runSqueezerTests[A](
     byteOrder : ByteOrder,
     inPojo    : A,
@@ -44,6 +45,26 @@ abstract class BaseSqueezerSpec
         squeezer
           .deSerialize[A](binaryData) should be (outPojo.getOrElse(inPojo))
       }
+    }
+  }
+
+  protected def runBE_n_LE[A](
+    descr: String,
+    inPojo: A,
+    beBinaryData: ByteString,
+    leBinaryData: ByteString,
+    outPojo: Option[A] = None,
+  ) (
+    implicit
+    classTag: ClassTag[A],
+    typeTag: ru.TypeTag[A]
+  ): Unit = {
+    s"[$descr] using w/ big endian byte order" when {
+      runSqueezerTests[A](ByteOrder.BIG_ENDIAN, inPojo, beBinaryData, outPojo = outPojo)
+    }
+
+    s"[$descr] using w/ little endian byte order" when {
+      runSqueezerTests[A](ByteOrder.LITTLE_ENDIAN, inPojo, leBinaryData, outPojo = outPojo)
     }
   }
 }
