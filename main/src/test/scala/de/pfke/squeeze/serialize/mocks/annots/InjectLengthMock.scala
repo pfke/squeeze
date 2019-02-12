@@ -1,8 +1,8 @@
 package de.pfke.squeeze.serialize.mocks.annots
 
-import de.pfke.squeeze.annots.injectLength
+import de.pfke.squeeze.annots.injectSize
 
 case class InjectLengthMock(
-  @injectLength(fromField = "_2ndParam") _1stParam: Short,
+  @injectSize(from = "_2ndParam") _1stParam  : Short,
                                          _2ndParam: String
 )

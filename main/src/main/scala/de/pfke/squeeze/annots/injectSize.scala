@@ -5,8 +5,8 @@ import scala.annotation.StaticAnnotation
 /**
   * The length of the annotated field or the number of elements will be injected.
   *
-  * @param fromField is the source field name
+  * @param from is the source field name
   */
-case class injectLength(
-  fromField: String
+case class injectSize(
+  from: String
 ) extends StaticAnnotation

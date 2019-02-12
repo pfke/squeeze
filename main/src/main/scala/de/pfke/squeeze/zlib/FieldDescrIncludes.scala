@@ -3,7 +3,7 @@ package de.pfke.squeeze.zlib
 import de.pfke.squeeze.zlib.data._
 import de.pfke.squeeze.zlib.refl.{FieldDescr, FieldHelper}
 import de.pfke.squeeze.zlib.refl.GeneralReflIncludes
-import de.pfke.squeeze.annots.{asBitfield, injectLength, injectType, withFixedSize}
+import de.pfke.squeeze.annots.{asBitfield, injectSize, injectType, withFixedSize}
 import de.pfke.squeeze.annots.AnnotationHelperIncludes._
 
 import scala.annotation.StaticAnnotation
@@ -21,8 +21,8 @@ trait FieldDescrIncludes {
     def getAsBitfield: Option[asBitfield] = getAnnot[asBitfield]
     def hasAsBitfield: Boolean = hasAnnot[asBitfield]
 
-    def getInjectLength: Option[injectLength] = getAnnot[injectLength]
-    def hasInjectLength: Boolean = hasAnnot[injectLength]
+    def getInjectLength: Option[injectSize] = getAnnot[injectSize]
+    def hasInjectLength: Boolean = hasAnnot[injectSize]
 
     def getInjectType: Option[injectType] = getAnnot[injectType]
     def hasInjectType: Boolean = hasAnnot[injectType]
@@ -99,18 +99,18 @@ trait FieldDescrIncludes {
     // get injectCount annot for this fields matching the passed name
     def getInjectCountAnnot(
       targetFieldName: String
-    ): Option[(injectLength, FieldDescr)] = {
-      getAnnot[injectLength]
-        .find { _._1.fromField == targetFieldName }
+    ): Option[(injectSize, FieldDescr)] = {
+      getAnnot[injectSize]
+        .find { _._1.from == targetFieldName }
         .matchToOption { i => (i._1, i._2) }
     }
 
     // get injectLength annot for this fields matching the passed name
     def getInjectLengthAnnot(
       targetFieldName: String
-    ): Option[(injectLength, FieldDescr)] = {
-      getAnnot[injectLength]
-        .find { _._1.fromField == targetFieldName }
+    ): Option[(injectSize, FieldDescr)] = {
+      getAnnot[injectSize]
+        .find { _._1.from == targetFieldName }
         .matchToOption { i => (i._1, i._2) }
     }
 

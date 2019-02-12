@@ -1,31 +1,29 @@
-package de.pfke.squeeze.squeezer.annots.injectLength
-
-import java.nio.ByteOrder
+package de.pfke.squeeze.squeezer.annots.injectSize
 
 import akka.util.ByteString
-import de.pfke.squeeze.annots.injectLength
+import de.pfke.squeeze.annots.injectSize
 import de.pfke.squeeze.squeezer.BaseSqueezerSpec
-import de.pfke.squeeze.squeezer.annots.injectLength.Squeezer_caseClass_w_annotInjectLength_onString_spec.caseClass_w_annotInjectLength_onString
+import de.pfke.squeeze.squeezer.annots.injectSize.Squeezer_caseClass_w_annotInjectSize_onString_spec.caseClass_w_annotInjectSize_onString
 
-object Squeezer_caseClass_w_annotInjectLength_onString_spec {
-  case class caseClass_w_annotInjectLength_onString(
+object Squeezer_caseClass_w_annotInjectSize_onString_spec {
+  case class caseClass_w_annotInjectSize_onString(
     param1: Long,
-    @injectLength(fromField = "param3")
+    @injectSize(from = "param3")
     param2: Byte,
     param3: String,
     param4: Short,
   )
 }
 
-class Squeezer_caseClass_w_annotInjectLength_onString_spec
+class Squeezer_caseClass_w_annotInjectSize_onString_spec
   extends BaseSqueezerSpec {
-  private val inPojo = caseClass_w_annotInjectLength_onString(
+  private val inPojo = caseClass_w_annotInjectSize_onString(
     param1 = 17433124l,
     param2 = 4,
     param3 = "jklj",
     param4 = 0x7841,
   )
-  private val outPojo = caseClass_w_annotInjectLength_onString(
+  private val outPojo = caseClass_w_annotInjectSize_onString(
     param1 = 17433124l,
     param2 = 4,
     param3 = "jklj",
@@ -44,14 +42,14 @@ class Squeezer_caseClass_w_annotInjectLength_onString_spec
     0x41, 0x78
   )
 
-  private val inPojo_inLengthIsZero = caseClass_w_annotInjectLength_onString(
+  private val inPojo_inLengthIsZero = caseClass_w_annotInjectSize_onString(
     param1 = 17433124l,
     param2 = 0,
     param3 = "jklj",
     param4 = 0x7841,
   )
 
-  runBE_n_LE[caseClass_w_annotInjectLength_onString](
+  runBE_n_LE[caseClass_w_annotInjectSize_onString](
     descr = "all params filled",
     inPojo,
     beBinaryData,
@@ -59,7 +57,7 @@ class Squeezer_caseClass_w_annotInjectLength_onString_spec
     outPojo = Some(outPojo)
   )
 
-  runBE_n_LE[caseClass_w_annotInjectLength_onString](
+  runBE_n_LE[caseClass_w_annotInjectSize_onString](
     descr = "in length is 0",
     inPojo_inLengthIsZero,
     beBinaryData,

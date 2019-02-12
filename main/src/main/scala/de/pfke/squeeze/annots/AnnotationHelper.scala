@@ -36,11 +36,11 @@ object AnnotationHelper {
   ) (
     implicit
     classLoader: ClassLoader = getClass.getClassLoader
-  ): Option[injectLength] = getAnnot[injectLength](in)
+  ): Option[injectSize] = getAnnot[injectSize](in)
 
   def hasInjectLength (
     in: List[ru.Annotation]
-  ): Boolean = hasAnnot[injectLength](in)
+  ): Boolean = hasAnnot[injectSize](in)
 
   def getInjectType (
     in: List[ru.Annotation]

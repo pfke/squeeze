@@ -320,14 +320,14 @@ class BuildByReflection
       // Laengen-info
       val foundInjectLengthAnnot = allSubFields.getInjectLengthAnnot(fieldName)
       val foundWithFixedSizeAnnot = field match {
-        case Some(x) => x.getWithFixedSize.matchTo(Some(_, x), None)
+        case Some(x) => x.getWithFixedSize.matchTo[Option[(withFixedSize, FieldDescr)]](t => Some((t, x)), None)
         case None => None
       }
 
       val lengthHint = foundInjectLengthAnnot orElse foundWithFixedSizeAnnot match {
-        case Some((_: injectLength, field: FieldDescr)) => Some(s"SizeInByteHint(value = ${field.name.replaceAll(field.name, field.name)})")
+        case Some((_: injectSize, field: FieldDescr)) => Some(s"SizeInByteHint(value = ${field.name.replaceAll(field.name, field.name)})")
         case Some((x: withFixedSize, _: FieldDescr))  => Some(s"SizeInByteHint(value = ${x.size})")
-        case _ => None
+        case _                                        => None
       }
 
       val reallyHints = List(typeHint, lengthHint)
@@ -517,7 +517,7 @@ class BuildByReflection
       classTag: ClassTag[A],
       typeTag: ru.TypeTag[A]
     ): A = field.getAnnot[A] matchToException ( i => i, new SerializerBuildException(s"$typeTag annot expected"))
-    def readInjectLength (field: FieldDescr): injectLength = readAnnot[injectLength](field)
+    def readInjectLength (field: FieldDescr): injectSize = readAnnot[injectSize](field)
     def readWithFixedSize (field: FieldDescr): withFixedSize = readAnnot[withFixedSize](field)
 
     // get all fields
@@ -536,7 +536,7 @@ class BuildByReflection
         case t if t.isString && t.hasAnnot[withFixedSize] => s"serializerContainer.write[String]($paramName.${t.name}, hints = hints ++ Seq(SizeInByteHint(value = ${readWithFixedSize(t).size})):_*)"
         case t if               t.hasAnnot[withFixedSize] => throw new SerializerBuildException(s"field '${t.name}' is annotated w/ ${t.getAnnot[withFixedSize]}, but this is only allowed to string fields")
 
-        case t if t.hasAnnot[injectLength] => write_buildCode_callSerializer(tpe = t.tpe, paramName = s"$paramName.${readInjectLength(t).fromField}.size.to${t.tpe}").trim
+        case t if t.hasAnnot[injectSize]        => write_buildCode_callSerializer(tpe = t.tpe, paramName = s"$paramName.${readInjectLength(t).from}.size.to${t.tpe}").trim
         case t if t.hasAnnot[injectTotalLength] => write_buildCode_callSerializer(tpe = t.tpe, paramName = s"SizeOf.guesso[$upperClassType](data).toByte.to${t.tpe}").trim // statisch+dynamisch
 
         case t => write_buildCode_callSerializer(tpe = t.tpe, paramName = s"$paramName.${t.name}", field = Some(t)).trim

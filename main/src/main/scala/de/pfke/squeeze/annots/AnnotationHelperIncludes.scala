@@ -21,7 +21,7 @@ trait AnnotationHelperIncludes {
     def getAsBitfield: Option[asBitfield] = AnnotationHelper.getAsBitfield(in)
     def hasAsBitfield: Boolean = AnnotationHelper.hasAsBitfield(in)
 
-    def getInjectLength: Option[injectLength] = AnnotationHelper.getInjectLength(in)
+    def getInjectLength: Option[injectSize] = AnnotationHelper.getInjectLength(in)
     def hasInjectLength: Boolean = AnnotationHelper.hasInjectLength(in)
 
     def getInjectType: Option[injectType] = AnnotationHelper.getInjectType(in)
