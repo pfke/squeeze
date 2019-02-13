@@ -560,12 +560,10 @@ class BuildByReflection
         case t if               t.hasAnnot[withFixedSize] => throw new SerializerBuildException(s"field '${t.name}' is annotated w/ ${t.getAnnot[withFixedSize]}, but this is only allowed to string fields")
 
 //        case t if t.isPrimitiveType => generate_writerCode_forPrimitive(t)
-        case t if t.isPrimitiveType && t.hasAnnot[injectSize] && t.getInjectSize.get.from == "." =>
-          write_buildCode_callSerializer(tpe = t.tpe, paramName = s"SizeOf.guesso[$upperClassType](data).toByte.to${t.tpe}").trim // statisch+dynamisch
-
+        case t if t.isPrimitiveType && t.hasAnnot[injectSize] && t.getInjectSize.get.from == "." => write_buildCode_callSerializer(tpe = t.tpe, paramName = s"SizeOf.guesso[$upperClassType](data).toByte.to${t.tpe}").trim // statisch+dynamisch
         case t if t.isPrimitiveType && t.hasAnnot[injectSize] && hasFieldAnnot[withFixedSize](readInjectLength(t).from) => write_buildCode_callSerializer(tpe = t.tpe, paramName = getFieldAnnot[withFixedSize](readInjectLength(t).from).size.toString).trim
         case t if t.isPrimitiveType && t.hasAnnot[injectSize]        => write_buildCode_callSerializer(tpe = t.tpe, paramName = s"$paramName.${readInjectLength(t).from}.size.to${t.tpe}").trim
-        case t if t.isPrimitiveType && t.hasAnnot[injectTotalLength] => write_buildCode_callSerializer(tpe = t.tpe, paramName = s"SizeOf.guesso[$upperClassType](data).toByte.to${t.tpe}").trim // statisch+dynamisch
+//        case t if t.isPrimitiveType && t.hasAnnot[injectTotalLength] => write_buildCode_callSerializer(tpe = t.tpe, paramName = s"SizeOf.guesso[$upperClassType](data).toByte.to${t.tpe}").trim // statisch+dynamisch
 
         case t => write_buildCode_callSerializer(tpe = t.tpe, paramName = s"$paramName.${t.name}", field = Some(t)).trim
       }
@@ -575,6 +573,7 @@ class BuildByReflection
   private def generate_writerCode_forPrimitive (
     field: FieldDescr
   ): String = {
+//    case t if t.isPrimitiveType && t.hasAnnot[injectSize] && t.getInjectSize.get.from == "." => write_buildCode_callSerializer(tpe = t.tpe, paramName = s"SizeOf.guesso[$upperClassType](data).toByte.to${t.tpe}").trim // statisch+dynamisch
 //    case t if t.isPrimitiveType && t.hasAnnot[injectSize] && hasFieldAnnot[withFixedSize](readInjectLength(t).from) => write_buildCode_callSerializer(tpe = t.tpe, paramName = getFieldAnnot[withFixedSize](readInjectLength(t).from).size.toString).trim
 //    case t if t.isPrimitiveType && t.hasAnnot[injectSize]        => write_buildCode_callSerializer(tpe = t.tpe, paramName = s"$paramName.${readInjectLength(t).from}.size.to${t.tpe}").trim
 //    case t if t.isPrimitiveType && t.hasAnnot[injectTotalLength] => write_buildCode_callSerializer(tpe = t.tpe, paramName = s"SizeOf.guesso[$upperClassType](data).toByte.to${t.tpe}").trim // statisch+dynamisch
