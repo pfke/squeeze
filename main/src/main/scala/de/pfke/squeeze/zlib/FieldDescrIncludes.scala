@@ -106,7 +106,7 @@ trait FieldDescrIncludes {
     }
 
     // get injectLength annot for this fields matching the passed name
-    def getInjectLengthAnnot(
+    def getInjectSizeAnnot(
       targetFieldName: String
     ): Option[(injectSize, FieldDescr)] = {
       getAnnot[injectSize]

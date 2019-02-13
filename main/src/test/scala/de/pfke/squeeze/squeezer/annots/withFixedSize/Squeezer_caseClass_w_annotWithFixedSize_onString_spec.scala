@@ -1,7 +1,5 @@
 package de.pfke.squeeze.squeezer.annots.withFixedSize
 
-import java.nio.ByteOrder
-
 import akka.util.ByteString
 import de.pfke.squeeze.annots.withFixedSize
 import de.pfke.squeeze.squeezer.BaseSqueezerSpec
@@ -72,9 +70,8 @@ class Squeezer_caseClass_w_annotWithFixedSize_onString_spec
     0x7b
   )
 
-
   runBE_n_LE[caseClass_w_annotWithFixedLength_onString](
-    descr = "annot size matching list elements",
+    descr = "annot size matching string length",
     inPojo,
     beBinaryData,
     leBinaryData,

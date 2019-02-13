@@ -318,19 +318,19 @@ class BuildByReflection
       }
 
       // Laengen-info
-      val foundInjectLengthAnnot = allSubFields.getInjectLengthAnnot(fieldName)
+      val foundInjectSizeAnnot = allSubFields.getInjectSizeAnnot(fieldName)
       val foundWithFixedSizeAnnot = field match {
         case Some(x) => x.getWithFixedSize.matchTo[Option[(withFixedSize, FieldDescr)]](t => Some((t, x)), None)
         case None => None
       }
 
-      val lengthHint = foundInjectLengthAnnot orElse foundWithFixedSizeAnnot match {
+      val sizeHint = foundInjectSizeAnnot orElse foundWithFixedSizeAnnot match {
         case Some((_: injectSize, field: FieldDescr)) => Some(s"SizeInByteHint(value = ${field.name.replaceAll(field.name, field.name)})")
         case Some((x: withFixedSize, _: FieldDescr))  => Some(s"SizeInByteHint(value = ${x.size})")
         case _                                        => None
       }
 
-      val reallyHints = List(typeHint, lengthHint)
+      val reallyHints = List(typeHint, sizeHint)
         .filter(_.nonEmpty)
         .map(_.get)
         .mkString(", ")
@@ -520,6 +520,17 @@ class BuildByReflection
     def readInjectLength (field: FieldDescr): injectSize = readAnnot[injectSize](field)
     def readWithFixedSize (field: FieldDescr): withFixedSize = readAnnot[withFixedSize](field)
 
+    def hasFieldAnnot[A <: StaticAnnotation](fieldName: String) (
+      implicit
+      classTag: ClassTag[A],
+      typeTag: ru.TypeTag[A]
+    ): Boolean = fields.exists(i => i.name == fieldName && i.annos.hasAnnot[A])
+    def getFieldAnnot[A <: StaticAnnotation](fieldName: String) (
+      implicit
+      classTag: ClassTag[A],
+      typeTag: ru.TypeTag[A]
+    ): A = fields.find(i => i.name == fieldName && i.annos.hasAnnot[A]).matchToException(i => readAnnot[A](i), new SerializerBuildException(s"$typeTag annot expected, but not found for field $fieldName"))
+
     // get all fields
     fields
       .map {
@@ -536,6 +547,7 @@ class BuildByReflection
         case t if t.isString && t.hasAnnot[withFixedSize] => s"serializerContainer.write[String]($paramName.${t.name}, hints = hints ++ Seq(SizeInByteHint(value = ${readWithFixedSize(t).size})):_*)"
         case t if               t.hasAnnot[withFixedSize] => throw new SerializerBuildException(s"field '${t.name}' is annotated w/ ${t.getAnnot[withFixedSize]}, but this is only allowed to string fields")
 
+        case t if t.hasAnnot[injectSize] && hasFieldAnnot[withFixedSize](readInjectLength(t).from) => write_buildCode_callSerializer(tpe = t.tpe, paramName = getFieldAnnot[withFixedSize](readInjectLength(t).from).size.toString).trim
         case t if t.hasAnnot[injectSize]        => write_buildCode_callSerializer(tpe = t.tpe, paramName = s"$paramName.${readInjectLength(t).from}.size.to${t.tpe}").trim
         case t if t.hasAnnot[injectTotalLength] => write_buildCode_callSerializer(tpe = t.tpe, paramName = s"SizeOf.guesso[$upperClassType](data).toByte.to${t.tpe}").trim // statisch+dynamisch
 
