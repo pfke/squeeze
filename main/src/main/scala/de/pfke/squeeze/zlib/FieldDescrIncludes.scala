@@ -21,7 +21,7 @@ trait FieldDescrIncludes {
     def getAsBitfield: Option[asBitfield] = getAnnot[asBitfield]
     def hasAsBitfield: Boolean = hasAnnot[asBitfield]
 
-    def getInjectLength: Option[injectSize] = getAnnot[injectSize]
+    def getInjectSize: Option[injectSize] = getAnnot[injectSize]
     def hasInjectLength: Boolean = hasAnnot[injectSize]
 
     def getInjectType: Option[injectType] = getAnnot[injectType]
