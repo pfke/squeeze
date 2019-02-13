@@ -6,7 +6,6 @@ import de.pfke.squeeze.Squeezer
 import de.pfke.squeeze.annots.withFixedSize
 import de.pfke.squeeze.squeezer.BaseSqueezerSpec
 import de.pfke.squeeze.squeezer.annots.withFixedSize.Squeezer_caseClass_w_annotWithFixedSize_onInvalid_spec.caseClass_w_annotWithFixedSize_onInvalid
-import de.pfke.squeeze.zlib.SerializerBuildException
 
 object Squeezer_caseClass_w_annotWithFixedSize_onInvalid_spec {
   case class caseClass_w_annotWithFixedSize_onInvalid(
@@ -28,7 +27,7 @@ class Squeezer_caseClass_w_annotWithFixedSize_onInvalid_spec
 
       "call die scheisse" should {
         "an exception should be thrown" in {
-          an[SerializerBuildException] shouldBe thrownBy(
+          an[IllegalArgumentException] shouldBe thrownBy(
             Squeezer().toBinary(in = inPojo_invalid)
           )
         }
@@ -40,7 +39,7 @@ class Squeezer_caseClass_w_annotWithFixedSize_onInvalid_spec
 
       "call die scheisse" should {
         "an exception should be thrown" in {
-          an[SerializerBuildException] shouldBe thrownBy(
+          an[IllegalArgumentException] shouldBe thrownBy(
             Squeezer().toBinary(in = inPojo_invalid)
           )
         }
