@@ -531,6 +531,17 @@ class BuildByReflection
       typeTag: ru.TypeTag[A]
     ): A = fields.find(i => i.name == fieldName && i.annos.hasAnnot[A]).matchToException(i => readAnnot[A](i), new SerializerBuildException(s"$typeTag annot expected, but not found for field $fieldName"))
 
+    def isLastField(descr: FieldDescr): Boolean = fields.indexOf(descr) == (fields.size - 1)
+
+    def hasInjectLengthWFrom(search: String): Boolean = {
+      fields
+        .filter(_.hasInjectSize)
+        .map(_.getInjectSize)
+        .filter(_.isDefined)
+        .map(_.get)
+        .exists(_.from == search)
+    }
+
     // get all fields
     fields
       .map {
@@ -545,6 +556,7 @@ class BuildByReflection
           s"$padList$paramName.${t.name}$trimList.foreach { i => $code }"
 
         case t if t.isString && t.hasAnnot[withFixedSize] => s"serializerContainer.write[String]($paramName.${t.name}, hints = hints ++ Seq(SizeInByteHint(value = ${readWithFixedSize(t).size})):_*)"
+        case t if t.isString && !isLastField(t) && !hasInjectLengthWFrom(t.name) => throw new SerializerBuildException(s"found string field '${t.name}' w/o fixed size annotation which is not the last one")
         case t if               t.hasAnnot[withFixedSize] => throw new SerializerBuildException(s"field '${t.name}' is annotated w/ ${t.getAnnot[withFixedSize]}, but this is only allowed to string fields")
 
 //        case t if t.isPrimitiveType => generate_writerCode_forPrimitive(t)
