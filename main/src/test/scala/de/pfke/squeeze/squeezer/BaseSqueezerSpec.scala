@@ -25,24 +25,22 @@ abstract class BaseSqueezerSpec
   ): Unit = {
     implicit val byteOrderToUse: ByteOrder = byteOrder
 
-    val squeezer = Squeezer()
-
     "convert correct to binary" should {
       "should return a ByteString with correct length" in {
-        squeezer
+        Squeezer()
           .toBinary(in = inPojo)
           .length should be(binaryData.size)
       }
 
       "should return the correct ByteString" in {
-        squeezer
+        Squeezer()
           .toBinary(in = inPojo) should be(binaryData)
       }
     }
 
     "convert correct from binary" should {
       "should return the correct object" in {
-        squeezer
+        Squeezer()
           .deSerialize[A](binaryData) should be (outPojo.getOrElse(inPojo))
       }
     }

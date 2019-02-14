@@ -72,7 +72,7 @@ class BitStringBuilder(
 
     _data
       .flatMap(makeToListFn) // separate our values by alignment
-      .take(elementsToUse)      // drop unneeded values
+      .take(elementsToUse)   // drop unneeded values
       .reverse
       .foreach(writeFunc)    // write to ByteString builder
 

@@ -8,6 +8,7 @@ import de.pfke.squeeze.annots._
 import de.pfke.squeeze.annots.classAnnots.{fromVersion, typeForIface}
 import de.pfke.squeeze.zlib._
 import de.pfke.squeeze.zlib.FieldDescrIncludes._
+import de.pfke.squeeze.zlib.data.length.digital.BitLength
 import de.pfke.squeeze.zlib.refl.{FieldDescr, FieldHelper, SizeOf}
 
 import scala.collection.mutable.ArrayBuffer
@@ -374,17 +375,15 @@ class BuildByReflection
   ): String = {
     require(fields.nonEmpty, "given field list is empty")
     require(!fields.hasOneWithoutAsBitfield, "given chunk contains a field w/o 'asBitfield' annot")
-    require(upperClassType.typeSymbol.annotations.hasAlignBitfieldsBy, "upper class does not have 'alignBitfieldsBy' annotation")
+//    require(upperClassType.typeSymbol.annotations.hasAlignBitfieldsBy, "upper class does not have 'alignBitfieldsBy' annotation")
 
     def buildName(field: FieldDescr) = s"${field.name}"
     def buildPrefix(field: FieldDescr) = s"${buildName(field)}_"
 
-    val bitfieldIterName = if (!fields.hasAsBitfield) "" else {
-      val upperClassAnnots = upperClassType.typeSymbol.annotations
+    val upperClassAnnots = upperClassType.typeSymbol.annotations
+    val bitAlignment = upperClassAnnots.getAlignBitfieldsBy.matchTo(_.bits, BitLength.apply(32).toBits)
 
-      upperClassAnnots
-        .getAlignBitfieldsBy match {
-        case Some(_) =>
+    val bitfieldIterName = if (!fields.hasAsBitfield) "" else {
           val idxToString = Map(
             0 -> "st",
             1 -> "nd",
@@ -395,15 +394,9 @@ class BuildByReflection
 
           s"_${idx + 1}${ idxToString.get(idx).matchTo(i => i, "th")}BitIter"
 
-        case None => ""
-      }
     }
 
     def groupBitfieldsByAlignment(): List[List[FieldDescr]] = {
-      val upperClassAnnots = upperClassType.typeSymbol.annotations
-
-      val alignment = upperClassAnnots.getAlignBitfieldsBy.matchToException(_.bits, new SerializerBuildException(s"class has no 'alignBitfieldsBy' annotation"))
-
       val r1 = new ArrayBuffer[ArrayBuffer[FieldDescr]]()
       r1 += new ArrayBuffer[FieldDescr]()
       var currentSize = 0
@@ -414,8 +407,8 @@ class BuildByReflection
           currentSize += sizeInBits
           r1.last += i
 
-          if (currentSize >= alignment) {
-            currentSize = currentSize - alignment
+          if (currentSize >= bitAlignment) {
+            currentSize = currentSize - bitAlignment
             r1 += new ArrayBuffer[FieldDescr]()
           }
         }
@@ -424,7 +417,7 @@ class BuildByReflection
     }
 
     val sepFields = groupBitfieldsByAlignment()
-    val bitAlignment = upperClassType.typeSymbol.annotations.getAlignBitfieldsBy.matchToException(_.bits, new SerializerBuildException(s"class has no 'alignBitfieldsBy' annotation"))
+//    val bitAlignment = upperClassType.typeSymbol.annotations.getAlignBitfieldsBy.matchToException(_.bits, new SerializerBuildException(s"class has no 'alignBitfieldsBy' annotation"))
 
     // code for iter
     val iterCode = fields
@@ -433,15 +426,15 @@ class BuildByReflection
         case t => throw new SerializerBuildException(s"field '${t.name}' w/o 'asBitfield' annotation")
       }.mkString("\n")
 
-    val upperClassAnnots = upperClassType.typeSymbol.annotations
-    val alignBitfieldsBy = upperClassAnnots.getAlignBitfieldsBy.matchTo(_.bits, 1)
+//    val upperClassAnnots = upperClassType.typeSymbol.annotations
+//    val alignBitfieldsBy = upperClassAnnots.getAlignBitfieldsBy.matchTo(_.bits, 1)
     // wir brauchen hier die reine bit size
     val bitFieldSize = SizeOf.guesso(fields = fields).toBits.toInt
 
-    val prefix = s"val $bitfieldIterName = iter.iterator(bitAlignment = BitStringAlignment.${BitStringAlignment.enumFromWidth(alignBitfieldsBy)})\n"
-    val padding = if ((bitFieldSize % bitAlignment) == 0) "" else s"\n$bitfieldIterName.read[Long](BitLength(${bitAlignment - (bitFieldSize % bitAlignment)})) // read padding bits"
+    val prefix = s"val $bitfieldIterName = iter.iterator(bitAlignment = BitStringAlignment.${BitStringAlignment.enumFromWidth(bitAlignment)})"
+    val padding = if ((bitFieldSize % bitAlignment) == 0) "" else s"$bitfieldIterName.read[Long](BitLength(${bitAlignment - (bitFieldSize % bitAlignment)})) // read padding bits"
 
-    s"$prefix$iterCode$padding"
+    s"$prefix\n$padding\n$iterCode"
   }
 
   /**
@@ -507,14 +500,16 @@ class BuildByReflection
     fields: List[FieldDescr]
   ): String = {
     require(!fields.hasOneWithoutAsBitfield, "given chunk contains a field w/o 'asBitfield' annot")
-    require(upperClassType.typeSymbol.annotations.hasAlignBitfieldsBy, "upper class does not have 'alignBitfieldsBy' annotation")
+//    require(upperClassType.typeSymbol.annotations.hasAlignBitfieldsBy, "upper class does not have 'alignBitfieldsBy' annotation")
+
+    val upperClassAnnots = upperClassType.typeSymbol.annotations
+    val alignBitfieldsBy = upperClassAnnots.getAlignBitfieldsBy.matchTo(_.bits, default = 32)
 
     val bitfieldIterName = if (!fields.hasAsBitfield) "" else {
-      val upperClassAnnots = upperClassType.typeSymbol.annotations
+//      val upperClassAnnots = upperClassType.typeSymbol.annotations
 
-      upperClassAnnots
-        .getAlignBitfieldsBy match {
-        case Some(_) =>
+//      alignBitfieldsBy match {
+//        case Some(_) =>
           val idxToString = Map(
             0 -> "st",
             1 -> "nd",
@@ -525,8 +520,8 @@ class BuildByReflection
 
           s"_${idx + 1}${ idxToString.get(idx).matchTo(i => i, "th")}BitBuilder"
 
-        case None => ""
-      }
+//        case None => ""
+//      }
     }
 
     // get all fields
@@ -535,8 +530,6 @@ class BuildByReflection
       case t => throw new SerializerBuildException(s"field '${t.name}' w/o 'asBitfield' annotation")
     }.mkString("\n")
 
-    val upperClassAnnots = upperClassType.typeSymbol.annotations
-    val alignBitfieldsBy = upperClassAnnots.getAlignBitfieldsBy.matchTo(_.bits, default = 1)
 //    val bitFieldSize = SizeOf.guesso(fields = fields).toBits
 
     val prefix = s"val $bitfieldIterName = BitStringBuilder.newBuilder(alignment = BitStringAlignment.${BitStringAlignment.enumFromWidth(alignBitfieldsBy)})\n"
