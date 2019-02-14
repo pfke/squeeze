@@ -445,40 +445,16 @@ class BuildByReflection
   }
 
   /**
-    * Build serializer object write method
-    */
-  private def write_buildCode_callSerializer(
-    tpe: ru.Type,
-    paramName: String = "data",
-     field: Option[FieldDescr] = None,
-    hints: Seq[String] = Seq.empty
-  ): String = {
-    // injectType annot?
-    def buildValueFromField(
-      f: FieldDescr
-    ) = {
-      f.annos
-        .getInjectType match {
-        case Some(x) if GeneralRefl.isPrimitive(tpe) => s"serializerContainer.getIfaceType(${paramName.replaceAll(f.name, x.fromField)}).to$tpe"
-        case Some(x) if GeneralRefl.isEnum(tpe)      => s"serializerContainer.getIfaceType(${paramName.replaceAll(f.name, x.fromField)})"
-        case None                                    => paramName
-      }
-    }
-
-    s"serializerContainer.write[$tpe](${field.matchTo(buildValueFromField, paramName)}, hints = ${ if (hints.isEmpty) "hints" else s"(hints ++ Seq(${hints.mkString(", ")}))"}:_*)"
-  }
-
-  /**
     * Gen write code for complex type (and its fields)
     */
   private def make_writerCode_forComplex(
     tpe: ru.Type
   ): String = {
     val groupedFields = FieldHelper.groupByBitfields(tpe = tpe)
-    val funcCurried = make_writerCode_forGroupedFields(upperClassType = tpe, allSubFields = FieldHelper.getFields(tpe), groupedSubFields = groupedFields, paramName = "data") _
+    val generateGroupedFields_fn = make_writerCode_forGroupedFields(upperClassType = tpe, allSubFields = FieldHelper.getFields(tpe), groupedSubFields = groupedFields, paramName = "data") _
 
     groupedFields
-      .map(funcCurried)
+      .map(generateGroupedFields_fn)
       .mkString("\n")
   }
 
@@ -518,137 +494,12 @@ class BuildByReflection
     field: List[FieldDescr]
   ): String = {
     field match {
-      case t if t.hasAsBitfield => write_buildCode_forComplex_bitfields(upperClassType = upperClassType, allSubFields = allSubFields, groupedSubFields = groupedSubFields, paramName = paramName, fields = field)
+      case t if t.hasAsBitfield => make_writerCode_forBitfields(upperClassType = upperClassType, allSubFields = allSubFields, groupedSubFields = groupedSubFields, paramName = paramName, fields = field)
       case _                    => make_writerCode_forField(upperClassType = upperClassType, allSubFields = allSubFields, groupedSubFields = groupedSubFields, paramName = paramName, fields = field)
     }
   }
 
-  /**
-    * Build serializer object read method
-    */
-  private def make_writerCode_forField(
-    upperClassType: ru.Type,
-    allSubFields: List[FieldDescr],
-    groupedSubFields: List[List[FieldDescr]],
-    paramName: String,
-    fields: List[FieldDescr]
-  ): String = {
-    lazy val generate_writerCode_forList_fn = generate_writerCode_forList(upperClassType, paramName, allSubFields) _
-    lazy val generate_writerCode_forPrimitive_fn = generate_writerCode_forPrimitive(upperClassType, paramName, allSubFields) _
-    lazy val generate_writerCode_forString_fn = generate_writerCode_forString(upperClassType, paramName, allSubFields) _
-
-    // get all fields
-    fields
-      .map {
-        case t if t.isArray || t.isListType => generate_writerCode_forList_fn(t)
-        case t if t.isPrimitiveType => generate_writerCode_forPrimitive_fn(t)
-        case t if t.isString => generate_writerCode_forString_fn(t)
-
-        case t => write_buildCode_callSerializer(tpe = t.tpe, paramName = s"$paramName.${t.name}", field = Some(t)).trim
-      }
-      .mkString("\n")
-  }
-
-  private def generate_writerCode (
-    tpe: ru.Type,
-    valueToConvert: String,
-    hints: Seq[String] = Seq.empty
-  ): String = {
-    val hintsCode = s"hints${if (hints.isEmpty) "" else s" ++ Seq(${hints.mkString(", ")})"}"
-
-    s"serializerContainer.write[$tpe]($valueToConvert, hints = $hintsCode:_*)"
-  }
-
-  private def generate_writerCode_forList (
-    upperClassType: ru.Type,
-    nameOfTheDataObjWithinWriterCode: String,
-    allFields: List[FieldDescr]
-  ) (
-    field: FieldDescr
-  ): String = {
-    require(field.isArray || field.isListType, s"this func is only for primitives ($field)")
-
-    def readWithFixedSize: withFixedSize = field.getWithFixedSize.matchToException(i => i, new SerializerBuildException(s"$field ${withFixedSize.getClass} expected"))
-
-    val code = field
-      .tpe
-      .typeArgs
-      .headOption
-      .matchToException ( i => generate_writerCode(i, "i"), new SerializerBuildException(s"unknown sub type of this list: $upperClassType"))
-
-    val paddedList = if (field.hasAnnot[withFixedSize]) s"""require($nameOfTheDataObjWithinWriterCode.${field.name}.size >= ${readWithFixedSize.size}, s"$nameOfTheDataObjWithinWriterCode.${field.name} is annotated $readWithFixedSize, but passed list size is less")\n""" else ""
-    val trimList = if (field.hasAnnot[withFixedSize]) s".take(${readWithFixedSize.size})" else ""
-
-    s"$paddedList$nameOfTheDataObjWithinWriterCode.${field.name}$trimList.foreach { i => $code }"
-  }
-
-  private def generate_writerCode_forPrimitive (
-    upperClassType: ru.Type,
-    nameOfTheDataObjWithinWriterCode: String,
-    allFields: List[FieldDescr]
-  ) (
-    field: FieldDescr
-  ): String = {
-    require(field.isPrimitiveType, s"this func is only for primitives ($field)")
-    require(!field.hasWithFixedSize, s"field '${field.name}' is annotated w/ ${field.getAnnot[withFixedSize]}, but this is only allowed to string fields")
-
-    def getWithFixedSize_fromInjectField(fieldName: Option[String]): Option[withFixedSize] = {
-      fieldName match {
-        case Some(x) => allFields.find(_.name == x).matchTo(_.getWithFixedSize, None)
-        case None => None
-      }
-    }
-
-    val valueToConvert = if (field.hasInjectSize) {
-      (field.getInjectSize, getWithFixedSize_fromInjectField(field.getInjectSize.matchToOption(_.from))) match {
-        case (Some(_1), Some(_2))               => s"${_2.size.toString}"
-        case (Some(_1), None) if _1.from == "." => s"SizeOf.guesso[$upperClassType](data).toByte.to${field.tpe}"
-        case (Some(_1), None)                   => s"$nameOfTheDataObjWithinWriterCode.${_1.from}.size.to${field.tpe}"
-
-        case _                                  => throw new SerializerBuildException(s"should not happen. No injectSize annot found on field $field")
-      }
-    } else {
-      s"$nameOfTheDataObjWithinWriterCode.${field.name}"
-    }
-
-    generate_writerCode(field.tpe, valueToConvert)
-  }
-
-  private def generate_writerCode_forString (
-    upperClassType: ru.Type,
-    nameOfTheDataObjWithinWriterCode: String,
-    allFields: List[FieldDescr]
-  ) (
-    field: FieldDescr
-  ): String = {
-    require(field.isString, s"this func is only for strings ($field)")
-
-    def hasInjectLengthWFrom: Boolean = {
-      allFields
-        .filter(_.hasInjectSize)
-        .map(_.getInjectSize)
-        .filter(_.isDefined)
-        .map(_.get)
-        .exists(_.from == field.name)
-    }
-    def isLastField: Boolean = allFields.indexOf(field) == (allFields.size - 1)
-    def readWithFixedSize: withFixedSize = field.getWithFixedSize.get
-
-    val hints = if (field.hasWithFixedSize) {
-      Seq(s"SizeInByteHint(value = ${readWithFixedSize.size})")
-    } else if (isLastField || hasInjectLengthWFrom) {
-      Seq.empty
-    } else {
-      throw new SerializerBuildException(s"found string field '${field.name}' w/o fixed size annotation which is not the last one")
-    }
-
-    generate_writerCode(ru.typeOf[String], s"$nameOfTheDataObjWithinWriterCode.${field.name}", hints = hints)
-  }
-
-  /**
-    * Build serializer object read method
-    */
-  private def write_buildCode_forComplex_bitfields(
+  private def make_writerCode_forBitfields(
     upperClassType: ru.Type,
     allSubFields: List[FieldDescr],
     groupedSubFields: List[List[FieldDescr]],
@@ -686,10 +537,132 @@ class BuildByReflection
 
     val upperClassAnnots = upperClassType.typeSymbol.annotations
     val alignBitfieldsBy = upperClassAnnots.getAlignBitfieldsBy.matchTo(_.bits, default = 1)
-    val bitFieldSize = SizeOf.guesso(fields = fields).toBits
+//    val bitFieldSize = SizeOf.guesso(fields = fields).toBits
 
     val prefix = s"val $bitfieldIterName = BitStringBuilder.newBuilder(alignment = BitStringAlignment.${BitStringAlignment.enumFromWidth(alignBitfieldsBy)})\n"
     val suffix = s"findOneHint[ByteStringBuilderHint](hints = hints).get.builder.append($bitfieldIterName.result())"
     s"$prefix$code\n$suffix"
+  }
+
+  /**
+    * Build serializer object read method
+    */
+  private def make_writerCode_forField(
+    upperClassType: ru.Type,
+    allSubFields: List[FieldDescr],
+    groupedSubFields: List[List[FieldDescr]],
+    paramName: String,
+    fields: List[FieldDescr]
+  ): String = {
+    lazy val generate_writerCode_forList_fn = generate_writerCode_forList(upperClassType, paramName, allSubFields) _
+    lazy val generate_writerCode_forPrimitive_fn = generate_writerCode_forPrimitive(upperClassType, paramName, allSubFields) _
+    lazy val generate_writerCode_forString_fn = generate_writerCode_forString(upperClassType, paramName, allSubFields) _
+
+    // get all fields
+    fields
+      .map {
+        case t if t.isArray || t.isListType => generate_writerCode_forList_fn(t)
+        case t if t.isPrimitiveType => generate_writerCode_forPrimitive_fn(t)
+        case t if t.isString => generate_writerCode_forString_fn(t)
+
+        case t => generate_writerCall(tpe = t.tpe, valueToConvert = s"$paramName.${t.name}")
+      }
+      .mkString("\n")
+  }
+
+  private def generate_writerCall (
+    tpe: ru.Type,
+    valueToConvert: String,
+    hints: Seq[String] = Seq.empty
+  ): String = {
+    val hintsCode = s"hints${if (hints.isEmpty) "" else s" ++ Seq(${hints.mkString(", ")})"}"
+
+    s"serializerContainer.write[$tpe]($valueToConvert, hints = $hintsCode:_*)"
+  }
+
+  private def generate_writerCode_forList (
+    upperClassType: ru.Type,
+    nameOfTheDataObjWithinWriterCode: String,
+    allFields: List[FieldDescr]
+  ) (
+    field: FieldDescr
+  ): String = {
+    require(field.isArray || field.isListType, s"this func is only for primitives ($field)")
+
+    def readWithFixedSize: withFixedSize = field.getWithFixedSize.matchToException(i => i, new SerializerBuildException(s"$field ${withFixedSize.getClass} expected"))
+
+    val code = field
+      .tpe
+      .typeArgs
+      .headOption
+      .matchToException ( i => generate_writerCall(i, "i"), new SerializerBuildException(s"unknown sub type of this list: $upperClassType"))
+
+    val paddedList = if (field.hasAnnot[withFixedSize]) s"""require($nameOfTheDataObjWithinWriterCode.${field.name}.size >= ${readWithFixedSize.size}, s"$nameOfTheDataObjWithinWriterCode.${field.name} is annotated $readWithFixedSize, but passed list size is less")\n""" else ""
+    val trimList = if (field.hasAnnot[withFixedSize]) s".take(${readWithFixedSize.size})" else ""
+
+    s"$paddedList$nameOfTheDataObjWithinWriterCode.${field.name}$trimList.foreach { i => $code }"
+  }
+
+  private def generate_writerCode_forPrimitive (
+    upperClassType: ru.Type,
+    nameOfTheDataObjWithinWriterCode: String,
+    allFields: List[FieldDescr]
+  ) (
+    field: FieldDescr
+  ): String = {
+    require(field.isPrimitiveType, s"this func is only for primitives ($field)")
+    require(!field.hasWithFixedSize, s"field '${field.name}' is annotated w/ ${field.getAnnot[withFixedSize]}, but this is only allowed to string fields")
+
+    def getWithFixedSize_fromInjectField(fieldName: Option[String]): Option[withFixedSize] = {
+      fieldName match {
+        case Some(x) => allFields.find(_.name == x).matchTo(_.getWithFixedSize, None)
+        case None => None
+      }
+    }
+
+    val valueToConvert = if (field.hasInjectSize) {
+      (field.getInjectSize, getWithFixedSize_fromInjectField(field.getInjectSize.matchToOption(_.from))) match {
+        case (Some(_1), Some(_2))               => s"${_2.size.toString}"
+        case (Some(_1), None) if _1.from == "." => s"SizeOf.guesso[$upperClassType](data).toByte.to${field.tpe}"
+        case (Some(_1), None)                   => s"$nameOfTheDataObjWithinWriterCode.${_1.from}.size.to${field.tpe}"
+
+        case _                                  => throw new SerializerBuildException(s"should not happen. No injectSize annot found on field $field")
+      }
+    } else {
+      s"$nameOfTheDataObjWithinWriterCode.${field.name}"
+    }
+
+    generate_writerCall(field.tpe, valueToConvert)
+  }
+
+  private def generate_writerCode_forString (
+    upperClassType: ru.Type,
+    nameOfTheDataObjWithinWriterCode: String,
+    allFields: List[FieldDescr]
+  ) (
+    field: FieldDescr
+  ): String = {
+    require(field.isString, s"this func is only for strings ($field)")
+
+    def hasInjectLengthWFrom: Boolean = {
+      allFields
+        .filter(_.hasInjectSize)
+        .map(_.getInjectSize)
+        .filter(_.isDefined)
+        .map(_.get)
+        .exists(_.from == field.name)
+    }
+    def isLastField: Boolean = allFields.indexOf(field) == (allFields.size - 1)
+    def readWithFixedSize: withFixedSize = field.getWithFixedSize.get
+
+    val hints = if (field.hasWithFixedSize) {
+      Seq(s"SizeInByteHint(value = ${readWithFixedSize.size})")
+    } else if (isLastField || hasInjectLengthWFrom) {
+      Seq.empty
+    } else {
+      throw new SerializerBuildException(s"found string field '${field.name}' w/o fixed size annotation which is not the last one")
+    }
+
+    generate_writerCall(ru.typeOf[String], s"$nameOfTheDataObjWithinWriterCode.${field.name}", hints = hints)
   }
 }
