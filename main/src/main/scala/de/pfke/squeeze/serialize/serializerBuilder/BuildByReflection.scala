@@ -8,10 +8,8 @@ import de.pfke.squeeze.annots._
 import de.pfke.squeeze.annots.classAnnots.{fromVersion, typeForIface}
 import de.pfke.squeeze.zlib._
 import de.pfke.squeeze.zlib.FieldDescrIncludes._
-import de.pfke.squeeze.zlib.data.length.digital.BitLength
 import de.pfke.squeeze.zlib.refl.{FieldDescr, FieldHelper, SizeOf}
 
-import scala.collection.mutable.ArrayBuffer
 import scala.reflect.ClassTag
 import scala.reflect.runtime.{universe => ru}
 
@@ -45,59 +43,61 @@ class BuildByReflection
 
     val namespaceClassName_r = """(.*)\.(.*)$""".r
 
-    val (ns, name) = typeTag.tpe.toString match {
-      case namespaceClassName_r(_1, _2) => (Some(s".${_1}"), _2)
-
-      case t => (None, t)
+    val name = typeTag.tpe.toString match {
+      case namespaceClassName_r(_, t) => t
+      case t => t
     }
 
-    val content =  s"""
-                      |import de.pfke.squeeze.zlib.version.PatchLevelVersion
-                      |import de.pfke.squeeze.zlib.data.collection.anythingString.AnythingIterator
-                      |import de.pfke.squeeze.zlib.data.collection.bitString.{BitStringAlignment, BitStringBuilder}
-                      |import de.pfke.squeeze.zlib.data.length.digital.{BitLength, ByteLength}
-                      |import de.pfke.squeeze.zlib.refl._
-                      |import de.pfke.squeeze.serialize.SerializerContainer
-                      |import de.pfke.squeeze.serialize.serializerCompiler.CompiledSerializer
-                      |import de.pfke.squeeze.serialize.serializerHints._
-                      |import de.pfke.squeeze.zlib._
-                      |import java.nio.ByteOrder
-                      |
-                      |class ${name}Serializer
-                      |  extends CompiledSerializer[${typeTag.tpe.toString}] {
-                      |  override def objectTypeInfo = GeneralRefl.generateTypeInfo[${typeTag.tpe.toString}]
-                      |
-                      |  ${genCode().indent}
-                      |}
-                      |new ${name}Serializer()
-                      |""".stripMargin
+    val code =  s"""
+                   |import de.pfke.squeeze.zlib.version.PatchLevelVersion
+                   |import de.pfke.squeeze.zlib.data.collection.anythingString.AnythingIterator
+                   |import de.pfke.squeeze.zlib.data.collection.bitString.{BitStringAlignment, BitStringBuilder}
+                   |import de.pfke.squeeze.zlib.data.length.digital.{BitLength, ByteLength}
+                   |import de.pfke.squeeze.zlib.refl._
+                   |import de.pfke.squeeze.serialize.SerializerContainer
+                   |import de.pfke.squeeze.serialize.serializerCompiler.CompiledSerializer
+                   |import de.pfke.squeeze.serialize.serializerHints._
+                   |import de.pfke.squeeze.zlib._
+                   |import java.nio.ByteOrder
+                   |
+                   |class ${name}Serializer
+                   |  extends CompiledSerializer[${typeTag.tpe.toString}] {
+                   |  override def objectTypeInfo = GeneralRefl.generateTypeInfo[${typeTag.tpe.toString}]
+                   |
+                   |  ${makeCode().indent}
+                   |}
+                   |new ${name}Serializer()
+                   |""".stripMargin
 
-    BuiltSerializer(classTag = classTag, typeTag = typeTag, fullClassName = s"${if (ns.nonEmpty) s"$ns." else ""}$name", code = content)
+    BuiltSerializer (
+      classTag = classTag,
+      typeTag = typeTag,
+      fullClassName = name,
+      code = code
+    )
   }
 
   /**
-    * Code generieren, hier noch für alle Typen
+    * Generate reader and writer code.
     */
-  private def genCode[A]()(
+  private def makeCode[A]() (
     implicit
     classTag: ClassTag[A],
-    typeTag: ru.TypeTag[A]): String = {
+    typeTag: ru.TypeTag[A]
+  ): String = {
     typeTag.tpe match {
-      case t if GeneralRefl.isComplexType(t) => genCodeForComplex()
+      case t if GeneralRefl.isComplex(t)   => makeCode_forComplex()
+      case t if GeneralRefl.isPrimitive(t) => makeCode_forPrimitives()
+      case t if GeneralRefl.isString(t)    => makeCode_forString()
 
-      case t if GeneralRefl.isEnum(t) => genCodeForEnum()
-
-      case t if GeneralRefl.isPrimitive(t) => genCodeForPrimitives()
-      case t if GeneralRefl.isString(t)    => genCodeForString()
-
-      case _ => "empty"
+      case _ => throw new SerializerBuildException(s"you want me to generate reader and writer code for $typeTag, but this type is neither complex, a primitove nor a string")
     }
   }
 
   /**
     * Code generieren fuer Enums
     */
-  private def genCodeForComplex[A]()(
+  private def makeCode_forComplex[A]()(
     implicit
     classTag: ClassTag[A],
     typeTag: ru.TypeTag[A]
@@ -123,7 +123,7 @@ class BuildByReflection
     def makeIterCodeForComplex(): String = {
       // code for iter
       val groupedFields = FieldHelper.groupByBitfields(tpe = typeTag.tpe)
-      val funcCurried = read_buildIterCode_forComplex(upperClassType = typeTag.tpe, allSubFields = FieldHelper.getFields(typeTag.tpe), groupedSubFields = groupedFields) _
+      val funcCurried = make_readerCode_forComplex(upperType = typeTag.tpe, groupedSubFields = groupedFields) _
 
       groupedFields
         .map(funcCurried)
@@ -234,7 +234,7 @@ class BuildByReflection
     ru.typeOf[Long]    -> "Long(value)",
     ru.typeOf[Short]   -> "Short(value)"
   )
-  private def genCodeForPrimitives[A]()(
+  private def makeCode_forPrimitives[A]()(
     implicit
     classTag: ClassTag[A],
     typeTag: ru.TypeTag[A]): String = {
@@ -247,7 +247,7 @@ class BuildByReflection
   /**
     * Code generieren, für primitive Typen
     */
-  private def genCodeForString[A]()(
+  private def makeCode_forString[A]()(
     implicit
     classTag: ClassTag[A],
     typeTag: ru.TypeTag[A]): String = {
@@ -302,24 +302,55 @@ class BuildByReflection
        |}""".stripMargin
   }
 
-  private def read_buildIterCode_forComplex(
-    upperClassType: ru.Type,
-    allSubFields: List[FieldDescr],
+  private def make_readerCode_forComplex(
+    upperType: ru.Type,
     groupedSubFields: List[List[FieldDescr]]
   )(
     fields: List[FieldDescr]
   ): String = {
     fields match {
-      case t if t.hasAsBitfield => read_buildIterCode_forComplex_bitfields(upperClassType = upperClassType, allSubFields = allSubFields, groupedSubFields = groupedSubFields)(fields = fields)
-      case _ => read_buildIterCode_forComplex_noBitfields(allSubFields = allSubFields, fields = fields, upperType = upperClassType)
+      case t if t.hasAsBitfield => make_readerCode_forBitfields          (upperType = upperType, fields = fields, groupedSubFields = groupedSubFields)
+      case _                    => make_readerCode_forComplex_noBitfields(upperType = upperType, fields = fields)
     }
   }
 
-  private def read_buildIterCode_forComplex_noBitfields(
-    allSubFields: List[FieldDescr],
+  private def make_readerCode_forBitfields(
+    upperType: ru.Type,
     fields: List[FieldDescr],
-    upperType: ru.Type
+    groupedSubFields: List[List[FieldDescr]]
   ): String = {
+    require(fields.nonEmpty, "given field list is empty")
+    require(!fields.hasOneWithoutAsBitfield, "given chunk contains a field w/o 'asBitfield' annot")
+
+    def buildName(field: FieldDescr) = s"${field.name}"
+    def getBits(field: FieldDescr) = field.getAsBitfield.matchToException(_.bits, new SerializerBuildException(s"missing bitfield annotation on field ${field.name}"))
+
+    val upperClassAnnots = upperType.typeSymbol.annotations
+    val bitAlignment = upperClassAnnots.getAlignBitfieldsBy.matchTo(_.bits, default = 32)
+
+    // code for fields
+    val iterName = buildBitfieldBuilderIterName(fields, groupedSubFields, "BitIter")
+    val codeForFields = fields
+      .map { t => s"val ${buildName(t)} = serializerContainer.read[${t.tpe}]($iterName, hints = SizeInBitHint(value = ${getBits(t)}))" }
+      .mkString("\n")
+
+    // wir brauchen hier die reine bit size
+    val bitFieldSize = SizeOf.guesso(fields = fields).toBits
+
+    val prepareIterator = s"val $iterName = iter.iterator(bitAlignment = BitStringAlignment.${BitStringAlignment.enumFromWidth(bitAlignment)})"
+    val codeForPadding = if ((bitFieldSize % bitAlignment) == 0) "" else s"$iterName.read[Long](BitLength(${bitAlignment - (bitFieldSize % bitAlignment)})) // read padding bits"
+
+    s"""$prepareIterator
+       |$codeForPadding
+       |$codeForFields""".stripMargin
+  }
+
+  private def make_readerCode_forComplex_noBitfields(
+    upperType: ru.Type,
+    fields: List[FieldDescr]
+  ): String = {
+    val allSubFields = FieldHelper.getFields(upperType)
+
     def makeLine(
       thisTpe: ru.Type,
       field: Option[FieldDescr] = None
@@ -380,77 +411,6 @@ class BuildByReflection
       .mkString("\n")
   }
 
-  private def read_buildIterCode_forComplex_bitfields(
-    upperClassType: ru.Type,
-    allSubFields: List[FieldDescr],
-    groupedSubFields: List[List[FieldDescr]]
-  )(
-    fields: List[FieldDescr]
-  ): String = {
-    require(fields.nonEmpty, "given field list is empty")
-    require(!fields.hasOneWithoutAsBitfield, "given chunk contains a field w/o 'asBitfield' annot")
-//    require(upperClassType.typeSymbol.annotations.hasAlignBitfieldsBy, "upper class does not have 'alignBitfieldsBy' annotation")
-
-    def buildName(field: FieldDescr) = s"${field.name}"
-    def buildPrefix(field: FieldDescr) = s"${buildName(field)}_"
-
-    val upperClassAnnots = upperClassType.typeSymbol.annotations
-    val bitAlignment = upperClassAnnots.getAlignBitfieldsBy.matchTo(_.bits, BitLength.apply(32).toBits)
-
-    val bitfieldIterName = if (!fields.hasAsBitfield) "" else {
-          val idxToString = Map(
-            0 -> "st",
-            1 -> "nd",
-            2 -> "rd"
-          )
-
-          val idx = groupedSubFields.filter(_.hasAsBitfield).indexOf(fields)
-
-          s"_${idx + 1}${ idxToString.get(idx).matchTo(i => i, "th")}BitIter"
-
-    }
-
-    def groupBitfieldsByAlignment(): List[List[FieldDescr]] = {
-      val r1 = new ArrayBuffer[ArrayBuffer[FieldDescr]]()
-      r1 += new ArrayBuffer[FieldDescr]()
-      var currentSize = 0
-      fields
-        .foreach { i =>
-          val sizeInBits = i.getAsBitfield.matchToException(_.bits, new SerializerBuildException(s"field ${i.name} has no 'asBitfield' annotation"))
-
-          currentSize += sizeInBits
-          r1.last += i
-
-          if (currentSize >= bitAlignment) {
-            currentSize = currentSize - bitAlignment
-            r1 += new ArrayBuffer[FieldDescr]()
-          }
-        }
-
-      r1.map(_.toList).toList
-    }
-
-    val sepFields = groupBitfieldsByAlignment()
-//    val bitAlignment = upperClassType.typeSymbol.annotations.getAlignBitfieldsBy.matchToException(_.bits, new SerializerBuildException(s"class has no 'alignBitfieldsBy' annotation"))
-
-    // code for iter
-    val iterCode = fields
-      .map {
-        case t if t.hasAsBitfield => s"val ${buildName(t)} = serializerContainer.read[${t.tpe}]($bitfieldIterName, hints = SizeInBitHint(value = ${t.getAsBitfield.matchToException(_.bits, new SerializerBuildException(s"missing bitfield annotation on field ${t.name}"))}))"
-        case t => throw new SerializerBuildException(s"field '${t.name}' w/o 'asBitfield' annotation")
-      }.mkString("\n")
-
-//    val upperClassAnnots = upperClassType.typeSymbol.annotations
-//    val alignBitfieldsBy = upperClassAnnots.getAlignBitfieldsBy.matchTo(_.bits, 1)
-    // wir brauchen hier die reine bit size
-    val bitFieldSize = SizeOf.guesso(fields = fields).toBits.toInt
-
-    val prefix = s"val $bitfieldIterName = iter.iterator(bitAlignment = BitStringAlignment.${BitStringAlignment.enumFromWidth(bitAlignment)})"
-    val padding = if ((bitFieldSize % bitAlignment) == 0) "" else s"$bitfieldIterName.read[Long](BitLength(${bitAlignment - (bitFieldSize % bitAlignment)})) // read padding bits"
-
-    s"$prefix\n$padding\n$iterCode"
-  }
-
   /**
     * Gen write code for complex type (and its fields)
     */
@@ -498,57 +458,68 @@ class BuildByReflection
     groupedSubFields: List[List[FieldDescr]],
     paramName: String
   )(
-    field: List[FieldDescr]
+    fields: List[FieldDescr]
   ): String = {
-    field match {
-      case t if t.hasAsBitfield => make_writerCode_forBitfields(upperClassType = upperClassType, allSubFields = allSubFields, groupedSubFields = groupedSubFields, paramName = paramName, fields = field)
-      case _                    => make_writerCode_forField(upperClassType = upperClassType, allSubFields = allSubFields, groupedSubFields = groupedSubFields, paramName = paramName, fields = field)
+    fields match {
+      case t if t.hasAsBitfield => make_writerCode_forBitfields(upperClassType = upperClassType, nameOfTheDataObjWithinCode = paramName, fields = fields, groupedSubFields = groupedSubFields)
+      case _                    => make_writerCode_forField    (upperClassType = upperClassType, nameOfTheDataObjWithinCode = paramName, fields = fields, allSubFields = allSubFields)
+    }
+  }
+
+  /**
+    * Build the name for this bitfield group.
+    * E.g. a case class has 4 bitfield groups (either separated by no-bitfield fields or by alignment), we
+    * need to build 4 unique names, used as iterator (for reading) or as builder (for writing).
+    *
+    * @param thisGroupedFields is a list w/ all field in this group
+    * @param allGroupedFields is a list w/ all fields grouped by its bitfield membership
+    * @return
+    */
+  private def buildBitfieldBuilderIterName(
+    thisGroupedFields: List[FieldDescr],
+    allGroupedFields: List[List[FieldDescr]],
+    suffix: String
+  ): String = {
+    if (!thisGroupedFields.hasAsBitfield) "" else {
+      val idxToString = Map(
+        0 -> "st",
+        1 -> "nd",
+        2 -> "rd"
+      )
+
+      val idx = allGroupedFields.filter(_.hasAsBitfield).indexOf(thisGroupedFields)
+
+      s"_${idx + 1}${ idxToString.get(idx).matchTo(i => i, "th")}$suffix"
     }
   }
 
   private def make_writerCode_forBitfields(
     upperClassType: ru.Type,
-    allSubFields: List[FieldDescr],
-    groupedSubFields: List[List[FieldDescr]],
-    paramName: String,
-    fields: List[FieldDescr]
+    nameOfTheDataObjWithinCode: String,
+    fields: List[FieldDescr],
+    groupedSubFields: List[List[FieldDescr]]
   ): String = {
+    require(fields.nonEmpty, "given field list is empty")
     require(!fields.hasOneWithoutAsBitfield, "given chunk contains a field w/o 'asBitfield' annot")
-//    require(upperClassType.typeSymbol.annotations.hasAlignBitfieldsBy, "upper class does not have 'alignBitfieldsBy' annotation")
+
+    def buildName(field: FieldDescr) = s"${field.name}"
+    def getBits(field: FieldDescr) = field.getAsBitfield.matchToException(_.bits, new SerializerBuildException(s"missing bitfield annotation on field ${field.name}"))
 
     val upperClassAnnots = upperClassType.typeSymbol.annotations
     val alignBitfieldsBy = upperClassAnnots.getAlignBitfieldsBy.matchTo(_.bits, default = 32)
 
-    val bitfieldIterName = if (!fields.hasAsBitfield) "" else {
-//      val upperClassAnnots = upperClassType.typeSymbol.annotations
+    // code for fields
+    val builderName = buildBitfieldBuilderIterName(fields, groupedSubFields, "BitBuilder")
+    val codeForFields = fields
+      .map { t => s"serializerContainer.write[${t.tpe}]($nameOfTheDataObjWithinCode.${buildName(t)}, hints = BitStringBuilderHint($builderName), SizeInBitHint(value = ${getBits(t)}))" }
+      .mkString("\n")
 
-//      alignBitfieldsBy match {
-//        case Some(_) =>
-          val idxToString = Map(
-            0 -> "st",
-            1 -> "nd",
-            2 -> "rd"
-          )
+    val prepareBuilder = s"val $builderName = BitStringBuilder.newBuilder(alignment = BitStringAlignment.${BitStringAlignment.enumFromWidth(alignBitfieldsBy)})"
+    val finishBuilder = s"findOneHint[ByteStringBuilderHint](hints = hints).get.builder.append($builderName.result())"
 
-          val idx = groupedSubFields.filter(_.hasAsBitfield).indexOf(fields)
-
-          s"_${idx + 1}${ idxToString.get(idx).matchTo(i => i, "th")}BitBuilder"
-
-//        case None => ""
-//      }
-    }
-
-    // get all fields
-    val code = fields.map {
-      case t if t.hasAsBitfield => s"serializerContainer.write[${t.tpe}]($paramName.${t.name}, hints = BitStringBuilderHint($bitfieldIterName), SizeInBitHint(value = ${t.getAsBitfield.matchToException(_.bits, new SerializerBuildException(s"missing bitfield annotation on field ${t.name}"))}))"
-      case t => throw new SerializerBuildException(s"field '${t.name}' w/o 'asBitfield' annotation")
-    }.mkString("\n")
-
-//    val bitFieldSize = SizeOf.guesso(fields = fields).toBits
-
-    val prefix = s"val $bitfieldIterName = BitStringBuilder.newBuilder(alignment = BitStringAlignment.${BitStringAlignment.enumFromWidth(alignBitfieldsBy)})\n"
-    val suffix = s"findOneHint[ByteStringBuilderHint](hints = hints).get.builder.append($bitfieldIterName.result())"
-    s"$prefix$code\n$suffix"
+    s"""$prepareBuilder
+       |$codeForFields
+       |$finishBuilder""".stripMargin
   }
 
   /**
@@ -556,14 +527,13 @@ class BuildByReflection
     */
   private def make_writerCode_forField(
     upperClassType: ru.Type,
-    allSubFields: List[FieldDescr],
-    groupedSubFields: List[List[FieldDescr]],
-    paramName: String,
-    fields: List[FieldDescr]
+    nameOfTheDataObjWithinCode: String,
+    fields: List[FieldDescr],
+    allSubFields: List[FieldDescr]
   ): String = {
-    lazy val generate_writerCode_forList_fn = generate_writerCode_forList(upperClassType, paramName, allSubFields) _
-    lazy val generate_writerCode_forPrimitive_fn = generate_writerCode_forPrimitive(upperClassType, paramName, allSubFields) _
-    lazy val generate_writerCode_forString_fn = generate_writerCode_forString(upperClassType, paramName, allSubFields) _
+    lazy val generate_writerCode_forList_fn = generate_writerCode_forList(upperClassType, nameOfTheDataObjWithinCode, allSubFields) _
+    lazy val generate_writerCode_forPrimitive_fn = generate_writerCode_forPrimitive(upperClassType, nameOfTheDataObjWithinCode, allSubFields) _
+    lazy val generate_writerCode_forString_fn = generate_writerCode_forString(upperClassType, nameOfTheDataObjWithinCode, allSubFields) _
 
     // get all fields
     fields
@@ -572,7 +542,7 @@ class BuildByReflection
         case t if t.isPrimitiveType => generate_writerCode_forPrimitive_fn(t)
         case t if t.isString => generate_writerCode_forString_fn(t)
 
-        case t => generate_writerCall(tpe = t.tpe, valueToConvert = s"$paramName.${t.name}")
+        case t => generate_writerCall(tpe = t.tpe, valueToConvert = s"$nameOfTheDataObjWithinCode.${t.name}")
       }
       .mkString("\n")
   }
@@ -589,7 +559,7 @@ class BuildByReflection
 
   private def generate_writerCode_forList (
     upperClassType: ru.Type,
-    nameOfTheDataObjWithinWriterCode: String,
+    nameOfTheDataObjWithinCode: String,
     allFields: List[FieldDescr]
   ) (
     field: FieldDescr
@@ -604,15 +574,15 @@ class BuildByReflection
       .headOption
       .matchToException ( i => generate_writerCall(i, "i"), new SerializerBuildException(s"unknown sub type of this list: $upperClassType"))
 
-    val paddedList = if (field.hasAnnot[withFixedSize]) s"""require($nameOfTheDataObjWithinWriterCode.${field.name}.size >= ${readWithFixedSize.size}, s"$nameOfTheDataObjWithinWriterCode.${field.name} is annotated $readWithFixedSize, but passed list size is less")\n""" else ""
+    val paddedList = if (field.hasAnnot[withFixedSize]) s"""require($nameOfTheDataObjWithinCode.${field.name}.size >= ${readWithFixedSize.size}, s"$nameOfTheDataObjWithinCode.${field.name} is annotated $readWithFixedSize, but passed list size is less")\n""" else ""
     val trimList = if (field.hasAnnot[withFixedSize]) s".take(${readWithFixedSize.size})" else ""
 
-    s"$paddedList$nameOfTheDataObjWithinWriterCode.${field.name}$trimList.foreach { i => $code }"
+    s"$paddedList$nameOfTheDataObjWithinCode.${field.name}$trimList.foreach { i => $code }"
   }
 
   private def generate_writerCode_forPrimitive (
     upperClassType: ru.Type,
-    nameOfTheDataObjWithinWriterCode: String,
+    nameOfTheDataObjWithinCode: String,
     allFields: List[FieldDescr]
   ) (
     field: FieldDescr
@@ -631,12 +601,12 @@ class BuildByReflection
       (field.getInjectSize, getWithFixedSize_fromInjectField(field.getInjectSize.matchToOption(_.from))) match {
         case (Some(_1), Some(_2))               => s"${_2.size.toString}"
         case (Some(_1), None) if _1.from == "." => s"SizeOf.guesso[$upperClassType](data).toByte.to${field.tpe}"
-        case (Some(_1), None)                   => s"$nameOfTheDataObjWithinWriterCode.${_1.from}.size.to${field.tpe}"
+        case (Some(_1), None)                   => s"$nameOfTheDataObjWithinCode.${_1.from}.size.to${field.tpe}"
 
         case _                                  => throw new SerializerBuildException(s"should not happen. No injectSize annot found on field $field")
       }
     } else {
-      s"$nameOfTheDataObjWithinWriterCode.${field.name}"
+      s"$nameOfTheDataObjWithinCode.${field.name}"
     }
 
     generate_writerCall(field.tpe, valueToConvert)
@@ -644,7 +614,7 @@ class BuildByReflection
 
   private def generate_writerCode_forString (
     upperClassType: ru.Type,
-    nameOfTheDataObjWithinWriterCode: String,
+    nameOfTheDataObjWithinCode: String,
     allFields: List[FieldDescr]
   ) (
     field: FieldDescr
@@ -670,6 +640,6 @@ class BuildByReflection
       throw new SerializerBuildException(s"found string field '${field.name}' w/o fixed size annotation which is not the last one")
     }
 
-    generate_writerCall(ru.typeOf[String], s"$nameOfTheDataObjWithinWriterCode.${field.name}", hints = hints)
+    generate_writerCall(ru.typeOf[String], s"$nameOfTheDataObjWithinCode.${field.name}", hints = hints)
   }
 }

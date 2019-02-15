@@ -56,7 +56,7 @@ object SizeOf {
     implicit
     classTag: ClassTag[A],
     typeTag: ru.TypeTag[A]
-  ): DigitalLength = guesso[A](annots = if (GeneralRefl.isComplexType(typeTag.tpe)) RichClassMirror[A]().annotations else List.empty)
+  ): DigitalLength = guesso[A](annots = if (GeneralRefl.isComplex(typeTag.tpe)) RichClassMirror[A]().annotations else List.empty)
 
   def guesso[A] (
     annots: List[ru.Annotation] = List.empty
@@ -71,7 +71,7 @@ object SizeOf {
     annots: List[ru.Annotation]
   ): DigitalLength = {
     val isComplex = tpe match {
-      case t if GeneralRefl.isComplexType(t) => Some(guessoComplex(tpe = t, annots = annots))
+      case t if GeneralRefl.isComplex(t) => Some(guessoComplex(tpe = t, annots = annots))
 
       case _ => None
     }
@@ -111,7 +111,7 @@ object SizeOf {
     tpe: ru.Type,
     annots: List[ru.Annotation]
   ): DigitalLength = {
-    require(GeneralRefl.isComplexType(tpe), s"pass type is no complex. Got $tpe")
+    require(GeneralRefl.isComplex(tpe), s"pass type is no complex. Got $tpe")
 
     val bitAlignment = annots.getAlignBitfieldsBy.matchTo(_.bits, 32).bits
 

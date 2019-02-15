@@ -31,7 +31,7 @@ trait GeneralReflIncludes {
     /**
       * Return true if the passed type is complex
       */
-    def isComplexType: Boolean = GeneralRefl.isComplexType(in)
+    def isComplexType: Boolean = GeneralRefl.isComplex(in)
 
     /**
       * Returns true if the given squeezle is an enum.

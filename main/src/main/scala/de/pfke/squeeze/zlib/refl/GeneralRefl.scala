@@ -127,7 +127,7 @@ object GeneralRefl {
   /**
     * Return true if the passed type is complex
     */
-  def isComplexType (in: ru.Type): Boolean = !(isPrimitive(in) || isString(in) || isEnum(in) || isListType(in) || isArray(in))
+  def isComplex (in: ru.Type): Boolean = !(isPrimitive(in) || isString(in) || isEnum(in) || isListType(in) || isArray(in))
 
   /**
     * Returns true if the given squeezle is an enum.
