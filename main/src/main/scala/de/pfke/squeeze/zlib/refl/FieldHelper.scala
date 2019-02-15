@@ -103,10 +103,13 @@ object FieldHelper {
     if (tpe.typeSymbol.isAbstract) {
       List.empty
     } else {
-
-      val constructor = tpe.decl(ru.termNames.CONSTRUCTOR).asMethod
-      val args = constructor
+      val constructor = tpe
+        .decl(ru.termNames.CONSTRUCTOR)
+        .asTerm
+        .alternatives
+        .head
         .asMethod
+      val args = constructor
         .paramLists
         .head map { p =>
         FieldDescr(
