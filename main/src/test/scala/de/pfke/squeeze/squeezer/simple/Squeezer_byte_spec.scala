@@ -5,13 +5,13 @@ import java.nio.ByteOrder
 import akka.util.ByteString
 import de.pfke.squeeze.squeezer.BaseSqueezerSpec
 
-class SqueezerOnByteSpec
+class Squeezer_byte_spec
   extends BaseSqueezerSpec {
-  val pojo = 42.toByte
-  val beBinaryData = ByteString(
+  private val pojo = 42.toByte
+  private val beBinaryData = ByteString(
     0x2a
   )
-  val leBinaryData = ByteString(
+  private val leBinaryData = ByteString(
     0x2a
   )
 

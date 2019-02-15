@@ -5,7 +5,7 @@ import java.nio.ByteOrder
 import akka.util.ByteString
 import de.pfke.squeeze.squeezer.BaseSqueezerSpec
 
-class SqueezerOnShortSpec
+class Squeezer_short_spec
   extends BaseSqueezerSpec {
   private val pojo = 2142.toShort
   private val beBinaryData = ByteString(

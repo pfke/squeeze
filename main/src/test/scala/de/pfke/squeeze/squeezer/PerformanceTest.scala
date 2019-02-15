@@ -2,12 +2,13 @@ package de.pfke.squeeze.squeezer
 
 import java.nio.ByteOrder
 
+import akka.util.ByteString
 import de.pfke.squeeze.Squeezer
 
 object PerformanceTest {
-  def main (args: Array[String]) {
-    val squeezer = Squeezer()(ByteOrder.BIG_ENDIAN)
-
+//  def main (args: Array[String]) {
+//    val squeezer = Squeezer()(ByteOrder.BIG_ENDIAN)
+//
 //    val sw = new StopWatch()
 //
 //    sw.start()
@@ -19,10 +20,9 @@ object PerformanceTest {
 //
 //    println(sw.overview)
 //
-//
 //    val r1 = ByteString.newBuilder
 //    val r2 = r1.putLong(1)(ByteOrder.BIG_ENDIAN)
 //
 //    println()
-  }
+//  }
 }

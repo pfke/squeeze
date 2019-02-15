@@ -5,21 +5,21 @@ import java.nio.ByteOrder
 import akka.util.ByteString
 import de.pfke.squeeze.squeezer.BaseSqueezerSpec
 
-class SqueezerOnFloatSpec
+class Squeezer_double_spec
   extends BaseSqueezerSpec {
-  private val pojo = 425456213f
+  private val pojo = 42547891d
   private val beBinaryData = ByteString(
-    0x4d, 0xca, 0xdf, 0x93
+    0x41, 0x84, 0x49, 0xd5, 0x98, 0x00, 0x00, 0x00
   )
   private val leBinaryData = ByteString(
-    0x93, 0xdf, 0xca, 0x4d
+    0x00, 0x00, 0x00, 0x98, 0xd5, 0x49, 0x84, 0x41
   )
 
   "using w/ big endian byte order" when {
-    runSqueezerTests[Float](ByteOrder.BIG_ENDIAN, pojo, beBinaryData)
+    runSqueezerTests[Double](ByteOrder.BIG_ENDIAN, pojo, beBinaryData)
   }
 
   "using w/ little endian byte order" when {
-    runSqueezerTests[Float](ByteOrder.LITTLE_ENDIAN, pojo, leBinaryData)
+    runSqueezerTests[Double](ByteOrder.LITTLE_ENDIAN, pojo, leBinaryData)
   }
 }

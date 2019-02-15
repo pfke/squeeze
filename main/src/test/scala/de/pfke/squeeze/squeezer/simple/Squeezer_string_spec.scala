@@ -7,7 +7,7 @@ import akka.util.ByteString
 import de.pfke.squeeze.Squeezer
 import de.pfke.squeeze.squeezer.BaseSqueezerSpec
 
-class SqueezerOnStringSpec
+class Squeezer_string_spec
   extends BaseSqueezerSpec {
   private val pojo = "hallo du"
   private val beBinaryData = ByteString(
