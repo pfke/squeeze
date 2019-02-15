@@ -4,7 +4,7 @@ import java.nio.ByteOrder
 
 import akka.util.ByteString
 import de.pfke.squeeze.Squeezer
-import de.pfke.squeeze.annots.withFixedSize
+import de.pfke.squeeze.annots.fieldAnnots.withFixedSize
 import de.pfke.squeeze.squeezer.BaseSqueezerSpec
 import de.pfke.squeeze.squeezer.annots.withFixedSize.Squeezer_caseClass_w_annotWithFixedSize_onList_spec.caseClass_w_annotWithFixedSize_onList
 

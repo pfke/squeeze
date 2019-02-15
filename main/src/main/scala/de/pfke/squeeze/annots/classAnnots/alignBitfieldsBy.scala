@@ -1,4 +1,4 @@
-package de.pfke.squeeze.annots
+package de.pfke.squeeze.annots.classAnnots
 
 import scala.annotation.StaticAnnotation
 

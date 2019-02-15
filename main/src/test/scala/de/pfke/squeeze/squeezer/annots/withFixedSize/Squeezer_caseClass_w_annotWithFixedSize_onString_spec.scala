@@ -1,7 +1,7 @@
 package de.pfke.squeeze.squeezer.annots.withFixedSize
 
 import akka.util.ByteString
-import de.pfke.squeeze.annots.withFixedSize
+import de.pfke.squeeze.annots.fieldAnnots.withFixedSize
 import de.pfke.squeeze.squeezer.BaseSqueezerSpec
 import de.pfke.squeeze.squeezer.annots.withFixedSize.Squeezer_caseClass_w_annotWithFixedSize_onString_spec.caseClass_w_annotWithFixedLength_onString
 

@@ -3,7 +3,7 @@ package de.pfke.squeeze.squeezer.annots.withFixedSize
 import java.nio.ByteOrder
 
 import de.pfke.squeeze.Squeezer
-import de.pfke.squeeze.annots.withFixedSize
+import de.pfke.squeeze.annots.fieldAnnots.withFixedSize
 import de.pfke.squeeze.squeezer.BaseSqueezerSpec
 import de.pfke.squeeze.squeezer.annots.withFixedSize.Squeezer_caseClass_w_annotWithFixedSize_onInvalid_spec.caseClass_w_annotWithFixedSize_onInvalid
 

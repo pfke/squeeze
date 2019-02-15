@@ -1,6 +1,7 @@
 package de.pfke.squeeze.zlib.refl.fieldHelper.mocks
 
-import de.pfke.squeeze.annots.{alignBitfieldsBy, asBitfield}
+import de.pfke.squeeze.annots.classAnnots.alignBitfieldsBy
+import de.pfke.squeeze.annots.fieldAnnots.asBitfield
 
 @alignBitfieldsBy(bits = 32)
 case class BitfieldsSeparated(

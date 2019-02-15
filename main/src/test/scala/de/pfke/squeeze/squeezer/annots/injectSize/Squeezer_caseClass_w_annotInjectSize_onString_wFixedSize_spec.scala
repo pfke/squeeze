@@ -1,7 +1,7 @@
 package de.pfke.squeeze.squeezer.annots.injectSize
 
 import akka.util.ByteString
-import de.pfke.squeeze.annots.{injectSize, withFixedSize}
+import de.pfke.squeeze.annots.fieldAnnots.{injectSize, withFixedSize}
 import de.pfke.squeeze.squeezer.BaseSqueezerSpec
 import de.pfke.squeeze.squeezer.annots.injectSize.Squeezer_caseClass_w_annotInjectSize_onString_wFixedSize_spec.caseClass_w_annotInjectSize_onString_wFixedSize
 

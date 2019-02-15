@@ -1,7 +1,7 @@
 package de.pfke.squeeze.squeezer.annots.asBitfield
 
 import akka.util.ByteString
-import de.pfke.squeeze.annots.asBitfield
+import de.pfke.squeeze.annots.fieldAnnots.asBitfield
 import de.pfke.squeeze.squeezer.BaseSqueezerSpec
 import de.pfke.squeeze.squeezer.annots.asBitfield.Squeezer_caseClass_w_annotAsBitfield_woAlignBitfieldsBy_spec.{Squeezer_caseClass_w_annotAsBitfield_woAlignBitfieldsBy_aligned, Squeezer_caseClass_w_annotAsBitfield_woAlignBitfieldsBy_unaligned_hole, Squeezer_caseClass_w_annotAsBitfield_woAlignBitfieldsBy_unaligned_noHole}
 

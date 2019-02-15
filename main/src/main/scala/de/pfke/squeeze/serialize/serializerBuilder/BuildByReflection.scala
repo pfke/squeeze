@@ -5,7 +5,8 @@ import de.pfke.squeeze.zlib.data.collection.bitString.BitStringAlignment
 import de.pfke.squeeze.zlib.refl.ClassFinder.ClassInfo
 import de.pfke.squeeze.zlib.refl._
 import de.pfke.squeeze.annots._
-import de.pfke.squeeze.annots.classAnnots.{fromVersion, typeForIface}
+import de.pfke.squeeze.annots.classAnnots.{alignBitfieldsBy, fromVersion, typeForIface}
+import de.pfke.squeeze.annots.fieldAnnots.{injectSize, withFixedSize}
 import de.pfke.squeeze.zlib._
 import de.pfke.squeeze.zlib.FieldDescrIncludes._
 import de.pfke.squeeze.zlib.refl.{FieldDescr, FieldHelper, SizeOf}

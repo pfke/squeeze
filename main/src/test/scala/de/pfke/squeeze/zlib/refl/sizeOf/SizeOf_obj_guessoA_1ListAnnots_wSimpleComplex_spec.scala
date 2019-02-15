@@ -1,6 +1,6 @@
 package de.pfke.squeeze.zlib.refl.sizeOf
 
-import de.pfke.squeeze.annots.withFixedSize
+import de.pfke.squeeze.annots.fieldAnnots.withFixedSize
 import de.pfke.squeeze.zlib.data._
 import de.pfke.squeeze.zlib.refl.SizeOf
 import org.scalatest.{Matchers, WordSpec}

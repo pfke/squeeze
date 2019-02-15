@@ -1,6 +1,6 @@
 package de.pfke.squeeze.serialize.mocks.annots
 
-import de.pfke.squeeze.annots.injectSize
+import de.pfke.squeeze.annots.fieldAnnots.injectSize
 
 case class InjectLengthOnSubMock(
   _1stParam: SubInjectLengthOnSubMock

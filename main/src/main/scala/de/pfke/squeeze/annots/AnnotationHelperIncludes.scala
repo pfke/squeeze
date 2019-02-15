@@ -1,6 +1,7 @@
 package de.pfke.squeeze.annots
 
-import de.pfke.squeeze.annots.classAnnots.typeForIface
+import de.pfke.squeeze.annots.classAnnots.{alignBitfieldsBy, typeForIface}
+import de.pfke.squeeze.annots.fieldAnnots.{asBitfield, injectSize, injectType, withFixedSize}
 
 import scala.annotation.StaticAnnotation
 import scala.reflect.ClassTag

@@ -3,8 +3,8 @@ package de.pfke.squeeze.zlib
 import de.pfke.squeeze.zlib.data._
 import de.pfke.squeeze.zlib.refl.{FieldDescr, FieldHelper}
 import de.pfke.squeeze.zlib.refl.GeneralReflIncludes
-import de.pfke.squeeze.annots.{asBitfield, injectSize, injectType, withFixedSize}
 import de.pfke.squeeze.annots.AnnotationHelperIncludes._
+import de.pfke.squeeze.annots.fieldAnnots.{asBitfield, injectSize, injectType, withFixedSize}
 
 import scala.annotation.StaticAnnotation
 import scala.collection.mutable.ArrayBuffer

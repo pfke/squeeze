@@ -1,6 +1,6 @@
 package de.pfke.squeeze.serialize.mocks.asType
 
-import de.pfke.squeeze.annots.injectType
+import de.pfke.squeeze.annots.fieldAnnots.injectType
 
 case class NAHIHoldingClass(
   @injectType(fromField = "_iface") _ifaceType: Int,

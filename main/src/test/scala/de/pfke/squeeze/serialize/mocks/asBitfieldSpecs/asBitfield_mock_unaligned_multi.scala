@@ -1,6 +1,7 @@
 package de.pfke.squeeze.serialize.mocks.asBitfieldSpecs
 
-import de.pfke.squeeze.annots.{alignBitfieldsBy, asBitfield}
+import de.pfke.squeeze.annots.classAnnots.alignBitfieldsBy
+import de.pfke.squeeze.annots.fieldAnnots.asBitfield
 
 @alignBitfieldsBy(bits = 16)
 case class asBitfield_mock_unaligned_multi(

@@ -4,7 +4,8 @@ import java.nio.ByteOrder
 
 import akka.util.ByteString
 import de.pfke.squeeze.Squeezer
-import de.pfke.squeeze.annots.{alignBitfieldsBy, asBitfield}
+import de.pfke.squeeze.annots.classAnnots.alignBitfieldsBy
+import de.pfke.squeeze.annots.fieldAnnots.asBitfield
 import de.pfke.squeeze.serialize.serializerBuilder.BuildByReflection
 import de.pfke.squeeze.squeezer.BaseSqueezerSpec
 import de.pfke.squeeze.squeezer.annots.asBitfield.Squeezer_caseClass_w_annotAsBitfield_wAlignBitfieldsBy_spec.{Squeezer_caseClass_w_annotAsBitfield_wAlignBitfieldsBy_16bit, Squeezer_caseClass_w_annotAsBitfield_wAlignBitfieldsBy_32bit, Squeezer_caseClass_w_annotAsBitfield_wAlignBitfieldsBy_8bit, Squeezer_caseClass_w_annotAsBitfield_wAlignBitfieldsBy_invalidFieldAnnot}
