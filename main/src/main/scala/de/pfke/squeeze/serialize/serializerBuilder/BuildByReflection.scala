@@ -95,49 +95,35 @@ class BuildByReflection
   }
 
   /**
-    * Code generieren fuer Enums
+    * Make code for complex
     */
   private def makeCode_forComplex[A]()(
     implicit
     classTag: ClassTag[A],
     typeTag: ru.TypeTag[A]
   ): String = {
-    def makeInstanceCodeCodeLine(in: FieldDescr): String = s"${in.name} = ${in.name}"
-    def makeInstanceCodeForComplex(): String = {
-      val code = FieldHelper.getFields(typeTag.tpe)
-        .map(makeInstanceCodeCodeLine)
+    def make_readerCode_instantiation_paramLine(in: FieldDescr): String = s"${in.name} = ${in.name}"
+    def make_readerCode_instantiation_forComplex (
+      tpe: ru.Type
+    ): String = {
+      val code = FieldHelper.getFields(tpe)
+        .map(make_readerCode_instantiation_paramLine)
         .mkString(",\n")
 
-      s"""${typeTag.tpe}(
+      s"""$tpe(
          |  ${code.indent}
          |)""".stripMargin
     }
-    def makeInstanceCode(): String = {
-      typeTag.tpe match {
+    def make_readerCode_instantiation (
+      tpe: ru.Type
+    ): String = {
+      tpe match {
         case t if GeneralRefl.isAbstract(t) => "// no its a trait"
-
-        case _ => makeInstanceCodeForComplex()
+        case t                              => make_readerCode_instantiation_forComplex(t)
       }
     }
 
-    def makeIterCodeForComplex(): String = {
-      // code for iter
-      val groupedFields = FieldHelper.groupByBitfields(tpe = typeTag.tpe)
-      val funcCurried = make_readerCode_forComplex(upperType = typeTag.tpe, groupedSubFields = groupedFields) _
-
-      groupedFields
-        .map(funcCurried)
-        .mkString("\n")
-    }
-    def makeIterCode(): String = {
-      typeTag.tpe match {
-        case t if GeneralRefl.isAbstract(t) => read_buildIterCode_forTraits(tpe = t)
-        case _                              => makeIterCodeForComplex()
-      }
-    }
-
-    def makeWriteCode(): String = if (GeneralRefl.isAbstract(typeTag.tpe)) make_writerCode_forTrait(tpe = typeTag.tpe) else make_writerCode_forComplex(tpe = typeTag.tpe)
-
+    val tpe = typeTag.tpe
     s"""override def read(
        |  iter: AnythingIterator,
        |  hints: SerializerHint*
@@ -146,16 +132,16 @@ class BuildByReflection
        |  byteOrder: ByteOrder,
        |  serializerContainer: SerializerContainer,
        |  version: Option[PatchLevelVersion]
-       |): ${typeTag.tpe} = {
-       |  require(iter.len.toByte >= ${SizeOf.guesso[A]().toByte}, s"[${typeTag.tpe.toString}] given input has only $${iter.len} left, but we need ${SizeOf.guesso[A]().toByte.toInt} byte")
+       |): $tpe = {
+       |  require(iter.len.toByte >= ${SizeOf.guesso[A]().toByte}, s"[${tpe.toString}] given input has only $${iter.len} left, but we need ${SizeOf.guesso[A]().toByte} byte")
        |  // read iter
-       |  ${makeIterCode().indent}
+       |  ${make_readerCode(tpe).indent}
        |  // create object
-       |  ${makeInstanceCode().indent}
+       |  ${make_readerCode_instantiation(tpe).indent}
        |}
        |
        |override def write(
-       |  data: ${typeTag.tpe},
+       |  data: $tpe,
        |  hints: SerializerHint*
        |)(
        |  implicit
@@ -163,61 +149,8 @@ class BuildByReflection
        |  serializerContainer: SerializerContainer,
        |  version: Option[PatchLevelVersion]
        |): Unit = {
-       |  require(findOneHint[ByteStringBuilderHint](hints = hints).nonEmpty, s"[${typeTag.tpe.toString}] given input has no ByteStringBuilderHint")
-       |  ${makeWriteCode().indent}
-       |}""".stripMargin
-  }
-
-  /**
-    * Code generieren fuer Enums
-    */
-  private def genCodeForEnum[A]()(
-    implicit
-    classTag: ClassTag[A],
-    typeTag: ru.TypeTag[A]
-  ): String = {
-    def makeCaseLine(in: String) = s"case t if t == $in.id => $in"
-    def makeCases() = {
-      EnumRefl
-        .getChildrenNames()
-        .map(makeCaseLine)
-        .mkString("\n")
-    }
-
-    // Test auf Duplikate Ids: diese fallen sonst nur zur Compile-Zeit auf und geben dann keine eindeutige Fehlermeldung mehr.
-    EnumRefl
-      .hasDuplicateIds(typeTag.tpe) match {
-      case Some(x) => throw new SerializerBuildException(s"Error while generating a serializer for '${typeTag.tpe}'. Duplicate ids detected. (msg: '$x')")
-      case None => // do nothing
-    }
-
-    s"""override def read (
-       |  iter: AnythingIterator,
-       |  hints: SerializerHint*
-       |) (
-       |  implicit
-       |  byteOrder: ByteOrder,
-       |  serializerContainer: SerializerContainer,
-       |  version: Option[PatchLevelVersion]
-       |): ${typeTag.tpe} = {
-       |  serializerContainer
-       |    .read[Int](iter, hints = hints:_*) match {
-       |    ${makeCases().indentBy(4)}
-       |
-       |    case t => throwException(s"no enum type found with this value ($$t)")
-       |  }
-       |}
-       |
-       |override def write (
-       |  data: ${typeTag.tpe},
-       |  hints: SerializerHint*
-       |) (
-       |  implicit
-       |  byteOrder: ByteOrder,
-       |  serializerContainer: SerializerContainer,
-       |  version: Option[PatchLevelVersion]
-       |): Unit = {
-       |  serializerContainer.write[Int](data.id, hints = hints:_*)
+       |  require(findOneHint[ByteStringBuilderHint](hints = hints).nonEmpty, s"[${tpe.toString}] given input has no ByteStringBuilderHint")
+       |  ${make_writerCode(tpe).indent}
        |}""".stripMargin
   }
 
@@ -255,10 +188,96 @@ class BuildByReflection
        |override protected def defaultSize = None""".stripMargin
   }
 
+//  /**
+//    * Code generieren fuer Enums
+//    */
+//  private def genCodeForEnum[A]()(
+//    implicit
+//    classTag: ClassTag[A],
+//    typeTag: ru.TypeTag[A]
+//  ): String = {
+//    def makeCaseLine(in: String) = s"case t if t == $in.id => $in"
+//    def makeCases() = {
+//      EnumRefl
+//        .getChildrenNames()
+//        .map(makeCaseLine)
+//        .mkString("\n")
+//    }
+//
+//    // Test auf Duplikate Ids: diese fallen sonst nur zur Compile-Zeit auf und geben dann keine eindeutige Fehlermeldung mehr.
+//    EnumRefl
+//      .hasDuplicateIds(typeTag.tpe) match {
+//      case Some(x) => throw new SerializerBuildException(s"Error while generating a serializer for '${typeTag.tpe}'. Duplicate ids detected. (msg: '$x')")
+//      case None => // do nothing
+//    }
+//
+//    s"""override def read (
+//       |  iter: AnythingIterator,
+//       |  hints: SerializerHint*
+//       |) (
+//       |  implicit
+//       |  byteOrder: ByteOrder,
+//       |  serializerContainer: SerializerContainer,
+//       |  version: Option[PatchLevelVersion]
+//       |): ${typeTag.tpe} = {
+//       |  serializerContainer
+//       |    .read[Int](iter, hints = hints:_*) match {
+//       |    ${makeCases().indentBy(4)}
+//       |
+//       |    case t => throwException(s"no enum type found with this value ($$t)")
+//       |  }
+//       |}
+//       |
+//       |override def write (
+//       |  data: ${typeTag.tpe},
+//       |  hints: SerializerHint*
+//       |) (
+//       |  implicit
+//       |  byteOrder: ByteOrder,
+//       |  serializerContainer: SerializerContainer,
+//       |  version: Option[PatchLevelVersion]
+//       |): Unit = {
+//       |  serializerContainer.write[Int](data.id, hints = hints:_*)
+//       |}""".stripMargin
+//  }
+
+  private def make_readerCode (
+    tpe: ru.Type
+  ): String = {
+    tpe match {
+      case t if GeneralRefl.isAbstract(t) => make_readerCode_forTraits(tpe = t)
+      case t                              => make_readerCode_forComplex(t)
+    }
+  }
+
+  private def make_readerCode_forComplex (
+    tpe: ru.Type
+  ): String = {
+    // code for iter
+    val groupedFields = FieldHelper.groupByBitfields(tpe = tpe)
+    val funcCurried = make_readerCode_forComplex_groupedFields(upperType = tpe, groupedSubFields = groupedFields) _
+
+    groupedFields
+      .map(funcCurried)
+      .mkString("\n")
+  }
+
+  private def make_readerCode_forComplex_groupedFields(
+    upperType: ru.Type,
+    groupedSubFields: List[List[FieldDescr]]
+  )(
+    fields: List[FieldDescr]
+  ): String = {
+    fields match {
+      case t if t.hasAsBitfield => make_readerCode_forBitfields          (upperType = upperType, fields = fields, groupedSubFields = groupedSubFields)
+      case _                    => make_readerCode_forComplex_noBitfields(upperType = upperType, fields = fields)
+    }
+  }
+
   /**
     * build iter code for string type
     */
-  private def read_buildIterCode_forTraits(
+  private def make_readerCode_forTraits(
     tpe: ru.Type
   ): String = {
     //---
@@ -300,18 +319,6 @@ class BuildByReflection
        |
        |  case (t1, t2) => throw new SerializerRunException(s"trying to unsqueeze a trait ($tpe), but either iface type ($$t1) or version ($$t2) does not match")
        |}""".stripMargin
-  }
-
-  private def make_readerCode_forComplex(
-    upperType: ru.Type,
-    groupedSubFields: List[List[FieldDescr]]
-  )(
-    fields: List[FieldDescr]
-  ): String = {
-    fields match {
-      case t if t.hasAsBitfield => make_readerCode_forBitfields          (upperType = upperType, fields = fields, groupedSubFields = groupedSubFields)
-      case _                    => make_readerCode_forComplex_noBitfields(upperType = upperType, fields = fields)
-    }
   }
 
   private def make_readerCode_forBitfields(
@@ -410,6 +417,10 @@ class BuildByReflection
       }
       .mkString("\n")
   }
+
+  private def make_writerCode (
+    tpe: ru.Type
+  ): String = if (GeneralRefl.isAbstract(tpe)) make_writerCode_forTrait(tpe = tpe) else make_writerCode_forComplex(tpe = tpe)
 
   /**
     * Gen write code for complex type (and its fields)
