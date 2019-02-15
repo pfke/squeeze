@@ -29,6 +29,20 @@ class BuildByReflection
     classTag: ClassTag[A],
     typeTag: ru.TypeTag[A]
   ): BuiltSerializer[A] = {
+    def allFieldsAnnotatedWAlignBitfieldsBy_n_genErrorOutput(): String = {
+      FieldHelper
+        .getFields(tpe = typeTag.tpe)
+        .filter(_.annos.hasAlignBitfieldsBy)
+        .map(i => s"${i.name}: ${i.tpe}")
+        .mkString(", ")
+    }
+    require(
+      !FieldHelper
+        .getFields(tpe = typeTag.tpe)
+        .exists(_.annos.hasAlignBitfieldsBy),
+      s"These field(s) '${allFieldsAnnotatedWAlignBitfieldsBy_n_genErrorOutput()}' are annotated w/ ${alignBitfieldsBy.getClass} and this is vorbidden"
+    )
+
     val namespaceClassName_r = """(.*)\.(.*)$""".r
 
     val (ns, name) = typeTag.tpe.toString match {
@@ -177,10 +191,10 @@ class BuildByReflection
       case None => // do nothing
     }
 
-    s"""override def read(
+    s"""override def read (
        |  iter: AnythingIterator,
        |  hints: SerializerHint*
-       |)(
+       |) (
        |  implicit
        |  byteOrder: ByteOrder,
        |  serializerContainer: SerializerContainer,
@@ -194,10 +208,10 @@ class BuildByReflection
        |  }
        |}
        |
-       |override def write(
+       |override def write (
        |  data: ${typeTag.tpe},
        |  hints: SerializerHint*
-       |)(
+       |) (
        |  implicit
        |  byteOrder: ByteOrder,
        |  serializerContainer: SerializerContainer,
