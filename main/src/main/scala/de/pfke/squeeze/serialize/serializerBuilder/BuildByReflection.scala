@@ -10,6 +10,7 @@ import de.pfke.squeeze.annots.fieldAnnots.{injectSize, withFixedSize}
 import de.pfke.squeeze.zlib._
 import de.pfke.squeeze.zlib.FieldDescrIncludes._
 import de.pfke.squeeze.zlib.refl.{FieldDescr, FieldHelper, SizeOf}
+import enumeratum.values._
 
 import scala.reflect.ClassTag
 import scala.reflect.runtime.{universe => ru}
@@ -20,6 +21,8 @@ object BuildByReflection {
 
 class BuildByReflection
   extends SerializerBuilder {
+  implicit val classLoader: ClassLoader = getClass.getClassLoader
+
   /**
     * Build the serializer
     */
@@ -87,9 +90,10 @@ class BuildByReflection
     typeTag: ru.TypeTag[A]
   ): String = {
     typeTag.tpe match {
-      case t if GeneralRefl.isComplex(t)   => makeCode_forComplex()
-      case t if GeneralRefl.isPrimitive(t) => makeCode_forPrimitives()
-      case t if GeneralRefl.isString(t)    => makeCode_forString()
+      case t if GeneralRefl.isComplex(t)    => makeCode_forComplex()
+      case t if GeneralRefl.isEnumeratum(t) => makeCode_forEnumeratum()
+      case t if GeneralRefl.isPrimitive(t)  => makeCode_forPrimitives()
+      case t if GeneralRefl.isString(t)     => makeCode_forString()
 
       case _ => throw new SerializerBuildException(s"you want me to generate reader and writer code for $typeTag, but this type is neither complex, a primitove nor a string")
     }
@@ -156,6 +160,99 @@ class BuildByReflection
   }
 
   /**
+    * Make code for enumeratum
+    */
+  private def makeCode_forEnumeratum[A]()(
+    implicit
+    classTag: ClassTag[A],
+    typeTag: ru.TypeTag[A]
+  ): String = {
+    val tpe = typeTag.tpe
+    lazy val tpeToGen = tpe match {
+      case t if t <:< ru.typeOf[IntEnumEntry] => ru.typeOf[Int]
+      case t if t <:< ru.typeOf[LongEnumEntry] => ru.typeOf[Long]
+      case t if t <:< ru.typeOf[ShortEnumEntry] => ru.typeOf[Short]
+      case t if t <:< ru.typeOf[StringEnumEntry] => ru.typeOf[String]
+      case t if t <:< ru.typeOf[ByteEnumEntry] => ru.typeOf[Byte]
+      case t if t <:< ru.typeOf[CharEnumEntry] => ru.typeOf[Char]
+
+      case t => throw new SerializerBuildException(s"$t is no a supported enueratum type. Please use Byte, Char, Short, Long, Int or String.")
+    }
+
+    def make_readerCode_forEnumeratum (
+      tpe: ru.Type
+    ): String = {
+      def toRichClass(in: ClassInfo[_]): RichClassMirror = RichClassMirror(in.classSymbol)
+
+      // find all classes derived from
+      val allSubClasses = ClassFinder
+        .findAllClassesDerivedFrom(tpe, packageName = "")
+        .filterNot(_.classSymbol.isAbstract)
+
+      case class ObjectCtors(rcm: RichClassMirror, ctors: List[RichMethodRefl])
+      val mappedWCtor = allSubClasses
+        .map(toRichClass)
+        .map(i => ObjectCtors(i, i.ctorMethodRefls))
+      require(!mappedWCtor.exists(_.ctors.isEmpty), s"At least one enumeratum type (${typeTag.tpe}) has no ctor: '${mappedWCtor.filter(_.ctors.isEmpty).map(_.rcm.classMirror.symbol.typeSignature)}'")
+
+      case class ObjectCtor(rcm: RichClassMirror, ctor: RichMethodRefl)
+      case class InstancedObject(rcm: RichClassMirror, obj: ValueEnumEntry[_])
+      case class InstanceValue(rcm: RichClassMirror, value: Any)
+      val mappedWValue = mappedWCtor
+        .map(i => ObjectCtor(i.rcm, i.ctors.head))
+        .map(i => InstancedObject(i.rcm, i.ctor.apply[ValueEnumEntry[_]]()))
+        .map(i => InstanceValue(i.rcm, i.obj.value))
+
+      if (tpe <:< ru.typeOf[CharEnumEntry]) {
+        s"""serializerContainer.read[$tpeToGen](iter, hints = hints:_*).toLong match {
+           |  ${mappedWValue.map(i => s"case ${i.value.asInstanceOf[Char].toLong} => ${i.rcm.classMirror.symbol.fullName}()").mkString("\n").indent}
+           |
+           |  case t => throw new SerializerRunException(s"Given value $$t does not match to a defined enum of class '$tpe'")
+           |}
+           """.stripMargin
+      } else {
+        s"""serializerContainer.read[$tpeToGen](iter, hints = hints:_*) match {
+           |  ${mappedWValue.map(i => s"case ${i.value} => ${i.rcm.classMirror.symbol.fullName}()").mkString("\n").indent}
+           |
+           |  case t => throw new SerializerRunException(s"Given value $$t does not match to a defined enum of class '$tpe'")
+           |}
+           """.stripMargin
+      }
+    }
+
+    def make_writerCode_forEnumeratum (
+      tpe: ru.Type
+    ): String = generate_writerCall(tpeToGen, s"data.value")
+
+    s"""override def read(
+       |  iter: AnythingIterator,
+       |  hints: SerializerHint*
+       |)(
+       |  implicit
+       |  byteOrder: ByteOrder,
+       |  serializerContainer: SerializerContainer,
+       |  version: Option[PatchLevelVersion]
+       |): $tpe = {
+       |  require(iter.len.toByte >= ${SizeOf.guesso[A]().toByte}, s"[${tpe.toString}] given input has only $${iter.len} left, but we need ${SizeOf.guesso[A]().toByte} byte")
+       |  // read iter
+       |  ${make_readerCode_forEnumeratum(tpe).indent}
+       |}
+       |
+       |override def write(
+       |  data: $tpe,
+       |  hints: SerializerHint*
+       |)(
+       |  implicit
+       |  byteOrder: ByteOrder,
+       |  serializerContainer: SerializerContainer,
+       |  version: Option[PatchLevelVersion]
+       |): Unit = {
+       |  require(findOneHint[ByteStringBuilderHint](hints = hints).nonEmpty, s"[${tpe.toString}] given input has no ByteStringBuilderHint")
+       |  ${make_writerCode_forEnumeratum(tpe).indent}
+       |}""".stripMargin
+  }
+
+  /**
     * Code generieren, für primitive Typen
     */
   private val writerOpCodeMap = Map(
@@ -175,7 +272,7 @@ class BuildByReflection
     val writerOpCode = writerOpCodeMap.get(GeneralRefl.unifyType(typeTag.tpe)).matchToException(_.toString, new SerializerBuildException(s"method called with complex type: '${typeTag.tpe}'"))
 
     s"""override protected def byteStringWriteOp(implicit byteOrder: ByteOrder) = Some({ (bsb,value) => bsb.put$writerOpCode })
-       |override protected def defaultSize = Some(ByteLength(${SizeOf.guesso[A]().toByte.toInt}))""".stripMargin
+       |override protected def defaultSize = Some(ByteLength(${SizeOf.guesso[A]().toByte}))""".stripMargin
   }
 
   /**
@@ -282,8 +379,6 @@ class BuildByReflection
     tpe: ru.Type
   ): String = {
     //---
-    implicit val classLoader: ClassLoader = ClassFinder.defaultClassLoader
-
     case class FoundAnnotsAsOpt(ifaceOpt: Option[typeForIface], versionOpt: Option[fromVersion])
     case class FoundAnnots(iface: typeForIface, versionOpt: Option[fromVersion])
     case class TypeToFoundAnnotsOpts(clazz: ClassInfo[_], foundAnnots: FoundAnnotsAsOpt)
@@ -393,7 +488,7 @@ class BuildByReflection
       s"serializerContainer.read[$thisTpe](iter$hints)"
     }
 
-    def makeList(
+    def makeLists(
       field: FieldDescr
     ): String = {
       val code = field.tpe.typeArgs.headOption.matchToException( i => makeLine(thisTpe = i), new SerializerBuildException(s"unknown sub type of this list: ${field.tpe}"))
@@ -412,8 +507,8 @@ class BuildByReflection
     // code for iter
     fields
       .map {
-        case t if t.isArray => s"val ${t.name} = ${makeList(t)}"
-        case t if t.isListType => s"val ${t.name} = ${makeList(t)}"
+        case t if t.isArray => s"val ${t.name} = ${makeLists(t)}"
+        case t if t.isListType => s"val ${t.name} = ${makeLists(t)}"
         case t => s"val ${t.name} = ${makeLine(thisTpe = t.tpe, field = t)}"
       }
       .mkString("\n")
@@ -576,7 +671,7 @@ class BuildByReflection
   ) (
     field: FieldDescr
   ): String = {
-    require(field.isArray || field.isListType, s"this func is only for primitives ($field)")
+    require(field.isArray || field.isListType, s"this func is only for array/lists ($field)")
 
     def readWithFixedSize: withFixedSize = field.getWithFixedSize.matchToException(i => i, new SerializerBuildException(s"$field ${withFixedSize.getClass} expected"))
 

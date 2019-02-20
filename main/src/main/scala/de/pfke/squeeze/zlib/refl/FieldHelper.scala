@@ -70,7 +70,7 @@ object FieldHelper {
       .matchTo(_.bits, BitStringAlignment.bitWidth(BitStringAlignment._32Bit))
     val allFields = fields
 
-    def bothHasOrBothHasnt(a: FieldDescr, b: FieldDescr): Boolean = !(a.annos.hasAsBitfield ^ b.annos.hasAsBitfield)
+    def bothHasOrBothHasnt(a: Option[FieldDescr], b: FieldDescr): Boolean = !(a.matchTo(_.annos, List.empty).hasAsBitfield ^ b.annos.hasAsBitfield)
     def countBits(in: List[FieldDescr]): Int = in.foldLeft(0)((sum,iter) => sum + getBits(iter))
     def getBits(in: FieldDescr): Int = in.annos.getAsBitfield.matchTo(_.bits, default = 0)
     def groupBy(
@@ -82,13 +82,13 @@ object FieldHelper {
         case Nil => resultList ++ List(currentList)
 
         case head :: tail if (countBits(currentList) + getBits(head)) > bitsToAlign => groupBy(resultList ++ List(currentList), List(head), tail)
-        case head :: tail if bothHasOrBothHasnt(currentList.last, head)             => groupBy(resultList, currentList ++ List(head), tail)
+        case head :: tail if bothHasOrBothHasnt(currentList.lastOption, head)       => groupBy(resultList, currentList ++ List(head), tail)
 
         case head :: tail => groupBy(resultList ++ List(currentList), List(head), tail)
       }
     }
 
-    groupBy(List.empty, List(allFields.head), allFields.drop(1))
+    groupBy(List.empty, List.empty, allFields)
   }
 
   /**

@@ -41,6 +41,13 @@ trait GeneralReflIncludes {
     def isEnum: Boolean = GeneralRefl.isEnum(in)
 
     /**
+      * Returns true if the given squeezle is an enum.
+      *
+      * @return true or false
+      */
+    def isEnumeratum: Boolean = GeneralRefl.isEnumeratum(in)
+
+    /**
       * Return true if the passed type is a list
       */
     def isListType: Boolean = GeneralRefl.isListType(in)

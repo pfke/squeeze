@@ -24,7 +24,7 @@ object RichClassMirror {
     */
   def apply (
     clazz: Class[_]
-  ): RichClassMirror = apply(richRuntimeMirror = RichRuntimeMirror(clazz), className = clazz.getCanonicalName)
+  ): RichClassMirror = apply(richRuntimeMirror = RichRuntimeMirror(clazz), className = clazz.getName)
 
   /**
     * Create instance.
@@ -41,7 +41,7 @@ object RichClassMirror {
     */
   def apply (
     value: Any
-  ): RichClassMirror = apply(RichRuntimeMirror(value.getClass), value.getClass.getCanonicalName)
+  ): RichClassMirror = apply(RichRuntimeMirror(value.getClass), value.getClass.getName)
 
   /**
     * Create instance.

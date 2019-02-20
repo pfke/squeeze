@@ -3,6 +3,7 @@ package de.pfke.squeeze.zlib.refl
 import de.pfke.squeeze.annots._
 import de.pfke.squeeze.zlib.data._
 import de.pfke.squeeze.zlib.data.length.digital.{BitLength, ByteLength, DigitalLength}
+import enumeratum.values._
 
 import scala.reflect.ClassTag
 import scala.reflect.runtime.{universe => ru}
@@ -35,6 +36,14 @@ object SizeOf {
     ru.typeOf[Float] -> 4.byte,
     ru.typeOf[Double] -> 8.byte,
     ru.typeOf[Char] -> 2.byte,
+  )
+
+  private val _enumeratumToSize = Map[ru.Type, DigitalLength](
+    ru.typeOf[ByteEnumEntry] -> 1.byte,
+    ru.typeOf[CharEnumEntry] -> 2.byte,
+    ru.typeOf[ShortEnumEntry] -> 2.byte,
+    ru.typeOf[IntEnumEntry] -> 4.byte,
+    ru.typeOf[LongEnumEntry] -> 8.byte,
   )
 
   def guesso[A] (
@@ -76,10 +85,11 @@ object SizeOf {
       case _ => None
     }
     val isBitfield = annots.getAsBitfield.matchToOption(_.bits bit)
-    // entweder STirng oder Liste
+    // entweder String oder Liste
     val isWithFixedSize = if (GeneralRefl.isString(tpe)) annots.getWithFixedSize.matchToOption(_.size byte) else annots.getWithFixedSize.matchToOption(i => tpe.typeArgs.foldLeft(DigitalLength.zero)((sum,i) => sum + guesso(tpe = i, List.empty)) * i.size)
     val isArray = if (GeneralRefl.isArray(tpe)) Some(tpe.typeArgs.foldLeft(DigitalLength.zero)((sum,i) => sum + SizeOf.guesso(i, annots = List.empty))) else None
     val isList = if (GeneralRefl.isListType(tpe)) Some(tpe.typeArgs.foldLeft(DigitalLength.zero)((sum,i) => sum + SizeOf.guesso(i, annots = List.empty))) else None
+    val isEnumeratum = if (GeneralRefl.isEnumeratum(tpe)) _enumeratumToSize.find(i => tpe <:< i._1).matchToOption(_._2) else None
 
     isComplex
       .orElse(isBitfield)
@@ -87,6 +97,7 @@ object SizeOf {
       .orElse(isArray)
       .orElse(isList)
       .orElse(_typeToSize.get(PrimitiveRefl.toScalaType(tpe)))
+      .orElse(isEnumeratum)
       .orElse(Some(0 byte))
       .get
   }

@@ -209,7 +209,8 @@ class RichMethodRefl (
     typeTag: ru.TypeTag[A]
   ): ru.MethodMirror = {
     require(methodSymbol.isConstructor, s"you wanted me to call a ctor, but the given method symbol is not a ctor ($methodSymbol)")
-    require(typeTag.tpe <:< methodSymbol.returnType, s"passed generic type ($typeTag) is no assignable to ($methodSymbol)")
+    require(methodSymbol.returnType <:< typeTag.tpe, s"passed generic type ($typeTag) is no assignable to ($methodSymbol)")
+//    require(typeTag.tpe <:< methodSymbol.returnType, s"passed generic type ($typeTag) is no assignable to ($methodSymbol)")
 
     val classSymbol = _richRuntimeMirror.getClassSymbol(methodSymbol.returnType.typeSymbol.fullName)
     val classMirror = _richRuntimeMirror.runtimeMirror.reflectClass(classSymbol)

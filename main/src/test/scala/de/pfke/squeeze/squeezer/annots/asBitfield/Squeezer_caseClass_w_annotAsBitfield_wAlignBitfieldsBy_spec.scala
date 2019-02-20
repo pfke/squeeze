@@ -156,7 +156,7 @@ class Squeezer_caseClass_w_annotAsBitfield_wAlignBitfieldsBy_spec
     leBinaryData_32bit
   )
 
-  val tto = BuildByReflection().build[Squeezer_caseClass_w_annotAsBitfield_wAlignBitfieldsBy_16bit]()
+  val tto = BuildByReflection().build[Squeezer_caseClass_w_annotAsBitfield_wAlignBitfieldsBy_8bit]()
   println()
 
   runBE_n_LE[Squeezer_caseClass_w_annotAsBitfield_wAlignBitfieldsBy_16bit](

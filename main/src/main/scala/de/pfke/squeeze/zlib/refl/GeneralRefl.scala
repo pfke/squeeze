@@ -4,6 +4,8 @@ import java.io.{File, IOException}
 import java.net.URL
 import java.util.UUID
 
+import enumeratum.values.{ValueEnum, ValueEnumEntry}
+
 import scala.collection.JavaConverters
 import scala.reflect.ClassTag
 import scala.reflect.runtime.{universe => ru}
@@ -127,7 +129,7 @@ object GeneralRefl {
   /**
     * Return true if the passed type is complex
     */
-  def isComplex (in: ru.Type): Boolean = !(isPrimitive(in) || isString(in) || isEnum(in) || isListType(in) || isArray(in))
+  def isComplex (in: ru.Type): Boolean = !(isPrimitive(in) || isString(in) || isEnum(in) || isListType(in) || isArray(in) || isEnumeratum(in))
 
   /**
     * Returns true if the given squeezle is an enum.
@@ -139,6 +141,13 @@ object GeneralRefl {
       .baseClasses
       .exists(_.fullName == classOf[Enumeration#Value].getCanonicalName)
   }
+
+  /**
+    * Returns true if the given squeezle is an enumeratum.
+    *
+    * @return true or false
+    */
+  def isEnumeratum (in: ru.Type): Boolean = in <:< ru.typeOf[ValueEnumEntry[_]]
 
   /**
     * Return true if the passed type is a list
