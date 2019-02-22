@@ -119,9 +119,6 @@ class SizeOf_obj_guessoA_1ListAnnots_wPrimitives_spec
       "4Bits" in { SizeOf.guesso[Boolean](getField("_4Bits")) should be (4 bit) }
       "8Bits" in { SizeOf.guesso[Boolean](getField("_8Bits")) should be (8 bit) }
       "9Bits" in { SizeOf.guesso[Boolean](getField("_9Bits")) should be (9 bit) }
-      "1Byte" in { SizeOf.guesso[Boolean](getField("_1Byte")) should be (1 byte) }
-      "4Byte" in { SizeOf.guesso[Boolean](getField("_4Byte")) should be (4 byte) }
-      "5Byte" in { SizeOf.guesso[Boolean](getField("_5Byte")) should be (5 byte) }
     }
 
     "java.lang.Boolean" should {
@@ -131,9 +128,6 @@ class SizeOf_obj_guessoA_1ListAnnots_wPrimitives_spec
       "4Bits" in { SizeOf.guesso[java.lang.Boolean](getField("_4Bits")) should be (4 bit) }
       "8Bits" in { SizeOf.guesso[java.lang.Boolean](getField("_8Bits")) should be (8 bit) }
       "9Bits" in { SizeOf.guesso[java.lang.Boolean](getField("_9Bits")) should be (9 bit) }
-      "1Byte" in { SizeOf.guesso[java.lang.Boolean](getField("_1Byte")) should be (1 byte) }
-      "4Byte" in { SizeOf.guesso[java.lang.Boolean](getField("_4Byte")) should be (4 byte) }
-      "5Byte" in { SizeOf.guesso[java.lang.Boolean](getField("_5Byte")) should be (5 byte) }
     }
 
     "Byte" should {
@@ -143,9 +137,6 @@ class SizeOf_obj_guessoA_1ListAnnots_wPrimitives_spec
       "4Bits" in { SizeOf.guesso[Byte](getField("_4Bits")) should be (4 bit) }
       "8Bits" in { SizeOf.guesso[Byte](getField("_8Bits")) should be (8 bit) }
       "9Bits" in { SizeOf.guesso[Byte](getField("_9Bits")) should be (9 bit) }
-      "1Byte" in { SizeOf.guesso[Byte](getField("_1Byte")) should be (1 byte) }
-      "4Byte" in { SizeOf.guesso[Byte](getField("_4Byte")) should be (4 byte) }
-      "5Byte" in { SizeOf.guesso[Byte](getField("_5Byte")) should be (5 byte) }
     }
 
     "java.lang.Byte" should {
@@ -155,9 +146,6 @@ class SizeOf_obj_guessoA_1ListAnnots_wPrimitives_spec
       "4Bits" in { SizeOf.guesso[java.lang.Byte](getField("_4Bits")) should be (4 bit) }
       "8Bits" in { SizeOf.guesso[java.lang.Byte](getField("_8Bits")) should be (8 bit) }
       "9Bits" in { SizeOf.guesso[java.lang.Byte](getField("_9Bits")) should be (9 bit) }
-      "1Byte" in { SizeOf.guesso[java.lang.Byte](getField("_1Byte")) should be (1 byte) }
-      "4Byte" in { SizeOf.guesso[java.lang.Byte](getField("_4Byte")) should be (4 byte) }
-      "5Byte" in { SizeOf.guesso[java.lang.Byte](getField("_5Byte")) should be (5 byte) }
     }
 
     "Short" should {
@@ -167,9 +155,6 @@ class SizeOf_obj_guessoA_1ListAnnots_wPrimitives_spec
       "4Bits" in { SizeOf.guesso[Short](getField("_4Bits")) should be (4 bit) }
       "8Bits" in { SizeOf.guesso[Short](getField("_8Bits")) should be (8 bit) }
       "9Bits" in { SizeOf.guesso[Short](getField("_9Bits")) should be (9 bit) }
-      "1Byte" in { SizeOf.guesso[Short](getField("_1Byte")) should be (1 byte) }
-      "4Byte" in { SizeOf.guesso[Short](getField("_4Byte")) should be (4 byte) }
-      "5Byte" in { SizeOf.guesso[Short](getField("_5Byte")) should be (5 byte) }
     }
 
     "java.lang.Short" should {
@@ -179,9 +164,6 @@ class SizeOf_obj_guessoA_1ListAnnots_wPrimitives_spec
       "4Bits" in { SizeOf.guesso[java.lang.Short](getField("_4Bits")) should be (4 bit) }
       "8Bits" in { SizeOf.guesso[java.lang.Short](getField("_8Bits")) should be (8 bit) }
       "9Bits" in { SizeOf.guesso[java.lang.Short](getField("_9Bits")) should be (9 bit) }
-      "1Byte" in { SizeOf.guesso[java.lang.Short](getField("_1Byte")) should be (1 byte) }
-      "4Byte" in { SizeOf.guesso[java.lang.Short](getField("_4Byte")) should be (4 byte) }
-      "5Byte" in { SizeOf.guesso[java.lang.Short](getField("_5Byte")) should be (5 byte) }
     }
 
     "Int" should {
@@ -191,9 +173,6 @@ class SizeOf_obj_guessoA_1ListAnnots_wPrimitives_spec
       "4Bits" in { SizeOf.guesso[Int](getField("_4Bits")) should be (4 bit) }
       "8Bits" in { SizeOf.guesso[Int](getField("_8Bits")) should be (8 bit) }
       "9Bits" in { SizeOf.guesso[Int](getField("_9Bits")) should be (9 bit) }
-      "1Byte" in { SizeOf.guesso[Int](getField("_1Byte")) should be (1 byte) }
-      "4Byte" in { SizeOf.guesso[Int](getField("_4Byte")) should be (4 byte) }
-      "5Byte" in { SizeOf.guesso[Int](getField("_5Byte")) should be (5 byte) }
     }
 
     "Integer" should {
@@ -203,9 +182,6 @@ class SizeOf_obj_guessoA_1ListAnnots_wPrimitives_spec
       "4Bits" in { SizeOf.guesso[Integer](getField("_4Bits")) should be (4 bit) }
       "8Bits" in { SizeOf.guesso[Integer](getField("_8Bits")) should be (8 bit) }
       "9Bits" in { SizeOf.guesso[Integer](getField("_9Bits")) should be (9 bit) }
-      "1Byte" in { SizeOf.guesso[Integer](getField("_1Byte")) should be (1 byte) }
-      "4Byte" in { SizeOf.guesso[Integer](getField("_4Byte")) should be (4 byte) }
-      "5Byte" in { SizeOf.guesso[Integer](getField("_5Byte")) should be (5 byte) }
     }
 
     "Long" should {
@@ -215,10 +191,6 @@ class SizeOf_obj_guessoA_1ListAnnots_wPrimitives_spec
       "4Bits" in { SizeOf.guesso[Long](getField("_4Bits")) should be (4 bit) }
       "8Bits" in { SizeOf.guesso[Long](getField("_8Bits")) should be (8 bit) }
       "9Bits" in { SizeOf.guesso[Long](getField("_9Bits")) should be (9 bit) }
-      "1Byte" in { SizeOf.guesso[Long](getField("_1Byte")) should be (1 byte) }
-      "4Byte" in { SizeOf.guesso[Long](getField("_4Byte")) should be (4 byte) }
-      "5Byte" in { SizeOf.guesso[Long](getField("_5Byte")) should be (5 byte) }
-      "17Byte" in { SizeOf.guesso[Long](getField("_17Byte")) should be (17 byte) }
     }
 
     "java.lang.Long" should {
@@ -228,10 +200,6 @@ class SizeOf_obj_guessoA_1ListAnnots_wPrimitives_spec
       "4Bits" in { SizeOf.guesso[java.lang.Long](getField("_4Bits")) should be (4 bit) }
       "8Bits" in { SizeOf.guesso[java.lang.Long](getField("_8Bits")) should be (8 bit) }
       "9Bits" in { SizeOf.guesso[java.lang.Long](getField("_9Bits")) should be (9 bit) }
-      "1Byte" in { SizeOf.guesso[java.lang.Long](getField("_1Byte")) should be (1 byte) }
-      "4Byte" in { SizeOf.guesso[java.lang.Long](getField("_4Byte")) should be (4 byte) }
-      "5Byte" in { SizeOf.guesso[java.lang.Long](getField("_5Byte")) should be (5 byte) }
-      "17Byte" in { SizeOf.guesso[java.lang.Long](getField("_17Byte")) should be (17 byte) }
     }
 
     "Float" should {
@@ -241,10 +209,6 @@ class SizeOf_obj_guessoA_1ListAnnots_wPrimitives_spec
       "4Bits" in { SizeOf.guesso[Float](getField("_4Bits")) should be (4 bit) }
       "8Bits" in { SizeOf.guesso[Float](getField("_8Bits")) should be (8 bit) }
       "9Bits" in { SizeOf.guesso[Float](getField("_9Bits")) should be (9 bit) }
-      "1Byte" in { SizeOf.guesso[Float](getField("_1Byte")) should be (1 byte) }
-      "4Byte" in { SizeOf.guesso[Float](getField("_4Byte")) should be (4 byte) }
-      "5Byte" in { SizeOf.guesso[Float](getField("_5Byte")) should be (5 byte) }
-      "17Byte" in { SizeOf.guesso[Float](getField("_17Byte")) should be (17 byte) }
     }
 
     "java.lang.Float" should {
@@ -254,10 +218,6 @@ class SizeOf_obj_guessoA_1ListAnnots_wPrimitives_spec
       "4Bits" in { SizeOf.guesso[java.lang.Float](getField("_4Bits")) should be (4 bit) }
       "8Bits" in { SizeOf.guesso[java.lang.Float](getField("_8Bits")) should be (8 bit) }
       "9Bits" in { SizeOf.guesso[java.lang.Float](getField("_9Bits")) should be (9 bit) }
-      "1Byte" in { SizeOf.guesso[java.lang.Float](getField("_1Byte")) should be (1 byte) }
-      "4Byte" in { SizeOf.guesso[java.lang.Float](getField("_4Byte")) should be (4 byte) }
-      "5Byte" in { SizeOf.guesso[java.lang.Float](getField("_5Byte")) should be (5 byte) }
-      "17Byte" in { SizeOf.guesso[java.lang.Float](getField("_17Byte")) should be (17 byte) }
     }
 
     "Double" should {
@@ -267,10 +227,6 @@ class SizeOf_obj_guessoA_1ListAnnots_wPrimitives_spec
       "4Bits" in { SizeOf.guesso[Double](getField("_4Bits")) should be (4 bit) }
       "8Bits" in { SizeOf.guesso[Double](getField("_8Bits")) should be (8 bit) }
       "9Bits" in { SizeOf.guesso[Double](getField("_9Bits")) should be (9 bit) }
-      "1Byte" in { SizeOf.guesso[Double](getField("_1Byte")) should be (1 byte) }
-      "4Byte" in { SizeOf.guesso[Double](getField("_4Byte")) should be (4 byte) }
-      "5Byte" in { SizeOf.guesso[Double](getField("_5Byte")) should be (5 byte) }
-      "17Byte" in { SizeOf.guesso[Double](getField("_17Byte")) should be (17 byte) }
     }
 
     "java.lang.Double" should {
@@ -280,10 +236,6 @@ class SizeOf_obj_guessoA_1ListAnnots_wPrimitives_spec
       "4Bits" in { SizeOf.guesso[java.lang.Double](getField("_4Bits")) should be (4 bit) }
       "8Bits" in { SizeOf.guesso[java.lang.Double](getField("_8Bits")) should be (8 bit) }
       "9Bits" in { SizeOf.guesso[java.lang.Double](getField("_9Bits")) should be (9 bit) }
-      "1Byte" in { SizeOf.guesso[java.lang.Double](getField("_1Byte")) should be (1 byte) }
-      "4Byte" in { SizeOf.guesso[java.lang.Double](getField("_4Byte")) should be (4 byte) }
-      "5Byte" in { SizeOf.guesso[java.lang.Double](getField("_5Byte")) should be (5 byte) }
-      "17Byte" in { SizeOf.guesso[java.lang.Double](getField("_17Byte")) should be (17 byte) }
     }
 
     "Char" should {
@@ -293,9 +245,6 @@ class SizeOf_obj_guessoA_1ListAnnots_wPrimitives_spec
       "4Bits" in { SizeOf.guesso[Char](getField("_4Bits")) should be (4 bit) }
       "8Bits" in { SizeOf.guesso[Char](getField("_8Bits")) should be (8 bit) }
       "9Bits" in { SizeOf.guesso[Char](getField("_9Bits")) should be (9 bit) }
-      "1Byte" in { SizeOf.guesso[Char](getField("_1Byte")) should be (1 byte) }
-      "4Byte" in { SizeOf.guesso[Char](getField("_4Byte")) should be (4 byte) }
-      "5Byte" in { SizeOf.guesso[Char](getField("_5Byte")) should be (5 byte) }
     }
 
     "java.lang.Char" should {
@@ -305,9 +254,6 @@ class SizeOf_obj_guessoA_1ListAnnots_wPrimitives_spec
       "4Bits" in { SizeOf.guesso[java.lang.Character](getField("_4Bits")) should be (4 bit) }
       "8Bits" in { SizeOf.guesso[java.lang.Character](getField("_8Bits")) should be (8 bit) }
       "9Bits" in { SizeOf.guesso[java.lang.Character](getField("_9Bits")) should be (9 bit) }
-      "1Byte" in { SizeOf.guesso[java.lang.Character](getField("_1Byte")) should be (1 byte) }
-      "4Byte" in { SizeOf.guesso[java.lang.Character](getField("_4Byte")) should be (4 byte) }
-      "5Byte" in { SizeOf.guesso[java.lang.Character](getField("_5Byte")) should be (5 byte) }
     }
   }
 }

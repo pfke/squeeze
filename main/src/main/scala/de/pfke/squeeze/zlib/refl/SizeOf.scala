@@ -87,15 +87,11 @@ object SizeOf {
     val isBitfield = annots.getAsBitfield.matchToOption(_.bits bit)
     // entweder String oder Liste
     val isWithFixedSize = if (GeneralRefl.isString(tpe)) annots.getWithFixedSize.matchToOption(_.size byte) else annots.getWithFixedSize.matchToOption(i => tpe.typeArgs.foldLeft(DigitalLength.zero)((sum,i) => sum + guesso(tpe = i, List.empty)) * i.size)
-    val isArray = if (GeneralRefl.isArray(tpe)) Some(tpe.typeArgs.foldLeft(DigitalLength.zero)((sum,i) => sum + SizeOf.guesso(i, annots = List.empty))) else None
-    val isList = if (GeneralRefl.isListType(tpe)) Some(tpe.typeArgs.foldLeft(DigitalLength.zero)((sum,i) => sum + SizeOf.guesso(i, annots = List.empty))) else None
     val isEnumeratum = if (GeneralRefl.isEnumeratum(tpe)) _enumeratumToSize.find(i => tpe <:< i._1).matchToOption(_._2) else None
 
     isComplex
       .orElse(isBitfield)
       .orElse(isWithFixedSize)
-      .orElse(isArray)
-      .orElse(isList)
       .orElse(_typeToSize.get(PrimitiveRefl.toScalaType(tpe)))
       .orElse(isEnumeratum)
       .orElse(Some(0 byte))

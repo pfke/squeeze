@@ -9,8 +9,9 @@ object RichClassMirror {
     */
   def apply[A] () (
     implicit
-    classTag: ClassTag[A]
-  ): RichClassMirror = apply(clazz = classTag.runtimeClass)
+    classTag: ClassTag[A],
+    typeTag: ru.TypeTag[A]
+  ): RichClassMirror = apply(classSymbol = typeTag.mirror.classSymbol(classTag.runtimeClass))
 
   /**
     * Create instance.

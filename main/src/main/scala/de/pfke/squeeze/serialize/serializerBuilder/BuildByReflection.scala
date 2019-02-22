@@ -497,7 +497,7 @@ class BuildByReflection
       val foundInjectCountAnnot = allSubFields.getInjectCountAnnot(field.name).matchToOption(_._2.name)
       val foundWithFixedSizeAnnot = field.getWithFixedSize.matchToOption(_.size.toString)
 
-      val sizeOfOneListElement = SizeOf.guesso(field).toByte
+      val sizeOfOneListElement = field.tpe.typeArgs.foldLeft(0)((sum,i) => math.max(sum, SizeOf.guesso(tpe = i, annots = List.empty).toByte))
       require(sizeOfOneListElement > 0, s"could not determine size of $field")
       val count = foundInjectCountAnnot orElse foundWithFixedSizeAnnot orDefault s"iter.len.toByte / $sizeOfOneListElement" // at least use rest of the iterator
 

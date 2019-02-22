@@ -2,6 +2,7 @@ package de.pfke.squeeze.squeezer.annots.injectSize
 
 import akka.util.ByteString
 import de.pfke.squeeze.annots.fieldAnnots.injectSize
+import de.pfke.squeeze.serialize.serializerBuilder.BuildByReflection
 import de.pfke.squeeze.squeezer.BaseSqueezerSpec
 import de.pfke.squeeze.squeezer.annots.injectSize.Squeezer_caseClass_w_annotInjectSize_onList_spec.caseClass_w_annotInjectSize_onList
 
@@ -48,6 +49,10 @@ class Squeezer_caseClass_w_annotInjectSize_onList_spec
     param3 = List(1, 3, 6, 7),
     param4 = 0x5422,
   )
+
+  val r1 = BuildByReflection().build[caseClass_w_annotInjectSize_onList]()
+  println()
+
 
   runBE_n_LE[caseClass_w_annotInjectSize_onList](
     descr = "all params filled",
