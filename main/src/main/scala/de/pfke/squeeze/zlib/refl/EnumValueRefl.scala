@@ -73,4 +73,8 @@ class EnumValueRefl (
   tpe: ru.Type
 ) {
   require(EnumValueRefl.isEnumValue(tpe), s"given type '$tpe' is not an enumeration#value")
+
+  val r1 = EnumValueRefl.isEnumValue(tpe)
+
+  println()
 }

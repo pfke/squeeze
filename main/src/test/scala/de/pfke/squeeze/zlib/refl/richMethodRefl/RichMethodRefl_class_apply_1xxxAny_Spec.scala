@@ -13,10 +13,10 @@ class RichMethodRefl_class_apply_1xxxAny_Spec
     val objectSymbol = RichRuntimeMirror().getClassSymbol(clazz.getCanonicalName + "$")
 
     "passing the class" should {
-      val method = RichMethodRefl.apply(classSymbol, RichMethodRefl.TERMNAME_CTOR).head
-
       "should return correct instance" in {
-        method
+        RichMethodRefl
+          .apply(classSymbol, RichMethodRefl.TERMNAME_CTOR)
+          .head
           .apply()
           .isInstanceOf[CaseClassMock0Args] should be (right = true)
       }

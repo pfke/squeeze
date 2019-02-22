@@ -89,6 +89,7 @@ object FieldHelper {
     }
 
     groupBy(List.empty, List.empty, allFields)
+      .filter(_.nonEmpty)
   }
 
   /**

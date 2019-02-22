@@ -1,10 +1,27 @@
 package de.pfke.squeeze.zlib.refl.fieldHelper
 
+import de.pfke.squeeze.annots.classAnnots.alignBitfieldsBy
+import de.pfke.squeeze.annots.fieldAnnots.asBitfield
 import de.pfke.squeeze.zlib.refl.FieldHelper
-import de.pfke.squeeze.zlib.refl.fieldHelper.mocks.BitfieldsSeparated
+import de.pfke.squeeze.zlib.refl.fieldHelper.FieldHelper_groupByBitfields_Spec.BitfieldsSeparated
 import org.scalatest.{Matchers, WordSpec}
 
 import scala.reflect.runtime.{universe => ru}
+
+object FieldHelper_groupByBitfields_Spec {
+  @alignBitfieldsBy(bits = 32)
+  case class BitfieldsSeparated (
+    @asBitfield(bits = 8) field01: Byte,
+    @asBitfield(bits = 16) field02: Short,
+    @asBitfield(bits = 8) field03: Byte,
+    @asBitfield(bits = 32) field04: Int,
+    @asBitfield(bits = 8) field05: Int,
+    @asBitfield(bits = 8) field06: Int,
+    field07: Short,
+    @asBitfield(bits = 8) field08: Byte,
+    field09: Int
+  )
+}
 
 class FieldHelper_groupByBitfields_Spec
   extends WordSpec

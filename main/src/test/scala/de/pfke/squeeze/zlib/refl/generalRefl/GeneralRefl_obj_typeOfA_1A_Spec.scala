@@ -38,29 +38,5 @@ class GeneralRefl_obj_typeOfA_1A_Spec
         }
       }
     }
-
-    "passing an enum#value type" should {
-      "return the correct type" in {
-        val t1 = RichInstanceMirror(Enum1Mock._2ndValue)
-        val t2 = t1.typeSignature
-        val t3 = t1.asTpe
-        val t4 = t1.asType
-        val t5 = t2.companion
-
-        val v1 = Enum1Mock._2ndValue.getClass
-
-
-
-
-        val r1 = GeneralRefl.typeOf(Enum1Mock._2ndValue)
-        val r2 = ru.typeOf[Enum1Mock.Enum1Mock]
-
-        withClue(s"GeneralRefl.typeOf(Enum1Mock._2ndValue)='$r1', ru.typeOf[Enumeration#Value]='$r2'") {
-          (r1 =:= r2) should be (right = true)
-        }
-
-        (GeneralRefl.typeOf(Enum1Mock._2ndValue) =:= ru.typeOf[Enum1Mock.Value]) should be (right = true)
-      }
-    }
   }
 }
