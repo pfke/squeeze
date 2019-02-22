@@ -442,10 +442,13 @@ class BuildByReflection
 
     val prepareIterator = s"val $iterName = iter.iterator(bitAlignment = BitStringAlignment.${BitStringAlignment.enumFromWidth(bitAlignment)})"
     val codeForPadding = if ((bitFieldSize % bitAlignment) == 0) "" else s"$iterName.read[Long](BitLength(${bitAlignment - (bitFieldSize % bitAlignment)})) // read padding bits"
+    val code = if (codeForPadding.nonEmpty) {
+      s"""$codeForPadding
+         |$codeForFields""".stripMargin
+    } else codeForFields
 
     s"""$prepareIterator
-       |$codeForPadding
-       |$codeForFields""".stripMargin
+       |$code""".stripMargin
   }
 
   private def make_readerCode_forComplex_noBitfields(
