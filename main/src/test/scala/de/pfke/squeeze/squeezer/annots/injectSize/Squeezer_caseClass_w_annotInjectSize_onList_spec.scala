@@ -50,10 +50,6 @@ class Squeezer_caseClass_w_annotInjectSize_onList_spec
     param4 = 0x5422,
   )
 
-  val r1 = BuildByReflection().build[caseClass_w_annotInjectSize_onList]()
-  println()
-
-
   runBE_n_LE[caseClass_w_annotInjectSize_onList](
     descr = "all params filled",
     inPojo,

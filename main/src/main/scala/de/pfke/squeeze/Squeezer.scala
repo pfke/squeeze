@@ -71,8 +71,8 @@ class Squeezer (
       .typeSymbol
       .annotations
       .getTypeForIface match {
-      case Some(x) if x.value.isInstanceOf[Int] => x.value.asInstanceOf[Int]
-      case Some(x) if x.value.isInstanceOf[Long] => x.value.asInstanceOf[Long]
+      case Some(x) if x.ident.isInstanceOf[Int] => x.ident.asInstanceOf[Int]
+      case Some(x) if x.ident.isInstanceOf[Long] => x.ident.asInstanceOf[Long]
       case Some(_) => throw new SerializerRunException(s"iface type for $typeTag is not in a valid format. Int or Long expected")
       case None => throw new SerializerRunException(s"could not find iface type for $typeTag")
     }

@@ -2,7 +2,7 @@ package de.pfke.squeeze.serialize.mocks.asType
 
 import de.pfke.squeeze.annots.classAnnots.{fromVersion, typeForIface}
 
-@typeForIface(value = 15)
+@typeForIface(ident = 15)
 @fromVersion(major = 1, minor = 6, level = 123)
 case class SubClassB_fromVersion_1_6_123(
   _1stParam: Short,

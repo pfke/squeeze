@@ -2,7 +2,7 @@ package de.pfke.squeeze.serialize.mocks.asType
 
 import de.pfke.squeeze.annots.classAnnots.typeForIface
 
-@typeForIface(value = 10)
+@typeForIface(ident = 10)
 case class NAHISubClassA(
   _1stParam: Int,
   _2ndParam: Short,
