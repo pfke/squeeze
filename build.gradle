@@ -1,6 +1,6 @@
 ext {
     scalaMajorV = '2.12'
-    scalaMinorV = '7'
+    scalaMinorV = '8'
     scalaV = scalaMajorV + '.' + scalaMinorV
     akkaV = "2.5.17"
     scalaTestV = "3.0.5"
