@@ -5,7 +5,7 @@ import java.nio.ByteOrder
 import de.pfke.squeeze.zlib.version.PatchLevelVersion
 import de.pfke.squeeze.zlib.data.collection.anythingString.AnythingIterator
 import de.pfke.squeeze.serialize.serializerHints.SerializerHint
-import de.pfke.squeeze.zlib.SerializerBuildException
+import de.pfke.squeeze.zlib.SerializerRunException
 
 import scala.reflect.ClassTag
 import scala.reflect.runtime.{universe => ru}
@@ -14,14 +14,16 @@ trait SerializerContainer {
   /**
     * Return the iface type of the given data (if its class is described with an annotation)
     */
-  @throws[SerializerBuildException]("if the class type has no ifaceType annotation")
+  @throws[SerializerRunException]("if the class type has no ifaceType annotation")
   def getIfaceType[A] (
-    in: A
+    in: AnyRef,
+    clazz: ru.Type,
+    paramName: String
   ) (
     implicit
     classTag: ClassTag[A],
-    typeTag: ru.TypeTag[A]
-  ): Long
+    typeTag: ru.TypeTag[A],
+  ): A
 
   /**
     * Read from given input and deserialize to an object A

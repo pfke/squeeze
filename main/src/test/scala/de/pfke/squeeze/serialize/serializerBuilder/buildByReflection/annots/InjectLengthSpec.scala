@@ -44,7 +44,7 @@ class InjectLengthSpec
                 |    version: Option[PatchLevelVersion]
                 |  ): Unit = {
                 |    require(findOneHint[ByteStringBuilderHint](hints = hints).nonEmpty, s"[de.pfke.squeeze.serialize.mocks.annots.InjectLengthMock] given input has no ByteStringBuilderHint")
-                |    serializerContainer.write[Short](data._2ndParam.length.toShort, hints = hints:_*)
+                |    serializerContainer.write[Short](data._2ndParam.size.toShort, hints = hints:_*)
                 |    serializerContainer.write[String](data._2ndParam, hints = hints:_*)
                 |  }
                 |}

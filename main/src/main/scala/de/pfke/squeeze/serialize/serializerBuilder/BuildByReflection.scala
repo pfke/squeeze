@@ -63,6 +63,7 @@ class BuildByReflection
                    |import de.pfke.squeeze.serialize.serializerHints._
                    |import de.pfke.squeeze.zlib._
                    |import java.nio.ByteOrder
+                   |import scala.reflect.runtime.{universe => ru}
                    |
                    |class ${name}Serializer
                    |  extends CompiledSerializer[${typeTag.tpe.toString}] {
@@ -714,6 +715,11 @@ class BuildByReflection
         case (Some(_1), None)                   => s"$nameOfTheDataObjWithinCode.${_1.from}.size.to${field.tpe}"
 
         case _                                  => throw new SerializerBuildException(s"should not happen. No injectSize annot found on field $field")
+      }
+    } else if(field.hasInjectType) {
+      field.getInjectType match {
+        case Some(x) => s"""serializerContainer.getIfaceType[${field.tpe}](in = data.${x.fromField}, clazz = ru.typeOf[$upperClassType], paramName = "${field.name}")"""
+        case _ => throw new SerializerBuildException(s"should not happen. No injectType annot found on field $field")
       }
     } else {
       s"$nameOfTheDataObjWithinCode.${field.name}"

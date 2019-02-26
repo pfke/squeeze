@@ -8,8 +8,9 @@ import de.pfke.squeeze.zlib.data.collection.anythingString.AnythingIterator
 import de.pfke.squeeze.zlib.data.collection.bitString.BitStringAlignment
 import de.pfke.squeeze.zlib.refl.GeneralRefl
 import de.pfke.squeeze.annots._
+import de.pfke.squeeze.annots.classAnnots.typeForIface
 import de.pfke.squeeze.serialize.serializerHints.{ByteStringBuilderHint, SerializerHint}
-import de.pfke.squeeze.serialize.{SerializerContainer, RichSerializer}
+import de.pfke.squeeze.serialize.{RichSerializer, SerializerContainer}
 import de.pfke.squeeze.zlib.SerializerRunException
 
 import scala.collection.mutable
@@ -60,21 +61,23 @@ class Squeezer (
   /**
     * Return the iface type of the given data (if its class is described with an annotation)
     */
-  override def getIfaceType[A](
-    in: A
-  )(implicit
+  override def getIfaceType[A] (
+    in: AnyRef,
+    clazz: ru.Type,
+    paramName: String
+  ) (
+    implicit
     classTag: ClassTag[A],
-    typeTag: ru.TypeTag[A]
-  ): Long = {
+    typeTag: ru.TypeTag[A],
+  ): A = {
     GeneralRefl
       .typeOf(in)
       .typeSymbol
       .annotations
       .getTypeForIface match {
-      case Some(x) if x.ident.isInstanceOf[Int] => x.ident.asInstanceOf[Int]
-      case Some(x) if x.ident.isInstanceOf[Long] => x.ident.asInstanceOf[Long]
-      case Some(_) => throw new SerializerRunException(s"iface type for $typeTag is not in a valid format. Int or Long expected")
-      case None => throw new SerializerRunException(s"could not find iface type for $typeTag")
+      case Some(x) if GeneralRefl.toScalaType(GeneralRefl.typeOf(x.ident)) =:= GeneralRefl.toScalaType(typeTag.tpe) => x.ident.asInstanceOf[A]
+      case Some(x) => throw new SerializerRunException(s"${ru.typeOf[typeForIface]}.ident has type ${GeneralRefl.typeOf(x.ident)}, but serializer wanted my to convert to $typeTag. Please change field type ($clazz.$paramName)")
+      case None => throw new SerializerRunException(s"could not find ${ru.typeOf[typeForIface]} annot for ${GeneralRefl.typeOf(in)}")
     }
   }
 

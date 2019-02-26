@@ -4,7 +4,7 @@ import java.io.{File, IOException}
 import java.net.URL
 import java.util.UUID
 
-import enumeratum.values.{ValueEnum, ValueEnumEntry}
+import enumeratum.values.ValueEnumEntry
 
 import scala.collection.JavaConverters
 import scala.reflect.ClassTag
@@ -169,6 +169,12 @@ object GeneralRefl {
     */
   def subFields (in: ru.Type): List[FieldDescr] = FieldHelper.getFields(in)
 
+  /**
+    * Convert java types to scala types
+    */
+  def toScalaType(
+    tpe: ru.Type
+  ): ru.Type = PrimitiveRefl.toScalaType(tpe)
   /**
     * Return type signature of the given value
     */

@@ -6,9 +6,9 @@ import akka.util.ByteString
 import de.pfke.squeeze.Squeezer
 import de.pfke.squeeze.annots.classAnnots.typeForIface
 import de.pfke.squeeze.annots.fieldAnnots.injectType
-import de.pfke.squeeze.serialize.serializerBuilder.BuildByReflection
 import de.pfke.squeeze.squeezer.BaseSqueezerSpec
 import de.pfke.squeeze.squeezer.annots.injectType.Squeezer_caseClass_w_annotInjectType_spec.{caseClass_w_annotInjectType_cc2, caseClass_w_annotInjectType_identAsInt, caseClass_w_annotInjectType_iface, caseClass_w_annotInjectType_noAnIface}
+import de.pfke.squeeze.zlib.SerializerRunException
 
 object Squeezer_caseClass_w_annotInjectType_spec {
   trait caseClass_w_annotInjectType_iface
@@ -21,7 +21,7 @@ object Squeezer_caseClass_w_annotInjectType_spec {
     param1: Long,
 
     @injectType(fromField = "param3")
-    param2: Byte,
+    param2: Int,
 
     param3: caseClass_w_annotInjectType_iface
   )
@@ -59,18 +59,14 @@ class Squeezer_caseClass_w_annotInjectType_spec
   )
   private val beBinaryData = ByteString(
     0x00, 0x00, 0x00, 0x00, 0x01, 0x0a, 0x02, 0x24,
-    0x02,
+    0x00, 0x00, 0x00, 0x02,
     0x31, 0x32, 0x33
   )
   private val leBinaryData = ByteString(
     0x24, 0x02, 0x0a, 0x01, 0x00, 0x00, 0x00, 0x00,
-    0x02,
+    0x02, 0x00, 0x00, 0x00,
     0x31, 0x32, 0x33
   )
-
-  val r1 = BuildByReflection().build[caseClass_w_annotInjectType_identAsInt]()
-  val r2 = BuildByReflection().build[caseClass_w_annotInjectType_iface]()
-  println()
 
   runBE_n_LE[caseClass_w_annotInjectType_identAsInt](
     descr = "type not prefilled",
@@ -99,7 +95,7 @@ class Squeezer_caseClass_w_annotInjectType_spec
 
     "call die scheisse" should {
       "an exception should be thrown" in {
-        an[IllegalArgumentException] shouldBe thrownBy(
+        an[SerializerRunException] shouldBe thrownBy(
           Squeezer().toBinary(in = inPojo_notAnIface)
         )
       }
@@ -111,7 +107,7 @@ class Squeezer_caseClass_w_annotInjectType_spec
 
     "call die scheisse" should {
       "an exception should be thrown" in {
-        an[IllegalArgumentException] shouldBe thrownBy(
+        an[SerializerRunException] shouldBe thrownBy(
           Squeezer().toBinary(in = inPojo_notAnIface)
         )
       }
