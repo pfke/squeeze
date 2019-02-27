@@ -3,6 +3,37 @@ package de.pfke.squeeze.zlib.refl
 import scala.reflect.runtime.{universe => ru}
 import scala.util.Try
 
+object MethodParameter {
+  def getParamTypeAsClass (
+    symbol: ru.Symbol,
+    typeParams_n_typeArgs: List[(ru.Symbol, ru.Type)]
+  ): Class[_] = {
+    val typeSignature: ru.Type = symbol.typeSignature
+
+    def getMathingTypeArg: Option[Class[_]] = {
+      typeParams_n_typeArgs
+        .find(_._1.asType.fullName == typeSignature.typeSymbol.fullName) match {
+        case Some(x) => Try(Class.forName(x._2.typeSymbol.asClass.fullName)).toOption
+        case None => None
+      }
+    }
+
+    Try(
+      Class
+        .forName(
+          typeSignature
+            .typeSymbol
+            .asClass
+            .fullName
+        ))
+      .toOption
+      .orElse(getMathingTypeArg) match {
+      case Some(x) => x
+      case None => throw new IllegalArgumentException(s"could not find out the type of param ${symbol.name}. Its neither a direct type nor a generic")
+    }
+  }
+}
+
 /**
   * Method parameter (got by reflection).
   *
@@ -15,20 +46,11 @@ case class MethodParameter (
   defaultValue: Option[Any] = None
 ) {
   /**
-    * Das wird hier als opt zurückgegeben, das wir auf eine Generic-Klasse treffen könnten und das stehet dann erst zur Laufzeit fest.
+    * Gibt entweder den Typ des Parameters zurück. oder wenn ein typearg den gematchten oder wirft eine ex.
     */
   def clazz (
     typeParams_n_typeArgs: List[(ru.Symbol, ru.Type)]
-  ): Class[_] = {
-    val res = Try(Class.forName(typeSignature.typeSymbol.asClass.fullName)).toOption
-
-    val r1 = typeSignature
-    val r2 = typeParams_n_typeArgs.find(_._1.asType.typeSignature =:= r1)
-    val r3 = typeParams_n_typeArgs.map(_._1.asType)
-    val r4 = typeParams_n_typeArgs.map(_._1.asType.info)
-
-    res.get
-  }
+  ): Class[_] = MethodParameter.getParamTypeAsClass(symbol, typeParams_n_typeArgs)
 
   /**
     * Return param name

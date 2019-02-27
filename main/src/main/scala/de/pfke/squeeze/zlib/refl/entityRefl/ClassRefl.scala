@@ -84,7 +84,7 @@ class ClassRefl (
   implicit
   classLoader: ClassLoader = getClass.getClassLoader
 ) {
-  require(ClassRefl.isClass(classSymbol), s"passed class: '${classSymbol.fullName}' is not a case class")
+  require(ClassRefl.isClass(classSymbol), s"passed class: '${classSymbol.fullName}' is not a class")
 
   // fields
   private val _richClassMirror = RichClassMirror(classSymbol = classSymbol)

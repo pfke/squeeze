@@ -4,6 +4,7 @@ import java.io.{File, IOException}
 import java.net.URL
 import java.util.UUID
 
+import de.pfke.squeeze.zlib.refl.entityRefl.{CaseClassRefl, ClassRefl}
 import enumeratum.values.ValueEnumEntry
 
 import scala.collection.JavaConverters
@@ -175,6 +176,16 @@ object GeneralRefl {
   def toScalaType(
     tpe: ru.Type
   ): ru.Type = PrimitiveRefl.toScalaType(tpe)
+
+  def toScalaType (
+    clazz: Class[_]
+  ): ru.Type = {
+    if (ClassRefl.isClass(clazz))
+      ClassRefl(clazz).typeSignature
+    else
+      CaseClassRefl(clazz).typeSignature
+  }
+
   /**
     * Return type signature of the given value
     */
@@ -204,4 +215,5 @@ object GeneralRefl {
     * Used to be able to compare e.g. java.lang.Integer == scala.Int
     */
   def unifyType (in: ru.Type): ru.Type = PrimitiveRefl.toScalaType(in)
+  def unifyType (in: Class[_]): Class[_] = PrimitiveRefl.toScalaType(in)
 }

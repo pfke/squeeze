@@ -150,7 +150,7 @@ abstract class EntityRefl (
     classTag: ClassTag[A],
     typeTag: ru.TypeTag[A]
   ): Option[RichMethodRefl] = {
-    findMethod_matching_methodName_and_paramTypes(
+    findMethod_matching_methodName_and_paramTypes[A](
       symbol = if (useCompanion) classSymbol.companion else classSymbol,
       methodName = methodName,
       args = args
@@ -171,9 +171,16 @@ abstract class EntityRefl (
   ): Option[RichMethodRefl] = {
     case class EnrichedArg(tpe: ru.Type, clazz: Class[_])
 
-    val enrichedArgs = args.map { i => EnrichedArg(PrimitiveRefl.toScalaType(GeneralRefl.typeOf(i)), i.getClass) }
+    val enrichedArgs = args.map { i => EnrichedArg(PrimitiveRefl.toScalaType(GeneralRefl.typeOf(i)), GeneralRefl.unifyType(i.getClass)) }
 
-    def mapParamToSimple(in: MethodParameter) = EnrichedArg(PrimitiveRefl.toScalaType(in.typeSignature), in.clazz(zipClassTypeParamsWInstanceTypeArgs[A]()))
+    def mapParamToSimple(in: MethodParameter) = EnrichedArg(
+      GeneralRefl.unifyType(
+        GeneralRefl.toScalaType(MethodParameter.getParamTypeAsClass(symbol, zipClassTypeParamsWInstanceTypeArgs[A]()))
+      ),
+      GeneralRefl.unifyType(
+        in.clazz(zipClassTypeParamsWInstanceTypeArgs[A]())
+      )
+    )
     def isAssignableFrom(_1: Class[_], _2: Class[_]) = _1.isAssignableFrom(_2)
     def isTypeFrom(_1: ru.Type, _2: ru.Type) = _1 <:< _2
 
@@ -190,6 +197,11 @@ abstract class EntityRefl (
       val res = !typeCheck
         .zip(classCheck)
         .forall { i => i._1 || i._2 }
+
+      val r1 = classOf[Integer]
+      val r2 = classOf[Int]
+      val r3 = GeneralRefl.unifyType(r1).isAssignableFrom(GeneralRefl.unifyType(r2))
+      val r4 = r2.isAssignableFrom(r1)
 
       !res
     }

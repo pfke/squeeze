@@ -104,11 +104,6 @@ class CaseClassRefl (
   require(CaseClassRefl.isCaseClass(classSymbol), s"passed class: '${classSymbol.fullName}' is not a case class")
 
   // fields
-  val r1 = RichMethodRefl(classSymbol, RichMethodRefl.TERMNAME_CTOR)
-  val r1_1 = r1.map(_.parameter)
-//  val r2 = RichMethodRefl(classSymbol.companion, RichMethodRefl.TERMNAME_APPLY)
-//  val r2_1 = r2.map(_.parameter)
-
 //  private val _applyMethods = RichMethodRefl(classSymbol.companion, RichMethodRefl.TERMNAME_APPLY)
   private val _applyMethods = RichMethodRefl(classSymbol, RichMethodRefl.TERMNAME_CTOR)
   private val _compagnionClassName = CaseClassRefl.getCompagnionClassName(classSymbol)
@@ -144,6 +139,8 @@ class CaseClassRefl (
     val r6 = r2_2 =:= r3_2
 
 //    require(classSymbol.selfType <:< typeTag.tpe, s"given generic is neither a super nor the same class (${classSymbol.selfType} <:< ${typeTag.tpe})")
+
+    val k1 = findApplyMethod_matching_paramTypes[A](args:_*)
 
     findApplyMethod_matching_paramTypes[A](args:_*) match {
       case Some(t) => t.apply[A](args:_*)
