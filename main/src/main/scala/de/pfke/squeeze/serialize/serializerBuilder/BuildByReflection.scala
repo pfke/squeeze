@@ -380,8 +380,8 @@ class BuildByReflection
     tpe: ru.Type
   ): String = {
     //---
-    case class FoundAnnotsAsOpt(ifaceOpt: Option[typeForIface], versionOpt: Option[fromVersion])
-    case class FoundAnnots(iface: typeForIface, versionOpt: Option[fromVersion])
+    case class FoundAnnotsAsOpt(ifaceOpt: Option[typeForIface[_]], versionOpt: Option[fromVersion])
+    case class FoundAnnots(iface: typeForIface[_], versionOpt: Option[fromVersion])
     case class TypeToFoundAnnotsOpts(clazz: ClassInfo[_], foundAnnots: FoundAnnotsAsOpt)
     case class TypeToFoundAnnots(clazz: ClassInfo[_], foundAnnots: FoundAnnots)
 
@@ -390,7 +390,7 @@ class BuildByReflection
       .filterNot(_.classSymbol.isAbstract)
       .map { i =>
         try {
-          TypeToFoundAnnotsOpts(i, FoundAnnotsAsOpt(i.annotations.getAnnot[typeForIface], i.annotations.getAnnot[fromVersion]))
+          TypeToFoundAnnotsOpts(i, FoundAnnotsAsOpt(i.annotations.getTypeForIface, i.annotations.getAnnot[fromVersion]))
         } catch {
           case e: IllegalArgumentException => throw new SerializerBuildException(s"unable to reflect annotation for '${i.tpe}' (${e.getMessage})")
         }
@@ -401,7 +401,7 @@ class BuildByReflection
     ): String = annot.matchTo(i => s"Some(PatchLevelVersion(${i.major}, ${i.minor}, ${i.level}))", default = "None")
 
     def ifaceOptToString(
-      annot: Option[typeForIface]
+      annot: Option[typeForIface[_]]
     ): String = annot.matchTo(i => s"Some(${i.ident})", default = "None")
 
     implicit def orderingTI[A <: TypeToFoundAnnotsOpts]: Ordering[A] = Ordering.by { i => s"${i.clazz.tpe.toString}${i.foundAnnots.versionOpt.getOrElse(fromVersion(0, 0))}" }

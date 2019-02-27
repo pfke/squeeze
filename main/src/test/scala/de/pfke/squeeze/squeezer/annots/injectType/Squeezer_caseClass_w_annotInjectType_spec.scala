@@ -12,9 +12,9 @@ import de.pfke.squeeze.zlib.SerializerRunException
 
 object Squeezer_caseClass_w_annotInjectType_spec {
   trait caseClass_w_annotInjectType_iface
-  @typeForIface(ident = 1)
+  @typeForIface[Int](ident = 1)
   case class caseClass_w_annotInjectType_cc1(param1: Byte  ) extends caseClass_w_annotInjectType_iface
-  @typeForIface(ident = 2)
+  @typeForIface[Int](ident = 2)
   case class caseClass_w_annotInjectType_cc2(param1: String) extends caseClass_w_annotInjectType_iface
 
   case class caseClass_w_annotInjectType_identAsInt(

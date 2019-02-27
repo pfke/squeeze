@@ -66,10 +66,14 @@ abstract class EntityRefl (
   /**
     * Findet die Methode mit angegebenem Namen und den vorhandenen Paremetern
     */
-  def findMethod_matching_methodName_and_paramNames (
+  def findMethod_matching_methodName_and_paramNames[A] (
     useCompanion: Boolean,
     methodName: String,
     paramNames: Seq[String]
+  ) (
+    implicit
+    classTag: ClassTag[A],
+    typeTag: ru.TypeTag[A]
   ): Option[RichMethodRefl] = {
     findMethod_matching_methodName_and_paramNames(
       useCompanion = useCompanion,
@@ -81,10 +85,14 @@ abstract class EntityRefl (
   /**
     * Findet die Methode mit angegebenem Namen und den vorhandenen Paremetern
     */
-  def findMethod_matching_methodName_and_paramNames (
+  def findMethod_matching_methodName_and_paramNames[A] (
     useCompanion: Boolean,
     methodName: ru.TermName,
     paramNames: Seq[String]
+  ) (
+    implicit
+    classTag: ClassTag[A],
+    typeTag: ru.TypeTag[A]
   ): Option[RichMethodRefl] = {
     findMethod_matching_methodName_and_paramNames(
       symbol = if (useCompanion) classSymbol.companion else classSymbol,
@@ -96,10 +104,14 @@ abstract class EntityRefl (
   /**
     * Findet die Methode mit angegebenem Namen und den vorhandenen Paremetern
     */
-  def findMethod_matching_methodName_and_paramNames (
+  def findMethod_matching_methodName_and_paramNames[A] (
     symbol: ru.Symbol,
     methodName: ru.TermName,
     paramNames: Seq[String]
+  ) (
+    implicit
+    classTag: ClassTag[A],
+    typeTag: ru.TypeTag[A]
   ): Option[RichMethodRefl] = {
     def hasAllParamNames (in: RichMethodRefl): Boolean = paramNames.forall { i => in.parameter.exists(_.name == i) }
 
@@ -110,10 +122,14 @@ abstract class EntityRefl (
   /**
     * Return the apply RichMethodRefl which contains the given name
     */
-  def findMethod_matching_methodName_and_paramTypes (
+  def findMethod_matching_methodName_and_paramTypes[A] (
     useCompanion: Boolean,
     methodName: String,
     args: Seq[Any]
+  ) (
+    implicit
+    classTag: ClassTag[A],
+    typeTag: ru.TypeTag[A]
   ): Option[RichMethodRefl] = {
     findMethod_matching_methodName_and_paramTypes(
       useCompanion = useCompanion,
@@ -125,10 +141,14 @@ abstract class EntityRefl (
   /**
     * Return the apply RichMethodRefl which contains the given name
     */
-  def findMethod_matching_methodName_and_paramTypes (
+  def findMethod_matching_methodName_and_paramTypes[A] (
     useCompanion: Boolean,
     methodName: ru.TermName,
     args: Seq[Any]
+  ) (
+    implicit
+    classTag: ClassTag[A],
+    typeTag: ru.TypeTag[A]
   ): Option[RichMethodRefl] = {
     findMethod_matching_methodName_and_paramTypes(
       symbol = if (useCompanion) classSymbol.companion else classSymbol,
@@ -140,16 +160,20 @@ abstract class EntityRefl (
   /**
     * Return the apply RichMethodRefl which contains the given name
     */
-  private def findMethod_matching_methodName_and_paramTypes (
+  private def findMethod_matching_methodName_and_paramTypes[A] (
     symbol: ru.Symbol,
     methodName: ru.TermName,
     args: Seq[Any]
+  ) (
+    implicit
+    classTag: ClassTag[A],
+    typeTag: ru.TypeTag[A]
   ): Option[RichMethodRefl] = {
     case class EnrichedArg(tpe: ru.Type, clazz: Class[_])
 
     val enrichedArgs = args.map { i => EnrichedArg(PrimitiveRefl.toScalaType(GeneralRefl.typeOf(i)), i.getClass) }
 
-    def mapParamToSimple(in: MethodParameter) = EnrichedArg(PrimitiveRefl.toScalaType(in.typeSignature), in.clazz)
+    def mapParamToSimple(in: MethodParameter) = EnrichedArg(PrimitiveRefl.toScalaType(in.typeSignature), in.clazz(zipClassTypeParamsWInstanceTypeArgs[A]()))
     def isAssignableFrom(_1: Class[_], _2: Class[_]) = _1.isAssignableFrom(_2)
     def isTypeFrom(_1: ru.Type, _2: ru.Type) = _1 <:< _2
 
@@ -173,4 +197,10 @@ abstract class EntityRefl (
     RichMethodRefl(symbol, methodName)
       .find(hasAllParamTypes)
   }
+
+  private def zipClassTypeParamsWInstanceTypeArgs[A] () (
+    implicit
+    classTag: ClassTag[A],
+    typeTag: ru.TypeTag[A]
+  ): List[(ru.Symbol, ru.Type)] = classSymbol.typeParams.zip(typeTag.tpe.typeArgs)
 }

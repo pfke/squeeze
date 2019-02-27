@@ -116,7 +116,7 @@ class ClassRefl (
   ): A = {
     require(classSymbol.selfType <:< typeTag.tpe, s"given generic is neither a super nor the same class of ${classSymbol.selfType}")
 
-    findCtorMatchingTheseValueTypes(args:_*) match {
+    findCtorMatchingTheseValueTypes[A](args:_*) match {
       case Some(t) => t.apply[A](args:_*)
       case None => throw new IllegalArgumentException(s"no apply method found, which matches the passed args: '${args.mkString(", ")}'")
     }
@@ -137,12 +137,18 @@ class ClassRefl (
   /**
     * Return the apply RichMethodRefl which contains the given name
     */
-  def findCtorMatchingTheseValueTypes (
+  def findCtorMatchingTheseValueTypes[A] (
     args: Any*
+  ) (
+    implicit
+    classTag: ClassTag[A],
+    typeTag: ru.TypeTag[A]
   ): Option[RichMethodRefl] = {
-    val enrichedArgs = args.map { i => (GeneralRefl.typeOf(i), i.getClass) }
+    case class ParamTypeToClass(tpe: ru.Type, clazz: Class[_])
 
-    def mapParamToSimple(in: MethodParameter) = (PrimitiveRefl.toScalaType(in.typeSignature), in.clazz)
+    val enrichedArgs = args.map { i => ParamTypeToClass(GeneralRefl.typeOf(i), i.getClass) }
+
+    def mapParamToSimple(in: MethodParameter) = ParamTypeToClass(PrimitiveRefl.toScalaType(in.typeSignature), in.clazz(zipClassTypeParamsWInstanceTypeArgs[A]()))
     def isAssignableFrom(_1: Class[_], _2: Class[_]) = PrimitiveRefl.toScalaType(_1).isAssignableFrom(PrimitiveRefl.toScalaType(_2))
     def isTypeFrom(_1: ru.Type, _2: ru.Type) = PrimitiveRefl.toScalaType(_1) <:< PrimitiveRefl.toScalaType(_2)
 
@@ -153,8 +159,8 @@ class ClassRefl (
       val paramsAsTuple = in.parameter.map(mapParamToSimple)
       val paddedArgs = enrichedArgs ++ paramsAsTuple.drop(enrichedArgs.size)
 
-      val classCheck = paramsAsTuple.zipWithIndex.map { i => isAssignableFrom(i._1._2, paddedArgs(i._2)._2) }
-      val typeCheck = paramsAsTuple.zipWithIndex.map { i => isTypeFrom(i._1._1, paddedArgs(i._2)._1) }
+      val classCheck = paramsAsTuple.zipWithIndex.map { i => isAssignableFrom(i._1.clazz, paddedArgs(i._2).clazz) }
+      val typeCheck = paramsAsTuple.zipWithIndex.map { i => isTypeFrom(i._1.tpe, paddedArgs(i._2).tpe) }
 
       val res = typeCheck
         .zip(classCheck)
@@ -166,4 +172,10 @@ class ClassRefl (
     ctorRichMethodRefls
       .find(hasAllParamTypes)
   }
+
+  private def zipClassTypeParamsWInstanceTypeArgs[A] () (
+    implicit
+    classTag: ClassTag[A],
+    typeTag: ru.TypeTag[A]
+  ): List[(ru.Symbol, ru.Type)] = classSymbol.typeParams.zip(typeTag.tpe.typeArgs)
 }

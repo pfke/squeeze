@@ -3,19 +3,23 @@ package de.pfke.squeeze
 import java.nio.ByteOrder
 
 import akka.util.ByteString
+import de.pfke.squeeze.annots.AnnotationHelper.getAnnot
 import de.pfke.squeeze.zlib.version.PatchLevelVersion
 import de.pfke.squeeze.zlib.data.collection.anythingString.AnythingIterator
 import de.pfke.squeeze.zlib.data.collection.bitString.BitStringAlignment
-import de.pfke.squeeze.zlib.refl.GeneralRefl
+import de.pfke.squeeze.zlib.refl.{AnnotationRefl, GeneralRefl}
 import de.pfke.squeeze.annots._
 import de.pfke.squeeze.annots.classAnnots.typeForIface
 import de.pfke.squeeze.serialize.serializerHints.{ByteStringBuilderHint, SerializerHint}
 import de.pfke.squeeze.serialize.{RichSerializer, SerializerContainer}
 import de.pfke.squeeze.zlib.SerializerRunException
+import de.pfke.squeeze.zlib.refl.entityRefl.CaseClassRefl
 
+import scala.annotation.StaticAnnotation
 import scala.collection.mutable
 import scala.reflect.ClassTag
 import scala.reflect.runtime.{universe => ru}
+import scala.util.Try
 
 object Squeezer {
   /**
@@ -70,14 +74,54 @@ class Squeezer (
     classTag: ClassTag[A],
     typeTag: ru.TypeTag[A],
   ): A = {
+    val r1 = GeneralRefl
+      .typeOf(in)
+      .typeSymbol
+      .annotations
+    val r1_1 = r1.head
+//    val r1_2 = GeneralRefl.typeOf(r1_1)
+    val r1_3 = r1_1.tree
+    val r1_4 = r1_3.tpe
+    require(r1_4 <:< ru.typeOf[typeForIface[_]], s"passed object is not annotated w/ ${ru.typeOf[typeForIface[_]]}")
+//    val r1_5 = r1_4.typeSymbol.typeSignature
+    val r1_6 = r1_4.typeArgs
+    val r1_7 = r1_6.head
+    val r1_8 = GeneralRefl.unifyType(r1_7) =:= GeneralRefl.unifyType(typeTag.tpe)
+
+    val a1 = ru.typeOf[typeForIface[typeTag.type]]
+    implicit val classLoader = in.getClass.getClassLoader
+    val a2 = getAnnot[typeForIface[Int]](r1)
+
+    val v1 = r1_3.children
+    val v2 = v1(1)
+
+    val annotType = r1_4
+    val args = r1_3.children.tail                                                                 // retrieve the args. These are returned as a list of Tree.
+      .collect{                                                                           // convert list of Tree to list of argument values
+      case ru.Literal(ru.Constant(m)) => m
+    }
+
+
+    val k1 = new CaseClassRefl(annotType.typeSymbol.asClass)
+    val k2 = k1.instantiate[typeForIface[Int]](args:_*)
+
+
+    val v3_0 = r1_1.tree.symbol
+    val v3 = r1_1.tree.symbol.asClass
+    val v4 = new CaseClassRefl(r1_1.tree.symbol.asClass)
+
+    val r2 = r1.getTypeForIface
+    val r3 = r2.get
+    val r4 = GeneralRefl.toScalaType(GeneralRefl.typeOf(r3.ident))
+
     GeneralRefl
       .typeOf(in)
       .typeSymbol
       .annotations
       .getTypeForIface match {
       case Some(x) if GeneralRefl.toScalaType(GeneralRefl.typeOf(x.ident)) =:= GeneralRefl.toScalaType(typeTag.tpe) => x.ident.asInstanceOf[A]
-      case Some(x) => throw new SerializerRunException(s"${ru.typeOf[typeForIface]}.ident has type ${GeneralRefl.typeOf(x.ident)}, but serializer wanted my to convert to $typeTag. Please change field type ($clazz.$paramName)")
-      case None => throw new SerializerRunException(s"could not find ${ru.typeOf[typeForIface]} annot for ${GeneralRefl.typeOf(in)}")
+      case Some(x) => throw new SerializerRunException(s"${ru.typeOf[typeForIface[_]]}.ident has type ${GeneralRefl.typeOf(x.ident)}, but serializer wanted my to convert to $typeTag. Please change field type ($clazz.$paramName)")
+      case None => throw new SerializerRunException(s"could not find ${ru.typeOf[typeForIface[_]]} annot for ${GeneralRefl.typeOf(in)}")
     }
   }
 

@@ -4,19 +4,17 @@ import de.pfke.squeeze.zlib.refl.entityRefl.caseClassRefl.mocks._
 import de.pfke.squeeze.zlib.refl.entityRefl.CaseClassRefl
 import org.scalatest.{Matchers, WordSpec}
 
-class CaseClassRefl_class_applyA_1xxxAny_Spec
+class CaseClassRefl_class_instantiateA_1xxxAny_Spec
   extends WordSpec
     with Matchers {
   "testing case class: 'CaseClassMock0Args'" when {
     "passing the class" should {
-      lazy val tto = CaseClassRefl[CaseClassMock0Args]
-
       "should instantiate, when passing all args" in {
-        tto.instantiate[CaseClassMock0Args]() should be (CaseClassMock0Args())
+        CaseClassRefl[CaseClassMock0Args].instantiate[CaseClassMock0Args]() should be (CaseClassMock0Args())
       }
 
       "should throw an exception, when to much args" in {
-        an[IllegalArgumentException] shouldBe thrownBy(tto.instantiate[CaseClassMock0Args](456, false))
+        an[IllegalArgumentException] shouldBe thrownBy(CaseClassRefl[CaseClassMock0Args].instantiate[CaseClassMock0Args](456, false))
       }
     }
   }
@@ -95,6 +93,22 @@ class CaseClassRefl_class_applyA_1xxxAny_Spec
 
       "should throw an exception, when to much args" in {
         an[IllegalArgumentException] shouldBe thrownBy(tto.instantiate[CaseClassMock2Args_woMethods](false, 123.toChar, false))
+      }
+    }
+  }
+
+  "testing case class: 'CaseClassMockGeneric2Args'" when {
+    "call method 'apply'" should {
+      "should instantiate, when passing all args" in {
+        CaseClassRefl[CaseClassMockGeneric2Args[Int]]
+          .instantiate[CaseClassMockGeneric2Args[Int]]("asd", 1233) should be (CaseClassMockGeneric2Args[Int]("asd", 1233))
+      }
+
+      "should throw an exception, when false type" in {
+        an[IllegalArgumentException] shouldBe thrownBy(CaseClassRefl[
+          CaseClassMockGeneric2Args[Int]]
+          .instantiate[CaseClassMock2Args_woMethods]("sdadsa", 123)
+        )
       }
     }
   }

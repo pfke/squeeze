@@ -28,7 +28,7 @@ trait AnnotationHelperIncludes {
     def getInjectType: Option[injectType] = AnnotationHelper.getInjectType(in)
     def hasInjectType: Boolean = AnnotationHelper.hasInjectType(in)
 
-    def getTypeForIface: Option[typeForIface] = AnnotationHelper.getTypeForIface(in)
+    def getTypeForIface: Option[typeForIface[_]] = AnnotationHelper.getTypeForIface(in)
     def hasTypeForIface: Boolean = AnnotationHelper.hasTypeForIface(in)
 
     def getWithFixedSize: Option[withFixedSize] = AnnotationHelper.getWithFixedSize(in)

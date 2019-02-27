@@ -15,14 +15,12 @@ class CaseClassRefl_obj_applyA_Spec
     }
 
     "passing a case class" should {
-      val tto = CaseClassRefl[CaseClassMock3Args_0Defaults]()
-
       "should return an object" in {
-        tto should not be null
+        CaseClassRefl[CaseClassMock3Args_0Defaults]() should not be null
       }
 
       "should return correct name" in {
-        tto.className should be (classOf[CaseClassMock3Args_0Defaults].getCanonicalName)
+        CaseClassRefl[CaseClassMock3Args_0Defaults]().className should be (classOf[CaseClassMock3Args_0Defaults].getCanonicalName)
       }
     }
   }
