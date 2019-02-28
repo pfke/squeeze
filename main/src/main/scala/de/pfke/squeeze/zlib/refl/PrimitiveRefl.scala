@@ -121,27 +121,35 @@ object PrimitiveRefl {
     tpe match {
       case t if t =:= ru.typeOf[Boolean] => t
       case t if t =:= ru.typeOf[java.lang.Boolean] => ru.typeOf[Boolean]
+      case t if t =:= ru.typeOf[scala.Boolean] => ru.typeOf[Boolean]
 
       case t if t =:= ru.typeOf[Char] => t
       case t if t =:= ru.typeOf[java.lang.Character] => ru.typeOf[Char]
+      case t if t =:= ru.typeOf[scala.Char] => ru.typeOf[Char]
 
       case t if t =:= ru.typeOf[Byte] => t
       case t if t =:= ru.typeOf[java.lang.Byte] => ru.typeOf[Byte]
+      case t if t =:= ru.typeOf[scala.Byte] => ru.typeOf[Byte]
 
       case t if t =:= ru.typeOf[Double] => t
       case t if t =:= ru.typeOf[java.lang.Double] => ru.typeOf[Double]
+      case t if t =:= ru.typeOf[scala.Double] => ru.typeOf[Double]
 
       case t if t =:= ru.typeOf[Float] => t
       case t if t =:= ru.typeOf[java.lang.Float] => ru.typeOf[Float]
+      case t if t =:= ru.typeOf[scala.Float] => ru.typeOf[Float]
 
       case t if t =:= ru.typeOf[Int] => t
       case t if t =:= ru.typeOf[java.lang.Integer] => ru.typeOf[Int]
+      case t if t =:= ru.typeOf[scala.Int] => ru.typeOf[Int]
 
       case t if t =:= ru.typeOf[Long] => t
       case t if t =:= ru.typeOf[java.lang.Long] => ru.typeOf[Long]
+      case t if t =:= ru.typeOf[scala.Long] => ru.typeOf[Long]
 
       case t if t =:= ru.typeOf[Short] => t
       case t if t =:= ru.typeOf[java.lang.Short] => ru.typeOf[Short]
+      case t if t =:= ru.typeOf[scala.Short] => ru.typeOf[Short]
 
       case t if t =:= ru.typeOf[String] => t
       case t if t =:= ru.typeOf[java.lang.String] => ru.typeOf[String]
@@ -159,27 +167,35 @@ object PrimitiveRefl {
     clazz match {
       case t if t == classOf[Boolean] => t
       case t if t == classOf[java.lang.Boolean] => classOf[Boolean]
+      case t if t == classOf[scala.Boolean] => classOf[Boolean]
 
       case t if t == classOf[Char] => t
       case t if t == classOf[java.lang.Character] => classOf[Char]
+      case t if t == classOf[scala.Char] => classOf[Char]
 
       case t if t == classOf[Byte] => t
       case t if t == classOf[java.lang.Byte] => classOf[Byte]
+      case t if t == classOf[scala.Byte] => classOf[Byte]
 
       case t if t == classOf[Double] => t
       case t if t == classOf[java.lang.Double] => classOf[Double]
+      case t if t == classOf[scala.Double] => classOf[Double]
 
       case t if t == classOf[Float] => t
       case t if t == classOf[java.lang.Float] => classOf[Float]
+      case t if t == classOf[scala.Float] => classOf[Float]
 
       case t if t == classOf[Int] => t
       case t if t == classOf[java.lang.Integer] => classOf[Int]
+      case t if t == classOf[scala.Int] => classOf[Int]
 
       case t if t == classOf[Long] => t
       case t if t == classOf[java.lang.Long] => classOf[Long]
+      case t if t == classOf[scala.Long] => classOf[Long]
 
       case t if t == classOf[Short] => t
       case t if t == classOf[java.lang.Short] => classOf[Short]
+      case t if t == classOf[scala.Short] => classOf[Short]
 
       case t if t == classOf[String] => t
       case t if t == classOf[java.lang.String] => classOf[String]

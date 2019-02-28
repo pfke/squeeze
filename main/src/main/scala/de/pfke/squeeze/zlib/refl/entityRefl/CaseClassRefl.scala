@@ -1,6 +1,6 @@
 package de.pfke.squeeze.zlib.refl.entityRefl
 
-import de.pfke.squeeze.zlib.refl.{MethodParameter, MethodParameterValue, RichInstanceMirror, RichMethodRefl, RichRuntimeMirror}
+import de.pfke.squeeze.zlib.refl._
 
 import scala.reflect.ClassTag
 import scala.reflect.runtime.{universe => ru}
@@ -104,8 +104,7 @@ class CaseClassRefl (
   require(CaseClassRefl.isCaseClass(classSymbol), s"passed class: '${classSymbol.fullName}' is not a case class")
 
   // fields
-//  private val _applyMethods = RichMethodRefl(classSymbol.companion, RichMethodRefl.TERMNAME_APPLY)
-  private val _applyMethods = RichMethodRefl(classSymbol, RichMethodRefl.TERMNAME_CTOR)
+  private val _applyMethods = RichMethodRefl(classSymbol.companion, RichMethodRefl.TERMNAME_APPLY)
   private val _compagnionClassName = CaseClassRefl.getCompagnionClassName(classSymbol)
   private val _richInstanceMirror = RichInstanceMirror(classSymbol = classSymbol)
 
@@ -127,24 +126,16 @@ class CaseClassRefl (
     classTag: ClassTag[A],
     typeTag: ru.TypeTag[A]
   ): A = {
-    val r1 = classSymbol
-    val r2 = r1.selfType
-    val r2_1 = r2.typeSymbol
-    val r2_2 = r2_1.typeSignature
-    val r3 = typeTag.tpe
-    val r3_1 = r3.typeSymbol
-    val r3_2 = r3_1.typeSignature
-    val r4 = r2 <:< r3
-    val r5 = r3 <:< r2
-    val r6 = r2_2 =:= r3_2
-
-//    require(classSymbol.selfType <:< typeTag.tpe, s"given generic is neither a super nor the same class (${classSymbol.selfType} <:< ${typeTag.tpe})")
-
-    val k1 = findApplyMethod_matching_paramTypes[A](args:_*)
-
     findApplyMethod_matching_paramTypes[A](args:_*) match {
       case Some(t) => t.apply[A](args:_*)
-      case None => throw new IllegalArgumentException(s"no apply method found, which matches the passed args: '${args.mkString(", ")}'")
+      case None =>
+        val argsWType: String = args.map(i => s"$i: ${GeneralRefl.typeOf(i)}").mkString(", ")
+
+        def methodParameterToStr(in: MethodParameter): String = s"${in.name}: ${in.clazz(zipClassTypeParamsWInstanceTypeArgs[A]()).getName}"
+        def methodToStr(in: RichMethodRefl): String = s"apply(${in.parameter.map(methodParameterToStr).mkString(", ")})"
+        val appliesWType: String = applyMethods.map(methodToStr).mkString(", ")
+
+        throw new IllegalArgumentException(s"no apply method found, which matches the passed args: '$argsWType'. Available apply fn(s: $appliesWType")
     }
   }
 

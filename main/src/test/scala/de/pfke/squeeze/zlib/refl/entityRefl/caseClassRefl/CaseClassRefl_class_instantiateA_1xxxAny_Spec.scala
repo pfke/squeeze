@@ -10,11 +10,15 @@ class CaseClassRefl_class_instantiateA_1xxxAny_Spec
   "testing case class: 'CaseClassMock0Args'" when {
     "passing the class" should {
       "should instantiate, when passing all args" in {
-        CaseClassRefl[CaseClassMock0Args].instantiate[CaseClassMock0Args]() should be (CaseClassMock0Args())
+        CaseClassRefl[CaseClassMock0Args]
+          .instantiate[CaseClassMock0Args]() should be(CaseClassMock0Args())
       }
 
       "should throw an exception, when to much args" in {
-        an[IllegalArgumentException] shouldBe thrownBy(CaseClassRefl[CaseClassMock0Args].instantiate[CaseClassMock0Args](456, false))
+        an[IllegalArgumentException] shouldBe thrownBy(
+          CaseClassRefl[CaseClassMock0Args]
+            .instantiate[CaseClassMock0Args](456, false)
+        )
       }
     }
   }
@@ -24,23 +28,37 @@ class CaseClassRefl_class_instantiateA_1xxxAny_Spec
 
     "call method 'apply'" should {
       "should instantiate, when passing all args" in {
-        tto.instantiate[CaseClassMock2Args_wMethods]("sdvdvds", 123) should be (CaseClassMock2Args_wMethods("sdvdvds", 123))
+        tto
+          .instantiate[CaseClassMock2Args_wMethods]("sdvdvds", 123) should
+          be(CaseClassMock2Args_wMethods("sdvdvds", 123))
       }
 
       "should throw an exception, when passing incompatible generic" in {
-        an[IllegalArgumentException] shouldBe thrownBy(tto.instantiate[String]("54656"))
+        an[IllegalArgumentException] shouldBe thrownBy(
+          tto
+            .instantiate[String]("54656")
+        )
       }
 
       "should throw an exception, when to few args" in {
-        an[IllegalArgumentException] shouldBe thrownBy(tto.instantiate[CaseClassMock2Args_wMethods]("54656"))
+        an[IllegalArgumentException] shouldBe thrownBy(
+          tto
+            .instantiate[CaseClassMock2Args_wMethods]("54656")
+        )
       }
 
       "should throw an exception, when passing wrong arg types" in {
-        an[IllegalArgumentException] shouldBe thrownBy(tto.instantiate[CaseClassMock2Args_wMethods]("54656", "sdvdvds"))
+        an[IllegalArgumentException] shouldBe thrownBy(
+          tto
+            .instantiate[CaseClassMock2Args_wMethods]("54656", "sdvdvds")
+        )
       }
 
       "should throw an exception, when to much args" in {
-        an[IllegalArgumentException] shouldBe thrownBy(tto.instantiate[CaseClassMock2Args_wMethods]("54656", 456, false))
+        an[IllegalArgumentException] shouldBe thrownBy(
+          tto
+            .instantiate[CaseClassMock2Args_wMethods]("54656", 456, false)
+        )
       }
     }
   }
@@ -50,23 +68,50 @@ class CaseClassRefl_class_instantiateA_1xxxAny_Spec
 
     "call method 'apply'" should {
       "should instantiate, when passing all args" in {
-        tto.instantiate[CaseClassMock2Args_woMethods](false, 123.toChar) should be (CaseClassMock2Args_woMethods(arg1 = false, 123.toChar))
+        tto
+          .instantiate[CaseClassMock2Args_woMethods](
+          false, 123
+            .toChar
+        ) should be(
+          CaseClassMock2Args_woMethods(
+            arg1 = false, 123
+              .toChar
+          )
+        )
       }
 
       "should throw an exception, when passing incompatible generic" in {
-        an[IllegalArgumentException] shouldBe thrownBy(tto.instantiate[String](false, 123.toChar))
+        an[Exception] shouldBe thrownBy(
+          tto
+            .instantiate[String](
+            false, 123
+              .toChar
+          )
+        )
       }
 
       "should throw an exception, when to few args" in {
-        an[IllegalArgumentException] shouldBe thrownBy(tto.instantiate[CaseClassMock2Args_woMethods](false))
+        an[IllegalArgumentException] shouldBe thrownBy(
+          tto
+            .instantiate[CaseClassMock2Args_woMethods](false)
+        )
       }
 
       "should throw an exception, when passing wrong arg types" in {
-        an[IllegalArgumentException] shouldBe thrownBy(tto.instantiate[CaseClassMock2Args_wMethods]("54656", "sdvdvds"))
+        an[IllegalArgumentException] shouldBe thrownBy(
+          tto
+            .instantiate[CaseClassMock2Args_wMethods]("54656", "sdvdvds")
+        )
       }
 
       "should throw an exception, when to much args" in {
-        an[IllegalArgumentException] shouldBe thrownBy(tto.instantiate[CaseClassMock2Args_woMethods](false, 123.toChar, false))
+        an[IllegalArgumentException] shouldBe thrownBy(
+          tto
+            .instantiate[CaseClassMock2Args_woMethods](
+            false, 123
+              .toChar, false
+          )
+        )
       }
     }
   }
@@ -76,38 +121,107 @@ class CaseClassRefl_class_instantiateA_1xxxAny_Spec
 
     "call method 'apply'" should {
       "should instantiate, when passing all args" in {
-        tto.instantiate[CaseClassMock3Args_1Default]("asd", false, 1233) should be (CaseClassMock3Args_1Default("asd", arg2 = false, 1233))
+        tto
+          .instantiate[CaseClassMock3Args_1Default]("asd", false, 1233) should
+          be(CaseClassMock3Args_1Default("asd", arg2 = false, 1233))
       }
 
       "should throw an exception, when passing incompatible generic" in {
-        an[IllegalArgumentException] shouldBe thrownBy(tto.instantiate[String](false, 123.toChar))
+        an[IllegalArgumentException] shouldBe thrownBy(
+          tto
+            .instantiate[String](
+            false, 123
+              .toChar
+          )
+        )
       }
 
       "should instantiate, when to few args" in {
-        tto.instantiate[CaseClassMock3Args_1Default]("asd", true) should be (CaseClassMock3Args_1Default("asd", arg2 = true))
+        tto
+          .instantiate[CaseClassMock3Args_1Default]("asd", true) should
+          be(CaseClassMock3Args_1Default("asd", arg2 = true))
       }
 
       "should throw an exception, when passing wrong arg types" in {
-        an[IllegalArgumentException] shouldBe thrownBy(tto.instantiate[CaseClassMock2Args_wMethods]("54656", "sdvdvds"))
+        an[IllegalArgumentException] shouldBe thrownBy(
+          tto
+            .instantiate[CaseClassMock2Args_wMethods]("54656", "sdvdvds")
+        )
       }
 
       "should throw an exception, when to much args" in {
-        an[IllegalArgumentException] shouldBe thrownBy(tto.instantiate[CaseClassMock2Args_woMethods](false, 123.toChar, false))
+        an[IllegalArgumentException] shouldBe thrownBy(
+          tto
+            .instantiate[CaseClassMock2Args_woMethods](
+            false, 123
+              .toChar, false
+          )
+        )
       }
     }
   }
 
   "testing case class: 'CaseClassMockGeneric2Args'" when {
-    "call method 'apply'" should {
+    "testing w/ type arg Byte" should {
       "should instantiate, when passing all args" in {
-        CaseClassRefl[CaseClassMockGeneric2Args[Int]]
-          .instantiate[CaseClassMockGeneric2Args[Int]]("asd", 1233) should be (CaseClassMockGeneric2Args[Int]("asd", 1233))
+        CaseClassRefl[CaseClassMockGeneric2Args[Byte]]
+          .instantiate[CaseClassMockGeneric2Args[Byte]]("asd", 113.toByte) should be(CaseClassMockGeneric2Args[Byte]("asd", 113))
       }
 
       "should throw an exception, when false type" in {
-        an[IllegalArgumentException] shouldBe thrownBy(CaseClassRefl[
-          CaseClassMockGeneric2Args[Int]]
-          .instantiate[CaseClassMock2Args_woMethods]("sdadsa", 123)
+        an[IllegalArgumentException] shouldBe thrownBy(
+          CaseClassRefl[CaseClassMockGeneric2Args[Byte]]
+            .instantiate[CaseClassMock2Args_woMethods]("sdadsa", 123.toByte)
+        )
+      }
+
+      "should throw an exception, when false arg type" in {
+        an[IllegalArgumentException] shouldBe thrownBy(
+          CaseClassRefl[CaseClassMockGeneric2Args[Byte]]
+            .instantiate[CaseClassMockGeneric2Args[Byte]]("sdadsa", 123)
+        )
+      }
+    }
+
+    "testing w/ type arg Char" should {
+      "should instantiate, when passing all args" in {
+        CaseClassRefl[CaseClassMockGeneric2Args[Char]]
+          .instantiate[CaseClassMockGeneric2Args[Char]]("asd", 113.toChar) should be(CaseClassMockGeneric2Args[Char]("asd", 113))
+      }
+
+      "should throw an exception, when false type" in {
+        an[IllegalArgumentException] shouldBe thrownBy(
+          CaseClassRefl[CaseClassMockGeneric2Args[Char]]
+            .instantiate[CaseClassMock2Args_woMethods]("sdadsa", 123.toChar)
+        )
+      }
+    }
+
+
+    "testing w/ type arg Short" should {
+      "should instantiate, when passing all args" in {
+        CaseClassRefl[CaseClassMockGeneric2Args[Short]]
+          .instantiate[CaseClassMockGeneric2Args[Short]]("asd", 11123.toShort) should be(CaseClassMockGeneric2Args[Short]("asd", 11123))
+      }
+
+      "should throw an exception, when false type" in {
+        an[IllegalArgumentException] shouldBe thrownBy(
+          CaseClassRefl[CaseClassMockGeneric2Args[Short]]
+            .instantiate[CaseClassMock2Args_woMethods]("sdadsa", 123.toShort)
+        )
+      }
+    }
+
+    "testing w/ type arg Int" should {
+      "should instantiate, when passing all args" in {
+        CaseClassRefl[CaseClassMockGeneric2Args[Int]]
+          .instantiate[CaseClassMockGeneric2Args[Int]]("asd", 1233) should be(CaseClassMockGeneric2Args[Int]("asd", 1233))
+      }
+
+      "should throw an exception, when false type" in {
+        an[IllegalArgumentException] shouldBe thrownBy(
+          CaseClassRefl[CaseClassMockGeneric2Args[Int]]
+            .instantiate[CaseClassMock2Args_woMethods]("sdadsa", 123)
         )
       }
     }

@@ -29,7 +29,7 @@ object MethodParameter {
       .toOption
       .orElse(getMathingTypeArg) match {
       case Some(x) => x
-      case None => throw new IllegalArgumentException(s"could not find out the type of param ${symbol.name}. Its neither a direct type nor a generic")
+      case None => throw new IllegalArgumentException(s"could not guess the type of param '${symbol.name}: ${symbol.info}'. Its neither a direct type nor a defined class generic")
     }
   }
 }
@@ -49,7 +49,7 @@ case class MethodParameter (
     * Gibt entweder den Typ des Parameters zurück. oder wenn ein typearg den gematchten oder wirft eine ex.
     */
   def clazz (
-    typeParams_n_typeArgs: List[(ru.Symbol, ru.Type)]
+    typeParams_n_typeArgs: List[(ru.Symbol, ru.Type)] = List.empty
   ): Class[_] = MethodParameter.getParamTypeAsClass(symbol, typeParams_n_typeArgs)
 
   /**

@@ -45,11 +45,11 @@ class CaseClassRefl_class_findApplyMatchingTheseValueTypes_1xxxAny_Spec
     }
 
     "passing the wrong params" should {
-      "should throw an exception, when passing wrong names" in {
+      "should return none, when passing wrong args" in {
         tto.findApplyMethod_matching_paramTypes(4645l, Some("arg2lkö")) should be (None)
       }
 
-      "should throw an exception, when passing too much names" in {
+      "should return none, when passing too much args" in {
         tto.findApplyMethod_matching_paramTypes(Some("arg1"), 12353, Some(true), 546f) should be (None)
       }
     }

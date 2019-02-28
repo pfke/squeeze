@@ -175,7 +175,7 @@ abstract class EntityRefl (
 
     def mapParamToSimple(in: MethodParameter) = EnrichedArg(
       GeneralRefl.unifyType(
-        GeneralRefl.toScalaType(MethodParameter.getParamTypeAsClass(symbol, zipClassTypeParamsWInstanceTypeArgs[A]()))
+        GeneralRefl.toScalaType(in.clazz(zipClassTypeParamsWInstanceTypeArgs[A]()))
       ),
       GeneralRefl.unifyType(
         in.clazz(zipClassTypeParamsWInstanceTypeArgs[A]())
@@ -198,11 +198,6 @@ abstract class EntityRefl (
         .zip(classCheck)
         .forall { i => i._1 || i._2 }
 
-      val r1 = classOf[Integer]
-      val r2 = classOf[Int]
-      val r3 = GeneralRefl.unifyType(r1).isAssignableFrom(GeneralRefl.unifyType(r2))
-      val r4 = r2.isAssignableFrom(r1)
-
       !res
     }
 
@@ -210,7 +205,7 @@ abstract class EntityRefl (
       .find(hasAllParamTypes)
   }
 
-  private def zipClassTypeParamsWInstanceTypeArgs[A] () (
+  protected def zipClassTypeParamsWInstanceTypeArgs[A] () (
     implicit
     classTag: ClassTag[A],
     typeTag: ru.TypeTag[A]
