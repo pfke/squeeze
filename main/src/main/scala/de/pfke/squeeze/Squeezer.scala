@@ -74,54 +74,80 @@ class Squeezer (
     classTag: ClassTag[A],
     typeTag: ru.TypeTag[A],
   ): A = {
-    val r1 = GeneralRefl
-      .typeOf(in)
-      .typeSymbol
-      .annotations
-    val r1_1 = r1.head
-//    val r1_2 = GeneralRefl.typeOf(r1_1)
-    val r1_3 = r1_1.tree
-    val r1_4 = r1_3.tpe
-    require(r1_4 <:< ru.typeOf[typeForIface[_]], s"passed object is not annotated w/ ${ru.typeOf[typeForIface[_]]}")
-//    val r1_5 = r1_4.typeSymbol.typeSignature
-    val r1_6 = r1_4.typeArgs
-    val r1_7 = r1_6.head
-    val r1_8 = GeneralRefl.unifyType(r1_7) =:= GeneralRefl.unifyType(typeTag.tpe)
-
-    val a1 = ru.typeOf[typeForIface[typeTag.type]]
-    implicit val classLoader = in.getClass.getClassLoader
-    val a2 = getAnnot[typeForIface[Int]](r1)
-
-    val v1 = r1_3.children
-    val v2 = v1(1)
-
-    val annotType = r1_4
-    val args = r1_3.children.tail                                                                 // retrieve the args. These are returned as a list of Tree.
-      .collect{                                                                           // convert list of Tree to list of argument values
-      case ru.Literal(ru.Constant(m)) => m
-    }
-
-
-    val k1 = new CaseClassRefl(annotType.typeSymbol.asClass)
-    val k2 = k1.instantiate[typeForIface[Int]](args:_*)
-
-
-    val v3_0 = r1_1.tree.symbol
-    val v3 = r1_1.tree.symbol.asClass
-    val v4 = new CaseClassRefl(r1_1.tree.symbol.asClass)
-
-    val r2 = r1.getTypeForIface
-    val r3 = r2.get
-    val r4 = GeneralRefl.toScalaType(GeneralRefl.typeOf(r3.ident))
-
+//    val r1 = GeneralRefl
+//      .typeOf(in)
+//      .typeSymbol
+//      .annotations
+//    val r1_1 = r1.head
+////    val r1_2 = GeneralRefl.typeOf(r1_1)
+//    val r1_3 = r1_1.tree
+//    val r1_4 = r1_3.tpe
+//    require(r1_4 <:< ru.typeOf[typeForIface[_]], s"passed object is not annotated w/ ${ru.typeOf[typeForIface[_]]}")
+////    val r1_5 = r1_4.typeSymbol.typeSignature
+//    val r1_6 = r1_4.typeArgs
+//    val r1_7 = r1_6.head
+//    val r1_8 = GeneralRefl.unifyType(r1_7) =:= GeneralRefl.unifyType(typeTag.tpe)
+//
+//    val a1 = ru.typeOf[typeForIface[typeTag.type]]
+//    implicit val classLoader = in.getClass.getClassLoader
+//    val a2 = getAnnot[typeForIface[_]](r1)
+//
+//    val v1 = r1_3.children
+//    val v2 = v1(1)
+//
+//    val annotType = r1_4
+//    val args = r1_3.children.tail                                                                 // retrieve the args. These are returned as a list of Tree.
+//      .collect{                                                                           // convert list of Tree to list of argument values
+//      case ru.Literal(ru.Constant(m)) => m
+//    }
+//
+//
+//    val k1 = new CaseClassRefl(annotType.typeSymbol.asClass, dynamicTypeArgs = r1_6)
+//    val k2 = k1.instantiate[typeForIface[Byte]](args:_*)
+//
+//    val jj1 = GeneralRefl.typeOf(in)
+//    val jj2 = jj1.typeSymbol
+//    val jj3 = jj2.typeSignature
+//    val jj4 = jj3.typeArgs
+//    val jj5 = jj2.asClass.typeParams
+//
+//    val k3 = Try(k1.instantiate[typeForIface[_]](args:_*))
+//
+//    ru.typeOf[Integer]
+//
+//    val b1 = ru.typeOf[Boolean]
+//    val b2 = ru.typeOf[Int]
+//    val b3 = b1 <:< b2
+//    val b4 = b2 <:< b1
+//
+//    val m0 = classOf[Any]
+//    val m1 = classOf[Byte]
+//    val m9_1 = m0.isAssignableFrom(m1)
+//    val m9_2 = m1.isAssignableFrom(m0)
+//    val m2 = ru.typeOf[Any]
+//    val m2_1 = m2.typeSymbol
+//    val m2_2 = m2_1.asClass
+//    val j1 = GeneralRefl.generateTypeInfo[Any].classTag.runtimeClass
+//
+//
+//
+//    val t1 = Try(GeneralRefl
+//      .typeOf(in)
+//      .typeSymbol
+//      .annotations
+//      .getTypeForIface match {
+//      case Some(x) if GeneralRefl.toScalaType(GeneralRefl.typeOf(x.ident)) =:= GeneralRefl.toScalaType(typeTag.tpe) => x.ident.asInstanceOf[A]
+//      case Some(x) => throw new SerializerRunException(s"${ru.typeOf[typeForIface[_]]}.ident has type ${GeneralRefl.typeOf(x.ident)}, but serializer wanted my to convert to $typeTag. Please change field type ($clazz.$paramName)")
+//      case None => throw new SerializerRunException(s"could not find ${ru.typeOf[typeForIface[_]]} annot for ${GeneralRefl.typeOf(in)}")
+//    })
     GeneralRefl
       .typeOf(in)
       .typeSymbol
       .annotations
       .getTypeForIface match {
-      case Some(x) if GeneralRefl.toScalaType(GeneralRefl.typeOf(x.ident)) =:= GeneralRefl.toScalaType(typeTag.tpe) => x.ident.asInstanceOf[A]
-      case Some(x) => throw new SerializerRunException(s"${ru.typeOf[typeForIface[_]]}.ident has type ${GeneralRefl.typeOf(x.ident)}, but serializer wanted my to convert to $typeTag. Please change field type ($clazz.$paramName)")
-      case None => throw new SerializerRunException(s"could not find ${ru.typeOf[typeForIface[_]]} annot for ${GeneralRefl.typeOf(in)}")
+//      case Some(x) if GeneralRefl.toScalaType(GeneralRefl.typeOf(x.ident)) =:= GeneralRefl.toScalaType(typeTag.tpe) => x.ident.asInstanceOf[A]
+      case Some(x) => throw new SerializerRunException(s"${ru.typeOf[typeForIface]}.ident has type ${GeneralRefl.typeOf(x)}, but serializer wanted my to convert to $typeTag. Please change field type ($clazz.$paramName)")
+      case None => throw new SerializerRunException(s"could not find ${ru.typeOf[typeForIface]} annot for ${GeneralRefl.typeOf(in)}")
     }
   }
 

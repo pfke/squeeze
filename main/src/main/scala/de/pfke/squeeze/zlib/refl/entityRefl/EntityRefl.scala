@@ -6,7 +6,8 @@ import scala.reflect.ClassTag
 import scala.reflect.runtime.{universe => ru}
 
 abstract class EntityRefl (
-  classSymbol: ru.ClassSymbol
+  classSymbol: ru.ClassSymbol,
+  dynamicTypeArgs: List[ru.Type] = List.empty
 ) (
   implicit
   classLoader: ClassLoader
@@ -209,5 +210,16 @@ abstract class EntityRefl (
     implicit
     classTag: ClassTag[A],
     typeTag: ru.TypeTag[A]
-  ): List[(ru.Symbol, ru.Type)] = classSymbol.typeParams.zip(typeTag.tpe.typeArgs)
+  ): List[(ru.Symbol, ru.Type)] = {
+    val res = classSymbol.typeParams.zip(typeTag.tpe.typeArgs)
+
+    val r0 = typeTag.tpe.typeArgs
+    val r1 = dynamicTypeArgs
+    val r3 = r0.zip(r1)
+    val r4 = r1 ++ r0.drop(r1.size)
+    val res2 = classSymbol.typeParams.zip(r4)
+
+
+    res2
+  }
 }

@@ -62,7 +62,18 @@ object AnnotationRefl {
   ) (
     implicit
     typeTag: ru.TypeTag[A]
-  ): Option[ru.Annotation] = annots.find { a => a.tree.tpe =:= typeTag.tpe }
+  ): Option[ru.Annotation] = {
+    val r1 = annots.map(_.tree.tpe)
+    val r2 = annots.map(_.tree.tpe.typeSymbol.typeSignature)
+
+    val e1 = typeTag.tpe
+    val e2 = e1.typeSymbol.typeSignature
+
+    val res2 = annots.find(i => i.tree.tpe.typeSymbol.typeSignature =:= typeTag.tpe.typeSymbol.typeSignature)
+
+    val res = annots.find { a => a.tree.tpe =:= typeTag.tpe }
+    res2
+  }
 
   /**
     * Get the class file annotation of the given class type.
@@ -123,16 +134,25 @@ object AnnotationRefl {
   ): A = {
     import scala.reflect.runtime.universe._ // sorgt dafür, dass die haessliche 'abstract type pattern reflect.runtime.universe.AssignOrNamedArg is unchecked since it is eliminated by erasure' wegkommt
 
-    require(annot.tree.tpe =:= annotTypeTag.tpe, "passed argument does not match generic annotation type")
+    require(annot.tree.tpe.typeSymbol.typeSignature =:= annotTypeTag.tpe.typeSymbol.typeSignature, "passed argument does not match generic annotation type")
 
     val annotType = annotTypeTag.tpe                                                                // get the expected annotation type to match
     val args = annot
       .tree.children.tail                                                                 // retrieve the args. These are returned as a list of Tree.
-      .collect{                                                                           // convert list of Tree to list of argument values
+      .collect {                                                                           // convert list of Tree to list of argument values
       case ru.Literal(ru.Constant(m)) => m
+      case ru.Apply(m) => m
+    }
+    val r1 = annot
+    val r2 = r1.tree
+    val r3 = r2.children
+    val r4 = r3.tail                                                                 // retrieve the args. These are returned as a list of Tree.
+    val r5 = r4.collect {                                                                           // convert list of Tree to list of argument values
+      case ru.Literal(ru.Constant(m)) => m
+      case ru.Apply(m) => m._1.symbol
     }
 
-    new CaseClassRefl(annotType.typeSymbol.asClass)
+    new CaseClassRefl(annotType.typeSymbol.asClass, dynamicTypeArgs = annot.tree.tpe.typeArgs)
       .instantiate[A](args:_*)
   }
 

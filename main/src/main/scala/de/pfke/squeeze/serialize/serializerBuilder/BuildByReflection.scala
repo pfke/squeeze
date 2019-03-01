@@ -14,6 +14,7 @@ import enumeratum.values._
 
 import scala.reflect.ClassTag
 import scala.reflect.runtime.{universe => ru}
+import scala.util.{Failure, Success, Try}
 
 object BuildByReflection {
   def apply() = new BuildByReflection()
@@ -380,8 +381,8 @@ class BuildByReflection
     tpe: ru.Type
   ): String = {
     //---
-    case class FoundAnnotsAsOpt(ifaceOpt: Option[typeForIface[_]], versionOpt: Option[fromVersion])
-    case class FoundAnnots(iface: typeForIface[_], versionOpt: Option[fromVersion])
+    case class FoundAnnotsAsOpt(ifaceOpt: Option[typeForIface], versionOpt: Option[fromVersion])
+    case class FoundAnnots(iface: typeForIface, versionOpt: Option[fromVersion])
     case class TypeToFoundAnnotsOpts(clazz: ClassInfo[_], foundAnnots: FoundAnnotsAsOpt)
     case class TypeToFoundAnnots(clazz: ClassInfo[_], foundAnnots: FoundAnnots)
 
@@ -401,8 +402,8 @@ class BuildByReflection
     ): String = annot.matchTo(i => s"Some(PatchLevelVersion(${i.major}, ${i.minor}, ${i.level}))", default = "None")
 
     def ifaceOptToString(
-      annot: Option[typeForIface[_]]
-    ): String = annot.matchTo(i => s"Some(${i.ident})", default = "None")
+      annot: Option[typeForIface]
+    ): String = annot.matchTo(i => s"Some(${i})", default = "None")
 
     implicit def orderingTI[A <: TypeToFoundAnnotsOpts]: Ordering[A] = Ordering.by { i => s"${i.clazz.tpe.toString}${i.foundAnnots.versionOpt.getOrElse(fromVersion(0, 0))}" }
 

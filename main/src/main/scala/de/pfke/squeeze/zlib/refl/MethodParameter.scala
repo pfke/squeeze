@@ -10,12 +10,24 @@ object MethodParameter {
   ): Class[_] = {
     val typeSignature: ru.Type = symbol.typeSignature
 
-    def getMathingTypeArg: Option[Class[_]] = {
+    def getMatchingTypeArg: Option[Class[_]] = {
       typeParams_n_typeArgs
         .find(_._1.asType.fullName == typeSignature.typeSymbol.fullName) match {
+        case Some(x) if x._2 =:= ru.typeOf[Any] => Some(GeneralRefl.generateTypeInfo[Any].classTag.runtimeClass)
         case Some(x) => Try(Class.forName(x._2.typeSymbol.asClass.fullName)).toOption
         case None => None
       }
+    }
+
+    val r1 = typeParams_n_typeArgs
+      .find(_._1.asType.fullName == typeSignature.typeSymbol.fullName) match {
+      case Some(x) =>
+        val rr1 = Try(Class.forName(x._2.typeSymbol.asClass.fullName))
+        val rr2 = Try(Class.forName(x._2.typeSymbol.asClass.name.toString))
+        val rr3 = Try(Class.forName(x._2.typeSymbol.asClass.toString))
+
+        None
+      case None => None
     }
 
     Try(
@@ -27,7 +39,7 @@ object MethodParameter {
             .fullName
         ))
       .toOption
-      .orElse(getMathingTypeArg) match {
+      .orElse(getMatchingTypeArg) match {
       case Some(x) => x
       case None => throw new IllegalArgumentException(s"could not guess the type of param '${symbol.name}: ${symbol.info}'. Its neither a direct type nor a defined class generic")
     }

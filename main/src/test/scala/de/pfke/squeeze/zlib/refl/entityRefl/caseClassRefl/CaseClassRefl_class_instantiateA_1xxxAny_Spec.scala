@@ -197,7 +197,6 @@ class CaseClassRefl_class_instantiateA_1xxxAny_Spec
       }
     }
 
-
     "testing w/ type arg Short" should {
       "should instantiate, when passing all args" in {
         CaseClassRefl[CaseClassMockGeneric2Args[Short]]
@@ -222,6 +221,53 @@ class CaseClassRefl_class_instantiateA_1xxxAny_Spec
         an[IllegalArgumentException] shouldBe thrownBy(
           CaseClassRefl[CaseClassMockGeneric2Args[Int]]
             .instantiate[CaseClassMock2Args_woMethods]("sdadsa", 123)
+        )
+      }
+    }
+
+    "testing w/ type arg Long" should {
+      "should instantiate, when passing all args" in {
+        CaseClassRefl[CaseClassMockGeneric2Args[Long]]
+          .instantiate[CaseClassMockGeneric2Args[Long]]("asd", 1112312213l.toLong) should be(CaseClassMockGeneric2Args[Long]("asd", 1112312213l))
+      }
+
+      "should throw an exception, when false type" in {
+        an[IllegalArgumentException] shouldBe thrownBy(
+          CaseClassRefl[CaseClassMockGeneric2Args[Long]]
+            .instantiate[CaseClassMock2Args_woMethods]("sdadsa", 123.toLong)
+        )
+      }
+    }
+
+    "testing w/ type arg String" should {
+      "should instantiate, when passing all args" in {
+        CaseClassRefl[CaseClassMockGeneric2Args[String]]
+          .instantiate[CaseClassMockGeneric2Args[String]]("asd", "1112312213l") should be(CaseClassMockGeneric2Args[String]("asd", "1112312213l"))
+      }
+
+      "should throw an exception, when false type" in {
+        an[IllegalArgumentException] shouldBe thrownBy(
+          CaseClassRefl[CaseClassMockGeneric2Args[String]]
+            .instantiate[CaseClassMock2Args_woMethods]("sdadsa", "123")
+        )
+      }
+    }
+
+    "testing w/ type arg Option[_]" should {
+      "should instantiate, when passing all args" in {
+        CaseClassRefl[CaseClassMockGeneric2Args[Option[String]]]
+          .instantiate[CaseClassMockGeneric2Args[Option[String]]]("asd", Some("1112312213l")) should be(CaseClassMockGeneric2Args[Option[String]]("asd", Some("1112312213l")))
+      }
+
+      "should instantiate, when passing all args, last is none" in {
+        CaseClassRefl[CaseClassMockGeneric2Args[Option[String]]]
+          .instantiate[CaseClassMockGeneric2Args[Option[String]]]("asd", None) should be(CaseClassMockGeneric2Args[Option[String]]("asd", None))
+      }
+
+      "should throw an exception, when false type" in {
+        an[IllegalArgumentException] shouldBe thrownBy(
+          CaseClassRefl[CaseClassMockGeneric2Args[Option[String]]]
+            .instantiate[CaseClassMock2Args_woMethods]("sdadsa", "123")
         )
       }
     }

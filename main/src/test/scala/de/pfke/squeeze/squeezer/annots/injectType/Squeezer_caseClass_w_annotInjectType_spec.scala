@@ -6,15 +6,28 @@ import akka.util.ByteString
 import de.pfke.squeeze.Squeezer
 import de.pfke.squeeze.annots.classAnnots.typeForIface
 import de.pfke.squeeze.annots.fieldAnnots.injectType
+import de.pfke.squeeze.serialize.serializerBuilder.BuildByReflection
 import de.pfke.squeeze.squeezer.BaseSqueezerSpec
 import de.pfke.squeeze.squeezer.annots.injectType.Squeezer_caseClass_w_annotInjectType_spec.{caseClass_w_annotInjectType_cc2, caseClass_w_annotInjectType_identAsInt, caseClass_w_annotInjectType_iface, caseClass_w_annotInjectType_noAnIface}
 import de.pfke.squeeze.zlib.SerializerRunException
 
+import scala.reflect.runtime.{universe => ru}
+
 object Squeezer_caseClass_w_annotInjectType_spec {
   trait caseClass_w_annotInjectType_iface
-  @typeForIface[Int](ident = 1)
+
+  @typeForIface(
+    typeToKeyList = Map(
+      ru.typeOf[Byte] -> 1,
+      ru.typeOf[Int] -> 10
+    ))
   case class caseClass_w_annotInjectType_cc1(param1: Byte  ) extends caseClass_w_annotInjectType_iface
-  @typeForIface[Int](ident = 2)
+
+  @typeForIface(
+    typeToKeyList = Map(
+      ru.typeOf[Byte] -> 2,
+      ru.typeOf[Int] -> 20
+    ))
   case class caseClass_w_annotInjectType_cc2(param1: String) extends caseClass_w_annotInjectType_iface
 
   case class caseClass_w_annotInjectType_identAsInt(
@@ -29,7 +42,7 @@ object Squeezer_caseClass_w_annotInjectType_spec {
   case class caseClass_w_annotInjectType_noAnIface(
     param1: Long,
     @injectType(fromField = "param3")
-    param2: Byte,
+    param2: Int,
     param3: String
   )
 }
@@ -67,6 +80,10 @@ class Squeezer_caseClass_w_annotInjectType_spec
     0x02, 0x00, 0x00, 0x00,
     0x31, 0x32, 0x33
   )
+
+  val r1 = BuildByReflection().build[caseClass_w_annotInjectType_identAsInt]()
+  val r2 = BuildByReflection().build[caseClass_w_annotInjectType_iface]()
+  println
 
   runBE_n_LE[caseClass_w_annotInjectType_identAsInt](
     descr = "type not prefilled",

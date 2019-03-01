@@ -90,7 +90,10 @@ class ClassRefl (
   private val _richClassMirror = RichClassMirror(classSymbol = classSymbol)
 
   // requirements
-  require(ctorRichMethodRefls.nonEmpty, s"could not find any apply method of case class ${classSymbol.typeSignature}")
+  val r1 = _richClassMirror.ctorMethodRefls
+  val r2 = _richClassMirror
+
+//  require(ctorRichMethodRefls.nonEmpty, s"could1 not find any ctor of class ${classSymbol.typeSignature}")
 
   /**
     * Getter

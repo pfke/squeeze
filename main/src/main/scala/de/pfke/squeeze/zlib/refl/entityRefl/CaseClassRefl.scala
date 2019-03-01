@@ -94,12 +94,14 @@ object CaseClassRefl {
 }
 
 class CaseClassRefl (
-  classSymbol: ru.ClassSymbol
+  classSymbol: ru.ClassSymbol,
+  dynamicTypeArgs: List[ru.Type] = List.empty
 ) (
   implicit
   classLoader: ClassLoader = getClass.getClassLoader
 ) extends EntityRefl (
-  classSymbol = classSymbol
+  classSymbol = classSymbol,
+  dynamicTypeArgs = dynamicTypeArgs
 ) {
   require(CaseClassRefl.isCaseClass(classSymbol), s"passed class: '${classSymbol.fullName}' is not a case class")
 
@@ -120,6 +122,20 @@ class CaseClassRefl (
     * @return
     */
   def instantiate[A] (
+    args: Any*
+  ) (
+    implicit
+    classTag: ClassTag[A],
+    typeTag: ru.TypeTag[A]
+  ): A = instantiate[A](typeArgs = List.empty, args:_*)
+
+  /**
+    * Instantiate this class, using the passed args
+    * @param args apply method arguments
+    * @return
+    */
+  def instantiate[A] (
+    typeArgs: List[ru.Type],
     args: Any*
   ) (
     implicit

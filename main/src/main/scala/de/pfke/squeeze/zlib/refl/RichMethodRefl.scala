@@ -101,6 +101,11 @@ class RichMethodRefl (
       .map(_.defaultValue.get)
     val argsToPass = args ++: defaultValues
 
+    val r1 = methodSymbol
+    val r2 = r1.paramLists
+    val r3 = r2.head
+    val r4 = r3.size
+
     require(argsToPass.size == methodSymbol.paramLists.head.size, s"too few/much parameter given (given=${argsToPass.size}, wanted=${methodSymbol.paramLists.head.size})")
     require(methodSymbol.owner.asClass.isCaseClass || methodSymbol.owner.asClass.isClass, "methods owner is neither a case class nor a class, so please provide an instance mirror")
 

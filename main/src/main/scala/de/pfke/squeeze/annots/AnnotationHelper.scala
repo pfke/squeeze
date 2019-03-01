@@ -59,11 +59,11 @@ object AnnotationHelper {
   ) (
     implicit
     classLoader: ClassLoader = getClass.getClassLoader
-  ): Option[typeForIface[_]] = getAnnot[typeForIface[_]](in)
+  ): Option[typeForIface] = getAnnot[typeForIface](in)
 
   def hasTypeForIface (
     in: List[ru.Annotation]
-  ): Boolean = hasAnnot[typeForIface[_]](in)
+  ): Boolean = hasAnnot[typeForIface](in)
 
   def getWithFixedSize (
     in: List[ru.Annotation]
