@@ -136,20 +136,14 @@ object AnnotationRefl {
 
     require(annot.tree.tpe.typeSymbol.typeSignature =:= annotTypeTag.tpe.typeSymbol.typeSignature, "passed argument does not match generic annotation type")
 
-    val annotType = annotTypeTag.tpe                                                                // get the expected annotation type to match
-    val args = annot
-      .tree.children.tail                                                                 // retrieve the args. These are returned as a list of Tree.
-      .collect {                                                                           // convert list of Tree to list of argument values
+    val annotType = annotTypeTag.tpe                    // get the expected annotation type to match
+    val args = annot                                    // retrieve the args. These are returned as a list of Tree.
+      .tree
+      .children
+      .tail
+      .collect {
       case ru.Literal(ru.Constant(m)) => m
-      case ru.Apply(m) => m
-    }
-    val r1 = annot
-    val r2 = r1.tree
-    val r3 = r2.children
-    val r4 = r3.tail                                                                 // retrieve the args. These are returned as a list of Tree.
-    val r5 = r4.collect {                                                                           // convert list of Tree to list of argument values
-      case ru.Literal(ru.Constant(m)) => m
-      case ru.Apply(m) => m._1.symbol
+      case m => throw new IllegalArgumentException(s"only contant values allowed as anno params ($m)")
     }
 
     new CaseClassRefl(annotType.typeSymbol.asClass, dynamicTypeArgs = annot.tree.tpe.typeArgs)

@@ -83,11 +83,13 @@ class RichInstanceMirror (
 ) {
   // fields
   private lazy val _applyMethodRefls = RichMethodRefl(instanceMirror.symbol, RichMethodRefl.TERMNAME_APPLY)
+  private lazy val _ctorMethodRefls = RichMethodRefl(instanceMirror.symbol, RichMethodRefl.TERMNAME_CTOR)
 
   /**
     * Getter
     */
   def applyMethodRefls: List[RichMethodRefl] = _applyMethodRefls
+  def ctorMethodRefls: List[RichMethodRefl] = _ctorMethodRefls
 
   def asType: ru.TypeSymbol = symbol.asType
   def asTpe: ru.Type = asType.toType

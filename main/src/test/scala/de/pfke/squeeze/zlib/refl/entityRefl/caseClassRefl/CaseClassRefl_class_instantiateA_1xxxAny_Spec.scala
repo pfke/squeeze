@@ -213,6 +213,8 @@ class CaseClassRefl_class_instantiateA_1xxxAny_Spec
 
     "testing w/ type arg Int" should {
       "should instantiate, when passing all args" in {
+        println()
+
         CaseClassRefl[CaseClassMockGeneric2Args[Int]]
           .instantiate[CaseClassMockGeneric2Args[Int]]("asd", 1233) should be(CaseClassMockGeneric2Args[Int]("asd", 1233))
       }
@@ -268,6 +270,118 @@ class CaseClassRefl_class_instantiateA_1xxxAny_Spec
         an[IllegalArgumentException] shouldBe thrownBy(
           CaseClassRefl[CaseClassMockGeneric2Args[Option[String]]]
             .instantiate[CaseClassMock2Args_woMethods]("sdadsa", "123")
+        )
+      }
+    }
+  }
+
+  "testing case class: 'CaseClassMock_wMap'" when {
+    "testing" should {
+      "should instantiate, when passing all args" in {
+        CaseClassRefl[CaseClassMock_wMap]
+          .instantiate[CaseClassMock_wMap](Map(1 -> "a", 2 -> "2"), 113, None) should be(CaseClassMock_wMap(Map(1 -> "a", 2 -> "2"), 113, None))
+      }
+
+      "should throw an exception, when false type" in {
+        an[IllegalArgumentException] shouldBe thrownBy(
+          CaseClassRefl[CaseClassMock_wMap]
+            .instantiate[CaseClassMockGeneric2Args[Byte]](Map(1 -> "a", 2 -> "2"), 113, None)
+        )
+      }
+
+      "should throw an exception, when to few args" in {
+        CaseClassRefl[CaseClassMock_wMap]
+          .instantiate[CaseClassMock_wMap](Map(1 -> "a", 2 -> "2"), 113) should be(CaseClassMock_wMap(Map(1 -> "a", 2 -> "2"), 113, Some(true)))
+      }
+
+      "should throw an exception, when passing wrong arg types" in {
+        an[IllegalArgumentException] shouldBe thrownBy(
+          CaseClassRefl[CaseClassMock_wMap]
+            .instantiate[CaseClassMock_wMap]("54656", "sdvdvds", true)
+        )
+      }
+
+      "should throw an exception, when to much args" in {
+        an[IllegalArgumentException] shouldBe thrownBy(
+          CaseClassRefl[CaseClassMock_wMap]
+            .instantiate[CaseClassMock_wMap](Map(1 -> "a", 2 -> "2"), 113, None, "jkljkl")
+        )
+      }
+    }
+  }
+
+  "testing case class: 'CaseClassMock_wOption'" when {
+    "testing" should {
+      "should instantiate, when passing all args" in {
+        CaseClassRefl[CaseClassMock_wOption]
+          .instantiate[CaseClassMock_wOption](Some("asd"), 113, None) should be(CaseClassMock_wOption(Some("asd"), 113, None))
+      }
+
+      "should throw an exception, when false type" in {
+        an[IllegalArgumentException] shouldBe thrownBy(
+          CaseClassRefl[CaseClassMock_wOption]
+            .instantiate[CaseClassMockGeneric2Args[Byte]](Some("asd"), 113, None)
+        )
+      }
+
+      "should throw an exception, when to few args" in {
+        CaseClassRefl[CaseClassMock_wOption]
+          .instantiate[CaseClassMock_wOption](Some("asd"), 113) should be(CaseClassMock_wOption(Some("asd"), 113, Some(true)))
+      }
+
+      "should throw an exception, when passing wrong arg types" in {
+        an[IllegalArgumentException] shouldBe thrownBy(
+          CaseClassRefl[CaseClassMock_wOption]
+            .instantiate[CaseClassMock_wOption]("54656", "sdvdvds", true)
+        )
+      }
+
+      "should throw an exception, when to much args" in {
+        an[IllegalArgumentException] shouldBe thrownBy(
+          CaseClassRefl[CaseClassMock_wOption]
+            .instantiate[CaseClassMock_wOption](Some("asd"), 113, None, "jkljkl")
+        )
+      }
+    }
+  }
+
+  "testing case class: 'CaseClassMock_wTrait'" when {
+    "testing" should {
+      "should instantiate, when passing all args" in {
+        CaseClassRefl[CaseClassMock_wTrait]
+          .instantiate[CaseClassMock_wTrait](Some("asd"), 113, None) should be(CaseClassMock_wTrait(Some("asd"), 113, None))
+      }
+
+      "should instantiate, when passing all args, cast as trait" in {
+        println()
+
+        CaseClassRefl[CaseClassMock_wTrait]
+          .instantiate[trait_CaseClassMock_wTrait](Some("asd"), 113, None) should not be null
+      }
+
+      "should throw an exception, when false type" in {
+        an[IllegalArgumentException] shouldBe thrownBy(
+          CaseClassRefl[CaseClassMock_wTrait]
+            .instantiate[CaseClassMockGeneric2Args[Byte]](Some("asd"), 113, None)
+        )
+      }
+
+      "should throw an exception, when to few args" in {
+        CaseClassRefl[CaseClassMock_wTrait]
+          .instantiate[CaseClassMock_wTrait](Some("asd"), 113) should be(CaseClassMock_wTrait(Some("asd"), 113, Some(true)))
+      }
+
+      "should throw an exception, when passing wrong arg types" in {
+        an[IllegalArgumentException] shouldBe thrownBy(
+          CaseClassRefl[CaseClassMock_wTrait]
+            .instantiate[CaseClassMock_wTrait]("54656", "sdvdvds", true)
+        )
+      }
+
+      "should throw an exception, when to much args" in {
+        an[IllegalArgumentException] shouldBe thrownBy(
+          CaseClassRefl[CaseClassMock_wTrait]
+            .instantiate[CaseClassMock_wTrait](Some("asd"), 113, None, "jkljkl")
         )
       }
     }

@@ -62,7 +62,7 @@ object CaseClassRefl {
     */
   def isCaseClass(
     clazzSymbol: ru.ClassSymbol
-  ): Boolean = clazzSymbol.isCaseClass
+  ): Boolean = clazzSymbol.isClass && clazzSymbol.isCaseClass
 
   /**
     * Return classymbols compagnion class name (the objects name)
@@ -142,6 +142,12 @@ class CaseClassRefl (
     classTag: ClassTag[A],
     typeTag: ru.TypeTag[A]
   ): A = {
+    if (typeTag.tpe.typeArgs.nonEmpty) {
+      require(typeTag.tpe.typeSymbol.typeSignature <:< typeSignature.typeSymbol.typeSignature, s"not the same type. CaseClassRefl[$typeSignature] -> instantiate[${typeTag.tpe}]")
+    } else {
+      require(typeSignature <:< typeTag.tpe, s"not the same type. CaseClassRefl[$typeSignature] -> instantiate[${typeTag.tpe}]")
+    }
+
     findApplyMethod_matching_paramTypes[A](args:_*) match {
       case Some(t) => t.apply[A](args:_*)
       case None =>

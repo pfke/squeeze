@@ -30,6 +30,15 @@ object MethodParameter {
       case None => None
     }
 
+    val r2 = Try(
+      Class
+        .forName(
+          typeSignature
+            .typeSymbol
+            .asClass
+            .fullName
+        ))
+
     Try(
       Class
         .forName(

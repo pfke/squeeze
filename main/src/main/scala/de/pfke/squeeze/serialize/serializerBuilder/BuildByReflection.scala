@@ -390,6 +390,9 @@ class BuildByReflection
       .findAllClassesDerivedFrom(tpe, packageName = "")
       .filterNot(_.classSymbol.isAbstract)
       .map { i =>
+        val r1 = Try(TypeToFoundAnnotsOpts(i, FoundAnnotsAsOpt(i.annotations.getTypeForIface, i.annotations.getAnnot[fromVersion])))
+        val r2 = TypeToFoundAnnotsOpts(i, FoundAnnotsAsOpt(i.annotations.getTypeForIface, i.annotations.getAnnot[fromVersion]))
+
         try {
           TypeToFoundAnnotsOpts(i, FoundAnnotsAsOpt(i.annotations.getTypeForIface, i.annotations.getAnnot[fromVersion]))
         } catch {
@@ -403,7 +406,7 @@ class BuildByReflection
 
     def ifaceOptToString(
       annot: Option[typeForIface]
-    ): String = annot.matchTo(i => s"Some(${i})", default = "None")
+    ): String = annot.matchTo(i => s"Some(${i.ident})", default = "None")
 
     implicit def orderingTI[A <: TypeToFoundAnnotsOpts]: Ordering[A] = Ordering.by { i => s"${i.clazz.tpe.toString}${i.foundAnnots.versionOpt.getOrElse(fromVersion(0, 0))}" }
 

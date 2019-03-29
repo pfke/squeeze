@@ -200,7 +200,12 @@ abstract class EntityRefl (
         .forall { i => i._1 || i._2 }
 
       !res
+      true
     }
+
+    val r1 = RichMethodRefl(symbol, methodName)
+    val r2 = r1.head
+    val r3 = r2.parameter
 
     RichMethodRefl(symbol, methodName)
       .find(hasAllParamTypes)

@@ -145,7 +145,7 @@ class Squeezer (
       .typeSymbol
       .annotations
       .getTypeForIface match {
-//      case Some(x) if GeneralRefl.toScalaType(GeneralRefl.typeOf(x.ident)) =:= GeneralRefl.toScalaType(typeTag.tpe) => x.ident.asInstanceOf[A]
+      case Some(x) if GeneralRefl.toScalaType(GeneralRefl.typeOf(x.ident)) =:= GeneralRefl.toScalaType(typeTag.tpe) => x.ident.asInstanceOf[A]
       case Some(x) => throw new SerializerRunException(s"${ru.typeOf[typeForIface]}.ident has type ${GeneralRefl.typeOf(x)}, but serializer wanted my to convert to $typeTag. Please change field type ($clazz.$paramName)")
       case None => throw new SerializerRunException(s"could not find ${ru.typeOf[typeForIface]} annot for ${GeneralRefl.typeOf(in)}")
     }
