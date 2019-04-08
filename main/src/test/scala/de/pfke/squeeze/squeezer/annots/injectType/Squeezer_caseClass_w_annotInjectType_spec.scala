@@ -7,15 +7,15 @@ import de.pfke.squeeze.Squeezer
 import de.pfke.squeeze.annots.classAnnots.typeForIface
 import de.pfke.squeeze.annots.fieldAnnots.injectType
 import de.pfke.squeeze.squeezer.BaseSqueezerSpec
-import de.pfke.squeeze.squeezer.annots.injectType.Squeezer_caseClass_w_annotInjectType_spec.{caseClass_w_annotInjectType_cc2, caseClass_w_annotInjectType_identAsInt, caseClass_w_annotInjectType_iface, caseClass_w_annotInjectType_noAnIface}
+import de.pfke.squeeze.squeezer.annots.injectType.Squeezer_caseClass_w_annotInjectType_spec.{caseClass_w_annotInjectType_cc1, caseClass_w_annotInjectType_cc2, caseClass_w_annotInjectType_identAsInt, caseClass_w_annotInjectType_iface, caseClass_w_annotInjectType_noAnIface}
 import de.pfke.squeeze.zlib.SerializerRunException
 
 object Squeezer_caseClass_w_annotInjectType_spec {
   trait caseClass_w_annotInjectType_iface
 
-  @typeForIface(value = 2)
+  @typeForIface(ident = 2)
   case class caseClass_w_annotInjectType_cc1(param1: Byte) extends caseClass_w_annotInjectType_iface
-  @typeForIface(value = 3)
+  @typeForIface(ident = 5)
   case class caseClass_w_annotInjectType_cc2(param1: String) extends caseClass_w_annotInjectType_iface
 
   case class caseClass_w_annotInjectType_identAsInt(
@@ -53,19 +53,19 @@ class Squeezer_caseClass_w_annotInjectType_spec
   )
   private val outPojo = caseClass_w_annotInjectType_identAsInt(
     param1 = 17433124l,
-    param2 = 2,
+    param2 = 5,
     param3 = caseClass_w_annotInjectType_cc2(
       param1 = "123"
     )
   )
   private val beBinaryData = ByteString(
     0x00, 0x00, 0x00, 0x00, 0x01, 0x0a, 0x02, 0x24,
-    0x00, 0x00, 0x00, 0x02,
+    0x00, 0x00, 0x00, 0x05,
     0x31, 0x32, 0x33
   )
   private val leBinaryData = ByteString(
     0x24, 0x02, 0x0a, 0x01, 0x00, 0x00, 0x00, 0x00,
-    0x02, 0x00, 0x00, 0x00,
+    0x05, 0x00, 0x00, 0x00,
     0x31, 0x32, 0x33
   )
 

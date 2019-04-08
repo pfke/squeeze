@@ -4,7 +4,7 @@ import de.pfke.squeeze.annots.classAnnots.typeForIface
 
 import scala.collection.immutable.HashMap
 
-@typeForIface(HashMap.empty)
+@typeForIface(7)
 case class NAHISubClassA(
   _1stParam: Int,
   _2ndParam: Short,

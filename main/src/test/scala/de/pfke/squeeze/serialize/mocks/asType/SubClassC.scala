@@ -5,7 +5,7 @@ import de.pfke.squeeze.annots.fieldAnnots.withFixedSize
 
 import scala.collection.immutable.HashMap
 
-@typeForIface(HashMap.empty)
+@typeForIface(5462)
 case class SubClassC(
                               _1stParam: Byte,
   @withFixedSize(size = 5) _2ndParam : String

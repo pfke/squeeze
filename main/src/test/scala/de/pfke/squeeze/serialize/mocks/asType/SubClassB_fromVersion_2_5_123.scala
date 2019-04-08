@@ -2,9 +2,7 @@ package de.pfke.squeeze.serialize.mocks.asType
 
 import de.pfke.squeeze.annots.classAnnots.{fromVersion, typeForIface}
 
-import scala.collection.immutable.HashMap
-
-@typeForIface(HashMap.empty)
+@typeForIface(13)
 @fromVersion(major = 2, minor = 5, level = 123)
 case class SubClassB_fromVersion_2_5_123(
   _1stParam: Short,
