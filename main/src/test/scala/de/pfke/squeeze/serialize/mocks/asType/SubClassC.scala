@@ -7,6 +7,6 @@ import scala.collection.immutable.HashMap
 
 @typeForIface(5462)
 case class SubClassC(
-                              _1stParam: Byte,
+                            _1stParam: Byte,
   @withFixedSize(size = 5) _2ndParam : String
 ) extends Iface

@@ -44,7 +44,7 @@ class HoldingClassSerializerSpec
                 |    version: Option[PatchLevelVersion]
                 |  ): Unit = {
                 |    require(findOneHint[ByteStringBuilderHint](hints = hints).nonEmpty, s"[de.pfke.squeeze.serialize.mocks.asType.HoldingClass] given input has no ByteStringBuilderHint")
-                |    serializerContainer.write[Int](serializerContainer.getIfaceType(data._iface).toInt, hints = hints:_*)
+                |    serializerContainer.write[Int](serializerContainer.getIfaceType[Int](in = data._iface, clazz = ru.typeOf[de.pfke.squeeze.serialize.mocks.asType.HoldingClass], paramName = "_ifaceType"), hints = hints:_*)
                 |    serializerContainer.write[de.pfke.squeeze.serialize.mocks.asType.Iface](data._iface, hints = hints:_*)
                 |  }
                 |}

@@ -26,13 +26,13 @@ class IfaceSerializerSpec
                 |    require(iter.len.toByte >= 0, s"[de.pfke.squeeze.serialize.mocks.asType.Iface] given input has only $${iter.len} left, but we need 0 byte")
                 |    // read iter
                 |    (findIfaceTypeHint(hints = hints), version) match {
-                |      case (Some(10), None) => serializerContainer.read[de.pfke.squeeze.serialize.mocks.asType.SubClassA](iter, hints = hints:_*)
-                |      case (Some(15), Some(PatchLevelVersion(1, 5, 123))) => serializerContainer.read[de.pfke.squeeze.serialize.mocks.asType.SubClassB_fromVersion_1_5_123](iter, hints = hints:_*)
-                |      case (Some(15), Some(PatchLevelVersion(1, 5, 124))) => serializerContainer.read[de.pfke.squeeze.serialize.mocks.asType.SubClassB_fromVersion_1_5_124](iter, hints = hints:_*)
-                |      case (Some(15), Some(PatchLevelVersion(1, 6, 123))) => serializerContainer.read[de.pfke.squeeze.serialize.mocks.asType.SubClassB_fromVersion_1_6_123](iter, hints = hints:_*)
-                |      case (Some(15), Some(PatchLevelVersion(2, 5, 123))) => serializerContainer.read[de.pfke.squeeze.serialize.mocks.asType.SubClassB_fromVersion_2_5_123](iter, hints = hints:_*)
-                |      case (Some(15), None) => serializerContainer.read[de.pfke.squeeze.serialize.mocks.asType.SubClassB](iter, hints = hints:_*)
-                |      case (Some(17), None) => serializerContainer.read[de.pfke.squeeze.serialize.mocks.asType.SubClassC](iter, hints = hints:_*)
+                |      case (Some(7), None) => serializerContainer.read[de.pfke.squeeze.serialize.mocks.asType.SubClassA](iter, hints = hints:_*)
+                |      case (Some(54), Some(PatchLevelVersion(1, 5, 123))) => serializerContainer.read[de.pfke.squeeze.serialize.mocks.asType.SubClassB_fromVersion_1_5_123](iter, hints = hints:_*)
+                |      case (Some(54), Some(PatchLevelVersion(1, 5, 124))) => serializerContainer.read[de.pfke.squeeze.serialize.mocks.asType.SubClassB_fromVersion_1_5_124](iter, hints = hints:_*)
+                |      case (Some(54), Some(PatchLevelVersion(1, 6, 123))) => serializerContainer.read[de.pfke.squeeze.serialize.mocks.asType.SubClassB_fromVersion_1_6_123](iter, hints = hints:_*)
+                |      case (Some(54), Some(PatchLevelVersion(2, 5, 123))) => serializerContainer.read[de.pfke.squeeze.serialize.mocks.asType.SubClassB_fromVersion_2_5_123](iter, hints = hints:_*)
+                |      case (Some(54), None) => serializerContainer.read[de.pfke.squeeze.serialize.mocks.asType.SubClassB](iter, hints = hints:_*)
+                |      case (Some(5462), None) => serializerContainer.read[de.pfke.squeeze.serialize.mocks.asType.SubClassC](iter, hints = hints:_*)
                 |
                 |      case (t1, t2) => throw new SerializerRunException(s"trying to unsqueeze a trait (de.pfke.squeeze.serialize.mocks.asType.Iface), but either iface type ($$t1) or version ($$t2) does not match")
                 |    }

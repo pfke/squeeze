@@ -14,7 +14,6 @@ import enumeratum.values._
 
 import scala.reflect.ClassTag
 import scala.reflect.runtime.{universe => ru}
-import scala.util.{Failure, Success, Try}
 
 object BuildByReflection {
   def apply() = new BuildByReflection()
@@ -390,9 +389,6 @@ class BuildByReflection
       .findAllClassesDerivedFrom(tpe, packageName = "")
       .filterNot(_.classSymbol.isAbstract)
       .map { i =>
-        val r1 = Try(TypeToFoundAnnotsOpts(i, FoundAnnotsAsOpt(i.annotations.getTypeForIface, i.annotations.getAnnot[fromVersion])))
-        val r2 = TypeToFoundAnnotsOpts(i, FoundAnnotsAsOpt(i.annotations.getTypeForIface, i.annotations.getAnnot[fromVersion]))
-
         try {
           TypeToFoundAnnotsOpts(i, FoundAnnotsAsOpt(i.annotations.getTypeForIface, i.annotations.getAnnot[fromVersion]))
         } catch {
@@ -714,7 +710,7 @@ class BuildByReflection
 
     val valueToConvert = if (field.hasInjectSize) {
       (field.getInjectSize, getWithFixedSize_fromInjectField(field.getInjectSize.matchToOption(_.from))) match {
-        case (Some(_1), Some(_2))               => s"${_2.size.toString}"
+        case (Some(_), Some(_2))                => s"${_2.size.toString}"
         case (Some(_1), None) if _1.from == "." => s"SizeOf.guesso[$upperClassType](data).toByte.to${field.tpe}"
         case (Some(_1), None)                   => s"$nameOfTheDataObjWithinCode.${_1.from}.size.to${field.tpe}"
 

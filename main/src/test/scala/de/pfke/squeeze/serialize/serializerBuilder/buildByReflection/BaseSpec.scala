@@ -25,7 +25,8 @@ abstract class BaseSpec
       |import de.pfke.squeeze.serialize.serializerCompiler.CompiledSerializer
       |import de.pfke.squeeze.serialize.serializerHints._
       |import de.pfke.squeeze.zlib._
-      |import java.nio.ByteOrder""".stripMargin
+      |import java.nio.ByteOrder
+      |import scala.reflect.runtime.{universe => ru}""".stripMargin
 
   /**
     * Testing the serializer for the given type
@@ -37,20 +38,24 @@ abstract class BaseSpec
     classTag: ClassTag[A],
     typeTag: ru.TypeTag[A]
   ): Unit = {
-    val tto = BuildByReflection().build[A]()
     val typeInfo = GeneralRefl.generateTypeInfo[A]
     val typeName = typeInfo.typeTag.tpe.toString
 
     s"testing ${prefix.getOrElse("")}$typeName type" should {
       "should return correct classTag" in {
+        val tto = BuildByReflection().build[A]()
         tto.classTag should be (typeInfo.classTag)
       }
 
       "should return correct typeTag" in {
+        val tto = BuildByReflection().build[A]()
+
         tto.typeTag should be (typeInfo.typeTag)
       }
 
       "should return correct code" in {
+        val tto = BuildByReflection().build[A]()
+
         val errorPatch = if (tto.code != code) {
           val resFile = cleanFileAfter("cmp_res".createTempFile())
 

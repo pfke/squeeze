@@ -13,9 +13,8 @@ class HoldingClassCompilerSpec
     implicit val byteOrder: ByteOrder = ByteOrder.BIG_ENDIAN
     implicit val version: None.type = None
 
-    val tto = createTTO[HoldingClass]()
     val value = HoldingClass(
-      _ifaceType = 15,
+      _ifaceType = 54,
       _iface = SubClassB(
         _1stParam = 0x123
       )
@@ -23,29 +22,39 @@ class HoldingClassCompilerSpec
 
     "read+write bit(s)" should {
       "[read] should throw an exception" in {
+        val tto = createTTO[HoldingClass]()
+
         an[IllegalArgumentException] shouldBe thrownBy(readBitString(tto, 5, 0x03))
       }
 
       "[write] should throw an exception" in {
+        val tto = createTTO[HoldingClass]()
+
         an[IllegalArgumentException] shouldBe thrownBy(writeBitString[HoldingClass](tto, 5, value))
       }
     }
 
     "read+write byte(s)" should {
       "[read] should read correct" in {
+        val tto = createTTO[HoldingClass]()
+
         readByteString(tto,
-          0x00, 0x00, 0x00, 0x0f,
+          0x00, 0x00, 0x00, 0x36,
           0x01, 0x23
         ) should be(value)
       }
 
       "[write] should return a ByteString with correct length" in {
+        val tto = createTTO[HoldingClass]()
+
         writeByteString(tto, value).length should be(6)
       }
 
       "[write] should return correct packed ByteString" in {
+        val tto = createTTO[HoldingClass]()
+
         writeByteString(tto, value) should be(ByteString(
-          0x00, 0x00, 0x00, 0x0f,
+          0x00, 0x00, 0x00, 0x36,
           0x01, 0x23
         ))
       }
@@ -56,9 +65,8 @@ class HoldingClassCompilerSpec
     implicit val byteOrder: ByteOrder = ByteOrder.BIG_ENDIAN
     implicit val version: Some[PatchLevelVersion] = Some(PatchLevelVersion("1.5-123"))
 
-    val tto = createTTO[HoldingClass]()
     val value = HoldingClass(
-      _ifaceType = 15,
+      _ifaceType = 54,
       _iface = SubClassB_fromVersion_1_5_123(
         _1stParam = 0x123,
         _2ndParam = 0x124
@@ -67,29 +75,39 @@ class HoldingClassCompilerSpec
 
     "read+write bit(s)" should {
       "[read] should throw an exception" in {
+        val tto = createTTO[HoldingClass]()
+
         an[IllegalArgumentException] shouldBe thrownBy(readBitString(tto, 5, 0x03))
       }
 
       "[write] should throw an exception" in {
+        val tto = createTTO[HoldingClass]()
+
         an[IllegalArgumentException] shouldBe thrownBy(writeBitString[HoldingClass](tto, 5, value))
       }
     }
 
     "read+write byte(s)" should {
       "[read] should read correct" in {
+        val tto = createTTO[HoldingClass]()
+
         readByteString(tto,
-          0x00, 0x00, 0x00, 0x0f,
+          0x00, 0x00, 0x00, 0x36,
           0x01, 0x23, 0x01, 0x24
         ) should be(value)
       }
 
       "[write] should return a ByteString with correct length" in {
+        val tto = createTTO[HoldingClass]()
+
         writeByteString(tto, value).length should be(8)
       }
 
       "[write] should return correct packed ByteString" in {
+        val tto = createTTO[HoldingClass]()
+
         writeByteString(tto, value) should be(ByteString(
-          0x00, 0x00, 0x00, 0x0f,
+          0x00, 0x00, 0x00, 0x36,
           0x01, 0x23, 0x01, 0x24
         ))
       }
@@ -100,9 +118,8 @@ class HoldingClassCompilerSpec
     implicit val byteOrder: ByteOrder = ByteOrder.BIG_ENDIAN
     implicit val version: Some[PatchLevelVersion] = Some(PatchLevelVersion("1.5-124"))
 
-    val tto = createTTO[HoldingClass]()
     val value = HoldingClass(
-      _ifaceType = 15,
+      _ifaceType = 54,
       _iface = SubClassB_fromVersion_1_5_124(
         _1stParam = 0x123,
         _2ndParam = 0x124,
@@ -112,29 +129,39 @@ class HoldingClassCompilerSpec
 
     "read+write bit(s)" should {
       "[read] should throw an exception" in {
+        val tto = createTTO[HoldingClass]()
+
         an[IllegalArgumentException] shouldBe thrownBy(readBitString(tto, 5, 0x03))
       }
 
       "[write] should throw an exception" in {
+        val tto = createTTO[HoldingClass]()
+
         an[IllegalArgumentException] shouldBe thrownBy(writeBitString[HoldingClass](tto, 5, value))
       }
     }
 
     "read+write byte(s)" should {
       "[read] should read correct" in {
+        val tto = createTTO[HoldingClass]()
+
         readByteString(tto,
-          0x00, 0x00, 0x00, 0x0f,
+          0x00, 0x00, 0x00, 0x36,
           0x01, 0x23, 0x01, 0x24, 0x01, 0x25
         ) should be(value)
       }
 
       "[write] should return a ByteString with correct length" in {
+        val tto = createTTO[HoldingClass]()
+
         writeByteString(tto, value).length should be(10)
       }
 
       "[write] should return correct packed ByteString" in {
+        val tto = createTTO[HoldingClass]()
+
         writeByteString(tto, value) should be(ByteString(
-          0x00, 0x00, 0x00, 0x0f,
+          0x00, 0x00, 0x00, 0x36,
           0x01, 0x23, 0x01, 0x24, 0x01, 0x25
         ))
       }
@@ -145,9 +172,8 @@ class HoldingClassCompilerSpec
     implicit val byteOrder: ByteOrder = ByteOrder.BIG_ENDIAN
     implicit val version: Some[PatchLevelVersion] = Some(PatchLevelVersion("1.6-123"))
 
-    val tto = createTTO[HoldingClass]()
     val value = HoldingClass(
-      _ifaceType = 15,
+      _ifaceType = 54,
       _iface = SubClassB_fromVersion_1_6_123(
         _1stParam = 0x123,
         _2ndParam = 0x124,
@@ -158,29 +184,39 @@ class HoldingClassCompilerSpec
 
     "read+write bit(s)" should {
       "[read] should throw an exception" in {
+        val tto = createTTO[HoldingClass]()
+
         an[IllegalArgumentException] shouldBe thrownBy(readBitString(tto, 5, 0x03))
       }
 
       "[write] should throw an exception" in {
+        val tto = createTTO[HoldingClass]()
+
         an[IllegalArgumentException] shouldBe thrownBy(writeBitString[HoldingClass](tto, 5, value))
       }
     }
 
     "read+write byte(s)" should {
       "[read] should read correct" in {
+        val tto = createTTO[HoldingClass]()
+
         readByteString(tto,
-          0x00, 0x00, 0x00, 0x0f,
+          0x00, 0x00, 0x00, 0x36,
           0x01, 0x23, 0x01, 0x24, 0x01, 0x25, 0x01, 0x26
         ) should be(value)
       }
 
       "[write] should return a ByteString with correct length" in {
+        val tto = createTTO[HoldingClass]()
+
         writeByteString(tto, value).length should be(12)
       }
 
       "[write] should return correct packed ByteString" in {
+        val tto = createTTO[HoldingClass]()
+
         writeByteString(tto, value) should be(ByteString(
-          0x00, 0x00, 0x00, 0x0f,
+          0x00, 0x00, 0x00, 0x36,
           0x01, 0x23, 0x01, 0x24, 0x01, 0x25, 0x01, 0x26
         ))
       }
@@ -191,9 +227,8 @@ class HoldingClassCompilerSpec
     implicit val byteOrder: ByteOrder = ByteOrder.BIG_ENDIAN
     implicit val version: Some[PatchLevelVersion] = Some(PatchLevelVersion("2.5-123"))
 
-    val tto = createTTO[HoldingClass]()
     val value = HoldingClass(
-      _ifaceType = 15,
+      _ifaceType = 54,
       _iface = SubClassB_fromVersion_2_5_123(
         _1stParam = 0x123,
         _2ndParam = 0x124,
@@ -205,29 +240,39 @@ class HoldingClassCompilerSpec
 
     "read+write bit(s)" should {
       "[read] should throw an exception" in {
+        val tto = createTTO[HoldingClass]()
+
         an[IllegalArgumentException] shouldBe thrownBy(readBitString(tto, 5, 0x03))
       }
 
       "[write] should throw an exception" in {
+        val tto = createTTO[HoldingClass]()
+
         an[IllegalArgumentException] shouldBe thrownBy(writeBitString[HoldingClass](tto, 5, value))
       }
     }
 
     "read+write byte(s)" should {
       "[read] should read correct" in {
+        val tto = createTTO[HoldingClass]()
+
         readByteString(tto,
-          0x00, 0x00, 0x00, 0x0f,
+          0x00, 0x00, 0x00, 0x36,
           0x01, 0x23, 0x01, 0x24, 0x01, 0x25, 0x01, 0x26, 0x01, 0x27
         ) should be(value)
       }
 
       "[write] should return a ByteString with correct length" in {
+        val tto = createTTO[HoldingClass]()
+
         writeByteString(tto, value).length should be(14)
       }
 
       "[write] should return correct packed ByteString" in {
+        val tto = createTTO[HoldingClass]()
+
         writeByteString(tto, value) should be(ByteString(
-          0x00, 0x00, 0x00, 0x0f,
+          0x00, 0x00, 0x00, 0x36,
           0x01, 0x23, 0x01, 0x24, 0x01, 0x25, 0x01, 0x26, 0x01, 0x27
         ))
       }

@@ -142,8 +142,9 @@ object AnnotationRefl {
       .children
       .tail
       .collect {
-      case ru.Literal(ru.Constant(m)) => m
-      case m => throw new IllegalArgumentException(s"only contant values allowed as anno params ($m)")
+      case ru.Literal(ru.Constant(m)) =>m
+      case m if !showRaw(m).matches(".*TermName.*default.*") => // default-Werte durchlassen
+        throw new IllegalArgumentException(s"only contant values allowed as anno params ($m)")
     }
 
     new CaseClassRefl(annotType.typeSymbol.asClass, dynamicTypeArgs = annot.tree.tpe.typeArgs)

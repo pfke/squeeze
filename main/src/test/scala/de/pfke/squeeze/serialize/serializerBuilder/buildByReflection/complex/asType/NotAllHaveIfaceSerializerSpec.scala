@@ -26,7 +26,7 @@ class NotAllHaveIfaceSerializerSpec
                 |    require(iter.len.toByte >= 0, s"[de.pfke.squeeze.serialize.mocks.asType.NotAllHaveIface] given input has only $${iter.len} left, but we need 0 byte")
                 |    // read iter
                 |    (findIfaceTypeHint(hints = hints), version) match {
-                |      case (Some(10), None) => serializerContainer.read[de.pfke.squeeze.serialize.mocks.asType.NAHISubClassA](iter, hints = hints:_*)
+                |      case (Some(7), None) => serializerContainer.read[de.pfke.squeeze.serialize.mocks.asType.NAHISubClassA](iter, hints = hints:_*)
                 |      case (None, None) => serializerContainer.read[de.pfke.squeeze.serialize.mocks.asType.NAHISubClassB](iter, hints = hints:_*)
                 |
                 |      case (t1, t2) => throw new SerializerRunException(s"trying to unsqueeze a trait (de.pfke.squeeze.serialize.mocks.asType.NotAllHaveIface), but either iface type ($$t1) or version ($$t2) does not match")
